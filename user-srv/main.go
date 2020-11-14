@@ -1,10 +1,12 @@
 package main
 
 import (
-	"course/service/proto/user"
-	"course/service/public"
-	"course/service/user-srv/handler"
+	"course/public"
+	"course/user-srv/handler"
+	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/consul/v2"
 	"github.com/pkg/errors"
 	"log"
 )
@@ -12,12 +14,12 @@ import (
 func main() {
 	defer public.DB.Close()
 	log.SetFlags(log.Llongfile)
-	//r := consul.NewRegistry(
-	//	registry.Addrs(public.RegistryAddr))
+	r := consul.NewRegistry(
+		registry.Addrs(public.RegistryAddr))
 	service := micro.NewService(
-		//micro.Registry(r),
+		micro.Registry(r),
 		micro.Name(public.UserServiceName),
-		)
+	)
 	service.Init()
 	err := user.RegisterUserServiceHandler(service.Server(), new(handler.UserHandler))
 	if err != nil {

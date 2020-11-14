@@ -1,0 +1,24 @@
+syntax="proto3";
+
+package com.chan.course.user;
+
+option go_package="proto/user";
+
+service UserService{
+  rpc List(PageDto) returns (PageDto){}
+}
+
+message User{
+  string id = 1;
+  string name = 2;
+  string login_name = 3;
+  string password = 4;
+}
+
+message PageDto{
+  int64 pageSize = 1;
+  int64 pageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated User users = 5;
+}

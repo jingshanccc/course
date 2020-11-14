@@ -1,29 +1,21 @@
-package repository
+package dao
 
 import (
 	"context"
-	"course/service/proto/user"
-	"course/service/public"
+	"course/public"
+	"course/user-srv/proto/user"
 	"log"
 )
 
-type UserRepository struct {
-	//
-	//Id string `json:"id"`
-	//
-	//LoginName string `json:"login_name"`
-	//
-	//Name string `json:"name"`
-	//
-	//Password string `json:"password"`
+type UserDao struct {
 }
 
-func (u *UserRepository) List(ctx context.Context, dto *user.PageDto) ([]*user.User, error){
+func (u *UserDao) List(ctx context.Context, dto *user.PageDto) ([]*user.User, error){
 	orderby := "desc"
-	if dto.Order == 1 {
+	if dto.Asc {
 		orderby = "asc"
 	}
-	stmt, err := public.DB.Prepare("select * from user order by ? " + orderby + "limit ?,? ")
+	stmt, err := public.DB.Prepare("select * from user order by ? " + orderby + " limit ?,? ")
 	if err != nil {
 		log.Println("prepare sql failed, err is " + err.Error())
 		return nil, err
