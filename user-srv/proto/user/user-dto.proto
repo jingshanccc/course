@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package com.chan.course.user;
+
+option go_package = "proto/user";
+
+message LoginUserDto{
+  string id = 1;
+  string login_name = 2;
+  string name = 3;
+  string token = 4;
+  repeated ResourceDto resources = 5;
+  repeated string requests = 6;
+}
+
+message ResourceDto{
+  /*
+   * id
+   */
+  string id = 1;
+
+  /*
+   * 名称|菜单或按钮
+   */
+  string name = 2;
+
+  /*
+   * 页面|路由
+   */
+  string page = 3;
+
+  /*
+   * 请求|接口
+   */
+  string request = 4;
+
+  /*
+   * 父id
+   */
+  string parent = 5;
+
+  repeated ResourceDto children = 6;
+}

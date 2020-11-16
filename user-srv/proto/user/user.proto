@@ -1,11 +1,17 @@
 syntax="proto3";
 
+import "user-dto.proto";
 package com.chan.course.user;
 
 option go_package="proto/user";
 
 service UserService{
   rpc List(PageDto) returns (PageDto){}
+  rpc Save(User) returns (User){}
+  rpc Delete(User) returns (User){}
+  rpc SavePassword(User) returns (User){}
+  rpc Login(User) returns (LoginUserDto){}
+  rpc Logout(LoginUserDto) returns (User){}
 }
 
 message User{

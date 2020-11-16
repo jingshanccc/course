@@ -1,0 +1,23 @@
+###
+POST {{base}}/user/save
+Content-Type: application/x-www-form-urlencoded
+
+LoginName=test2&Password=test2&Name=testuser2
+
+###
+POST {{base}}/user/login
+Content-Type: application/x-www-form-urlencoded
+
+LoginName=test2&Password=test2
+
+###
+POST {{base}}/user/save-password
+Content-Type: application/x-www-form-urlencoded
+
+LoginName=test2&Password=test2
+
+###
+### get user list
+GET  {{base}}/user/list?PageSize=10&PageNum=1&SortBy=Id&Asc=true
+Accept: */*
+Cache-Control: no-cache
