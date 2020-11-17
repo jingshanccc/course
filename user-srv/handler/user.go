@@ -78,8 +78,8 @@ func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginU
 	out.Name = loginUserDto.Name
 	out.LoginName = loginUserDto.LoginName
 	out.Token = loginUserDto.Token
-	//out.Requests = loginUserDto.Id
-	//out.Resources = loginUserDto.Id
+	out.Requests = loginUserDto.Requests
+	out.Resources = loginUserDto.Resources
 	return nil
 }
 

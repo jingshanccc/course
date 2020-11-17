@@ -5,6 +5,7 @@ import (
 	"course/public"
 	"course/user-srv/proto/user"
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"log"
 )
@@ -81,8 +82,8 @@ func (u *UserDao) Login(ctx context.Context, dto *user.User) (*user.LoginUserDto
 				Name:      usr.Name,
 			}
 			res.Token = public.GetUuid()
-			setAuth(res)
-			return res, public.NoException("")
+			exception := setAuth(ctx, res)
+			return res, exception
 		} else {
 			err = public.NewBusinessException(public.LOGIN_USER_ERROR)
 			log.Println(err.Error() + dto.LoginName)
@@ -92,8 +93,30 @@ func (u *UserDao) Login(ctx context.Context, dto *user.User) (*user.LoginUserDto
 }
 
 //setAuth : set user's resources (access control)
-func setAuth(loginUser *user.LoginUserDto) {
-
+func setAuth(ctx context.Context, loginUser *user.LoginUserDto) public.BusinessException {
+	resources, exception := (&ResourceDao{}).findUserResources(ctx, loginUser.Id)
+	if exception.Code() != int32(public.OK) {
+		return exception
+	}
+	requestSet := public.NewHashSet()
+	if len(resources) > 0 {
+		for _, resource := range resources {
+			var requests []string
+			request := resource.Request
+			json.Unmarshal([]byte(request), &requests)
+			if len(requests) > 0 {
+				for _, v := range requests {
+					requestSet.Add(v)
+				}
+			}
+		}
+	}
+	var reqs []string
+	requestJson, _ := requestSet.ToJSON()
+	json.Unmarshal(requestJson, &reqs)
+	loginUser.Resources = resources
+	loginUser.Requests = reqs
+	return exception
 }
 
 //SavePassword : reset password

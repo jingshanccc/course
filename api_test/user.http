@@ -8,13 +8,13 @@ LoginName=test2&Password=test2&Name=testuser2
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test2&Password=test2
+LoginName=test&Password=test
 
 ###
 POST {{base}}/user/save-password
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test2&Password=test2
+LoginName=test&Password=test
 
 ###
 ### get user list
