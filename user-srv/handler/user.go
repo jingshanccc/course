@@ -17,11 +17,13 @@ import (
  so that we can let the gateway response in our way.
 */
 
+var userDao = &dao.UserDao{}
+
 type UserHandler struct {
 }
 
 func (u *UserHandler) List(ctx context.Context, in *user.PageDto, out *user.PageDto) error {
-	users, err := (&dao.UserDao{}).List(ctx, in)
+	users, err := userDao.List(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
@@ -35,7 +37,7 @@ func (u *UserHandler) List(ctx context.Context, in *user.PageDto, out *user.Page
 }
 
 func (h *UserHandler) Save(ctx context.Context, in *user.User, out *user.User) error {
-	outUser, err := (&dao.UserDao{}).Save(ctx, in)
+	outUser, err := userDao.Save(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
@@ -47,6 +49,10 @@ func (h *UserHandler) Save(ctx context.Context, in *user.User, out *user.User) e
 }
 
 func (h *UserHandler) Delete(ctx context.Context, in *user.User, out *user.User) error {
+	exception := userDao.Delete(ctx, in)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
+	}
 	return nil
 }
 
@@ -54,7 +60,7 @@ func (h *UserHandler) Delete(ctx context.Context, in *user.User, out *user.User)
 func (h *UserHandler) SavePassword(ctx context.Context, in *user.User, out *user.User) error {
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
 	in.Password = str
-	password, err := (&dao.UserDao{}).SavePassword(ctx, in)
+	password, err := userDao.SavePassword(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
@@ -70,7 +76,7 @@ func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginU
 	//in.Password = *(*string)(unsafe.Pointer(&sum))
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
 	in.Password = str
-	loginUserDto, err := (&dao.UserDao{}).Login(ctx, in)
+	loginUserDto, err := userDao.Login(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
@@ -78,8 +84,8 @@ func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginU
 	out.Name = loginUserDto.Name
 	out.LoginName = loginUserDto.LoginName
 	out.Token = loginUserDto.Token
-	//out.Requests = loginUserDto.Id
-	//out.Resources = loginUserDto.Id
+	out.Requests = loginUserDto.Requests
+	out.Resources = loginUserDto.Resources
 	return nil
 }
 
