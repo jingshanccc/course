@@ -53,3 +53,14 @@ func Save(ctx *gin.Context) {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
 }
+
+func DeleteUser(ctx *gin.Context) {
+	var req user.User
+	if err := ctx.Bind(&req); err == nil {
+		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		result, err := userService.Delete(context.Background(), &req)
+		public.ResponseAny(ctx, err, result)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}

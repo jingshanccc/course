@@ -18,13 +18,14 @@ type Resource struct {
 	Request *string
 }
 
+// findUserResources 获取用户的权限
 func (r *ResourceDao) findUserResources(ctx context.Context, userId string) ([]*user.ResourceDto, public.BusinessException) {
-	stmt, err := public.DB.PrepareContext(ctx, "select distinct r.id, r.name, r.page, r.request, r.parent from role_user ru, role_resource rr, resource r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id")
+	stmt, err := public.DB.Prepare("select distinct r.id, r.name, r.page, r.request, r.parent from role_user ru, role_resource rr, resource r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id")
 	if err != nil {
 		return nil, public.NewBusinessException(public.PREPARE_SQL_ERROR)
 	}
 	defer stmt.Close()
-	rows, err := stmt.QueryContext(ctx, userId)
+	rows, err := stmt.Query(userId)
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}

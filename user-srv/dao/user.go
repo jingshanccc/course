@@ -19,7 +19,7 @@ func (u *UserDao) List(ctx context.Context, dto *user.PageDto) ([]*user.User, pu
 	if dto.Asc {
 		orderby = "asc"
 	}
-	stmt, err := public.DB.PrepareContext(ctx, "select * from user order by ? "+orderby+" limit ?,? ")
+	stmt, err := public.DB.Prepare("select * from user order by ? " + orderby + " limit ?,? ")
 	if err != nil {
 		log.Println("prepare sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.PREPARE_SQL_ERROR)
@@ -46,7 +46,7 @@ func (u *UserDao) List(ctx context.Context, dto *user.PageDto) ([]*user.User, pu
 
 //SelectByLoginName : get user by login name
 func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (us *user.User, exception public.BusinessException) {
-	stmt, err := public.DB.PrepareContext(ctx, "select * from user where login_name=?")
+	stmt, err := public.DB.Prepare("select * from user where login_name=?")
 	if err != nil {
 		log.Println("prepare sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.PREPARE_SQL_ERROR)
@@ -121,7 +121,7 @@ func setAuth(ctx context.Context, loginUser *user.LoginUserDto) public.BusinessE
 
 //SavePassword : reset password
 func (u *UserDao) SavePassword(ctx context.Context, dto *user.User) (string, public.BusinessException) {
-	stmt, err := public.DB.PrepareContext(ctx, "update user set password = ? where login_name = ?")
+	stmt, err := public.DB.Prepare("update user set password = ? where login_name = ?")
 	if err != nil {
 		log.Println("prepare sql failed, err is " + err.Error())
 		return "", public.NewBusinessException(public.PREPARE_SQL_ERROR)
@@ -143,7 +143,7 @@ func (u *UserDao) SavePassword(ctx context.Context, dto *user.User) (string, pub
 //Save : update when dto.id exists, insert otherwise
 func (u *UserDao) Save(ctx context.Context, dto *user.User) (*user.User, public.BusinessException) {
 	if dto.Id != "" { //update
-		stmt, err := public.DB.PrepareContext(ctx, "update user set login_name = ?, name=? where id = ?")
+		stmt, err := public.DB.Prepare("update user set login_name = ?, name=? where id = ?")
 		if err != nil {
 			return &user.User{}, public.NewBusinessException(public.PREPARE_SQL_ERROR)
 		}
@@ -166,7 +166,7 @@ func (u *UserDao) Save(ctx context.Context, dto *user.User) (*user.User, public.
 		}
 		dto.Id = public.GetShortUuid()
 		dto.Password = fmt.Sprintf("%x", md5.Sum([]byte(dto.Password)))
-		stmt, err1 := public.DB.PrepareContext(ctx, "insert into user(id, name, login_name, password) values (?, ?, ?, ?)")
+		stmt, err1 := public.DB.Prepare("insert into user(id, name, login_name, password) values (?, ?, ?, ?)")
 		if err1 != nil {
 			return &user.User{}, public.NewBusinessException(public.PREPARE_SQL_ERROR)
 		}
@@ -180,4 +180,20 @@ func (u *UserDao) Save(ctx context.Context, dto *user.User) (*user.User, public.
 		}
 	}
 	return dto, public.NoException("")
+}
+
+// Delete 删除用户
+func (u *UserDao) Delete(ctx context.Context, dto *user.User) public.BusinessException {
+	stmt, err := public.DB.Prepare("delete from user where id = ?")
+	if err != nil {
+		log.Println("prepare sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.PREPARE_SQL_ERROR)
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(dto.Id)
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return public.NoException("")
 }

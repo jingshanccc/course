@@ -1,4 +1,10 @@
 ###
+POST {{base}}/user/delete
+Content-Type: application/x-www-form-urlencoded
+
+Id=5nx4O9fH
+
+###
 POST {{base}}/user/save
 Content-Type: application/x-www-form-urlencoded
 
@@ -8,7 +14,7 @@ LoginName=test2&Password=test2&Name=testuser2
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test&Password=test
+LoginName=test2&Password=test2
 
 ###
 POST {{base}}/user/save-password

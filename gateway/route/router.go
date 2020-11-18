@@ -15,5 +15,6 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	v1.POST("/user/login", handler.Login)
 	v1.POST("/user/save-password", handler.SavePassword)
 	v1.POST("/user/save", handler.Save)
+	v1.POST("/user/delete", handler.DeleteUser)
 	return ginRouter
 }
