@@ -2,12 +2,15 @@ package handler
 
 import (
 	"context"
+	"course/middleware/redis"
 	"course/public"
+	"course/public/util"
 	"course/user-srv/dao"
 	"course/user-srv/proto/user"
 	"crypto/md5"
 	"fmt"
 	"github.com/micro/go-micro/v2/errors"
+	"log"
 )
 
 /*
@@ -86,9 +89,13 @@ func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginU
 	out.Token = loginUserDto.Token
 	out.Requests = loginUserDto.Requests
 	out.Resources = loginUserDto.Resources
+	string, _ := util.ToJsonString(loginUserDto)
+	redis.SetString(loginUserDto.Token, string)
 	return nil
 }
 
 func (h *UserHandler) Logout(ctx context.Context, in *user.LoginUserDto, out *user.User) error {
+	redis.DeleteString(in.Token)
+	log.Println("从redis中删除token: ", in.Token)
 	return nil
 }

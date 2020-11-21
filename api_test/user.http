@@ -1,8 +1,12 @@
+GET {{base}}/user/logout?Token=b6ef9ba21b54428296ab902d14d0572b
+Accept: application/json
+
+###
 ###
 POST {{base}}/user/delete
 Content-Type: application/x-www-form-urlencoded
 
-Id=5nx4O9fH
+Id=cpcUAo5S
 
 ###
 POST {{base}}/user/save
@@ -14,7 +18,7 @@ LoginName=test2&Password=test2&Name=testuser2
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test2&Password=test2
+LoginName=test&Password=test
 
 ###
 POST {{base}}/user/save-password
@@ -22,7 +26,6 @@ Content-Type: application/x-www-form-urlencoded
 
 LoginName=test&Password=test
 
-###
 ### get user list
 GET  {{base}}/user/list?PageSize=10&PageNum=1&SortBy=Id&Asc=true
 Accept: */*

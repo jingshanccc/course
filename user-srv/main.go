@@ -1,6 +1,7 @@
 package main
 
 import (
+	"course/middleware/redis"
 	"course/public"
 	"course/user-srv/handler"
 	"course/user-srv/proto/user"
@@ -13,6 +14,7 @@ import (
 
 func main() {
 	defer public.DB.Close()
+	defer redis.Pool.Close()
 	log.SetFlags(log.Llongfile)
 	r := consul.NewRegistry(
 		registry.Addrs(public.RegistryAddr))

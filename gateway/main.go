@@ -3,6 +3,7 @@ package main
 import (
 	"course/gateway/route"
 	"course/public"
+	"course/public/util"
 	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
@@ -25,6 +26,6 @@ func main() {
 		web.Handler(route.NewRouter(userService)),
 		web.Registry(r),
 	)
-	public.PanicIfErr(server.Init(), public.GatewayName)
-	public.PanicIfErr(server.Run(), public.GatewayName)
+	util.PanicIfErr(server.Init(), public.GatewayName)
+	util.PanicIfErr(server.Run(), public.GatewayName)
 }

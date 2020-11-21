@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"course/public"
+	"course/public/util"
 	"course/user-srv/proto/user"
 	"crypto/md5"
 	"encoding/json"
@@ -81,7 +82,7 @@ func (u *UserDao) Login(ctx context.Context, dto *user.User) (*user.LoginUserDto
 				LoginName: usr.LoginName,
 				Name:      usr.Name,
 			}
-			res.Token = public.GetUuid()
+			res.Token = util.GetUuid()
 			exception := setAuth(ctx, res)
 			return res, exception
 		} else {
@@ -164,7 +165,7 @@ func (u *UserDao) Save(ctx context.Context, dto *user.User) (*user.User, public.
 		if us != nil {
 			return &user.User{}, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
 		}
-		dto.Id = public.GetShortUuid()
+		dto.Id = util.GetShortUuid()
 		dto.Password = fmt.Sprintf("%x", md5.Sum([]byte(dto.Password)))
 		stmt, err1 := public.DB.Prepare("insert into user(id, name, login_name, password) values (?, ?, ?, ?)")
 		if err1 != nil {

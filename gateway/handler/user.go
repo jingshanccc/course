@@ -54,11 +54,24 @@ func Save(ctx *gin.Context) {
 	}
 }
 
+//DeleteUser : 删除用户
 func DeleteUser(ctx *gin.Context) {
 	var req user.User
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
+		public.ResponseAny(ctx, err, result)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//Logout : 退出
+func Logout(ctx *gin.Context) {
+	var req user.LoginUserDto
+	if err := ctx.Bind(&req); err == nil {
+		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		result, err := userService.Logout(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
