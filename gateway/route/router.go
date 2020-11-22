@@ -12,12 +12,20 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	ginRouter.Use(SaveServices(service))
 	v1 := ginRouter.Group("/api/v1")
 
-	v1.GET("/user/list", handler.GetUserList)
-	v1.POST("/user/login", handler.Login)
-	v1.POST("/user/save-password", handler.SavePassword)
-	v1.POST("/user/save", handler.Save)
-	v1.POST("/user/delete", handler.DeleteUser)
-	v1.GET("/user/logout", handler.Logout)
+	admin := v1.Group("/admin")
+	{
+		user := admin.Group("/user")
+		{
+			user.GET("/list", handler.GetUserList)
+			user.POST("/login", handler.Login)
+			user.POST("/save-password", handler.SavePassword)
+			user.POST("/save", handler.Save)
+			user.POST("/delete", handler.DeleteUser)
+			user.GET("/logout", handler.Logout)
+		}
+		admin.GET("/captcha/image-code", handler.GetCaptcha)
+	}
+
 	return ginRouter
 }
 
