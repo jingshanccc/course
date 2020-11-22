@@ -1,3 +1,7 @@
+GET {{base}}/captcha/image-code?Id=b6ef9ba21b54428296ab902d14d0572b
+Accept: application/json
+
+###
 GET {{base}}/user/logout?Token=b6ef9ba21b54428296ab902d14d0572b
 Accept: application/json
 
@@ -18,7 +22,7 @@ LoginName=test2&Password=test2&Name=testuser2
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test&Password=test
+LoginName=test&Password=test&Id=b6ef9ba21b54428296ab902d14d0572b&Name=8683
 
 ###
 POST {{base}}/user/save-password

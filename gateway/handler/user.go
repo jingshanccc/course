@@ -22,9 +22,15 @@ func GetUserList(ctx *gin.Context) {
 func Login(ctx *gin.Context) {
 	var req user.User
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
-		loginUserDto, err := userService.Login(context.Background(), &req)
-		public.ResponseAny(ctx, err, loginUserDto)
+		//图形验证码校验-user的id作为验证码id name作为验证码值
+		exception := VerifyCaptcha(req.Id, req.Name)
+		if exception.Code() == int32(public.OK) {
+			userService := ctx.Keys[public.UserServiceName].(user.UserService)
+			loginUserDto, err := userService.Login(context.Background(), &req)
+			public.ResponseAny(ctx, err, loginUserDto)
+		} else {
+			public.ResponseError(ctx, exception)
+		}
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}

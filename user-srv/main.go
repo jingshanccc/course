@@ -14,7 +14,7 @@ import (
 
 func main() {
 	defer public.DB.Close()
-	defer redis.Pool.Close()
+	defer redis.RedisClient.Close()
 	log.SetFlags(log.Llongfile)
 	r := consul.NewRegistry(
 		registry.Addrs(public.RegistryAddr))

@@ -1,7 +1,7 @@
 package public
 
 import (
-	"encoding/json"
+	"course/public/util"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/v2/errors"
 	"net/http"
@@ -17,16 +17,16 @@ type Response struct {
 func ResponseError(c *gin.Context, err BusinessException) {
 	resp := &Response{Success: false, Code: err.Code(), Message: err.Error(), Content: ""}
 	c.JSON(200, resp)
-	response, _ := json.Marshal(resp)
-	c.Set("response", string(response))
+	response, _ := util.ToJsonString(resp)
+	c.Set("response", response)
 	c.AbortWithError(200, err)
 }
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
 	resp := &Response{Success: true, Code: http.StatusOK, Message: "", Content: data}
-	c.JSON(200, resp)
-	response, _ := json.Marshal(resp)
-	c.Set("response", string(response))
+	c.JSON(http.StatusOK, resp)
+	response, _ := util.ToJsonString(resp)
+	c.Set("response", response)
 }
 
 // ResponseAny : do response
@@ -44,6 +44,6 @@ func ResponseAny(c *gin.Context, err interface{}, any interface{}) {
 		defer c.AbortWithError(http.StatusOK, exception)
 	}
 	c.JSON(http.StatusOK, resp)
-	response, _ := json.Marshal(resp)
-	c.Set("response", string(response))
+	response, _ := util.ToJsonString(resp)
+	c.Set("response", response)
 }
