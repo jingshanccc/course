@@ -43,17 +43,26 @@ func NewUserServiceEndpoints() []*api.Endpoint {
 // Client API for UserService service
 
 type UserService interface {
-	// 用户接口
+	//----------- 用户接口 -------------
 	List(ctx context.Context, in *PageDto, opts ...client.CallOption) (*PageDto, error)
 	Save(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error)
 	Delete(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error)
 	SavePassword(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error)
 	Login(ctx context.Context, in *UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
 	Logout(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error)
-	//权限管理
+	//---------- 权限管理 ---------------
+	//resource
 	LoadTree(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	SaveJson(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error)
 	DeleteResource(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error)
+	//role
+	RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error)
+	SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
+	DeleteRole(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error)
+	SaveRoleResource(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
+	ListRoleResource(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.StringList, error)
+	SaveRoleUser(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
+	ListRoleUser(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.StringList, error)
 }
 
 type userService struct {
@@ -158,20 +167,99 @@ func (c *userService) DeleteResource(ctx context.Context, in *dto.String, opts .
 	return out, nil
 }
 
+func (c *userService) RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.RoleList", in)
+	out := new(dto.RolePageDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.SaveRole", in)
+	out := new(dto.RoleDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) DeleteRole(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.DeleteRole", in)
+	out := new(dto.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) SaveRoleResource(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.SaveRoleResource", in)
+	out := new(dto.RoleDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) ListRoleResource(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.StringList, error) {
+	req := c.c.NewRequest(c.name, "UserService.ListRoleResource", in)
+	out := new(dto.StringList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) SaveRoleUser(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.SaveRoleUser", in)
+	out := new(dto.RoleDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) ListRoleUser(ctx context.Context, in *dto.String, opts ...client.CallOption) (*dto.StringList, error) {
+	req := c.c.NewRequest(c.name, "UserService.ListRoleUser", in)
+	out := new(dto.StringList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
-	// 用户接口
+	//----------- 用户接口 -------------
 	List(context.Context, *PageDto, *PageDto) error
 	Save(context.Context, *UserDto, *UserDto) error
 	Delete(context.Context, *dto.String, *dto.String) error
 	SavePassword(context.Context, *UserDto, *UserDto) error
 	Login(context.Context, *UserDto, *dto.LoginUserDto) error
 	Logout(context.Context, *dto.String, *dto.String) error
-	//权限管理
+	//---------- 权限管理 ---------------
+	//resource
 	LoadTree(context.Context, *dto.String, *dto.ResourceDtoList) error
 	SaveJson(context.Context, *dto.String, *dto.String) error
 	DeleteResource(context.Context, *dto.String, *dto.String) error
+	//role
+	RoleList(context.Context, *dto.RolePageDto, *dto.RolePageDto) error
+	SaveRole(context.Context, *dto.RoleDto, *dto.RoleDto) error
+	DeleteRole(context.Context, *dto.String, *dto.String) error
+	SaveRoleResource(context.Context, *dto.RoleDto, *dto.RoleDto) error
+	ListRoleResource(context.Context, *dto.String, *dto.StringList) error
+	SaveRoleUser(context.Context, *dto.RoleDto, *dto.RoleDto) error
+	ListRoleUser(context.Context, *dto.String, *dto.StringList) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -185,6 +273,13 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		LoadTree(ctx context.Context, in *dto.String, out *dto.ResourceDtoList) error
 		SaveJson(ctx context.Context, in *dto.String, out *dto.String) error
 		DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error
+		RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error
+		SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
+		DeleteRole(ctx context.Context, in *dto.String, out *dto.String) error
+		SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
+		ListRoleResource(ctx context.Context, in *dto.String, out *dto.StringList) error
+		SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
+		ListRoleUser(ctx context.Context, in *dto.String, out *dto.StringList) error
 	}
 	type UserService struct {
 		userService
@@ -231,4 +326,32 @@ func (h *userServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *
 
 func (h *userServiceHandler) DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error {
 	return h.UserServiceHandler.DeleteResource(ctx, in, out)
+}
+
+func (h *userServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
+	return h.UserServiceHandler.RoleList(ctx, in, out)
+}
+
+func (h *userServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return h.UserServiceHandler.SaveRole(ctx, in, out)
+}
+
+func (h *userServiceHandler) DeleteRole(ctx context.Context, in *dto.String, out *dto.String) error {
+	return h.UserServiceHandler.DeleteRole(ctx, in, out)
+}
+
+func (h *userServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return h.UserServiceHandler.SaveRoleResource(ctx, in, out)
+}
+
+func (h *userServiceHandler) ListRoleResource(ctx context.Context, in *dto.String, out *dto.StringList) error {
+	return h.UserServiceHandler.ListRoleResource(ctx, in, out)
+}
+
+func (h *userServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return h.UserServiceHandler.SaveRoleUser(ctx, in, out)
+}
+
+func (h *userServiceHandler) ListRoleUser(ctx context.Context, in *dto.String, out *dto.StringList) error {
+	return h.UserServiceHandler.ListRoleUser(ctx, in, out)
 }

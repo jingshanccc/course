@@ -248,6 +248,85 @@ func (x *RoleDto) GetUserIds() []string {
 	return nil
 }
 
+type RolePageDto struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PageSize int64      `protobuf:"varint,1,opt,name=pageSize,proto3" json:"pageSize,omitempty"`
+	PageNum  int64      `protobuf:"varint,2,opt,name=pageNum,proto3" json:"pageNum,omitempty"`
+	SortBy   string     `protobuf:"bytes,3,opt,name=sortBy,proto3" json:"sortBy,omitempty"`
+	Asc      bool       `protobuf:"varint,4,opt,name=asc,proto3" json:"asc,omitempty"`
+	Rows     []*RoleDto `protobuf:"bytes,5,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *RolePageDto) Reset() {
+	*x = RolePageDto{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RolePageDto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RolePageDto) ProtoMessage() {}
+
+func (x *RolePageDto) ProtoReflect() protoreflect.Message {
+	mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RolePageDto.ProtoReflect.Descriptor instead.
+func (*RolePageDto) Descriptor() ([]byte, []int) {
+	return file_course_user_srv_proto_dto_resource_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RolePageDto) GetPageSize() int64 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *RolePageDto) GetPageNum() int64 {
+	if x != nil {
+		return x.PageNum
+	}
+	return 0
+}
+
+func (x *RolePageDto) GetSortBy() string {
+	if x != nil {
+		return x.SortBy
+	}
+	return ""
+}
+
+func (x *RolePageDto) GetAsc() bool {
+	if x != nil {
+		return x.Asc
+	}
+	return false
+}
+
+func (x *RolePageDto) GetRows() []*RoleDto {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
 type RoleUserDto struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -261,7 +340,7 @@ type RoleUserDto struct {
 func (x *RoleUserDto) Reset() {
 	*x = RoleUserDto{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[3]
+		mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -274,7 +353,7 @@ func (x *RoleUserDto) String() string {
 func (*RoleUserDto) ProtoMessage() {}
 
 func (x *RoleUserDto) ProtoReflect() protoreflect.Message {
-	mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[3]
+	mi := &file_course_user_srv_proto_dto_resource_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -287,7 +366,7 @@ func (x *RoleUserDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleUserDto.ProtoReflect.Descriptor instead.
 func (*RoleUserDto) Descriptor() ([]byte, []int) {
-	return file_course_user_srv_proto_dto_resource_proto_rawDescGZIP(), []int{3}
+	return file_course_user_srv_proto_dto_resource_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *RoleUserDto) GetId() string {
@@ -339,14 +418,23 @@ var file_course_user_srv_proto_dto_resource_proto_rawDesc = []byte{
 	0x63, 0x65, 0x49, 0x64, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x73,
 	0x6f, 0x75, 0x72, 0x63, 0x65, 0x49, 0x64, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72,
 	0x49, 0x64, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x75, 0x73, 0x65, 0x72, 0x49,
-	0x64, 0x73, 0x22, 0x4d, 0x0a, 0x0b, 0x52, 0x6f, 0x6c, 0x65, 0x55, 0x73, 0x65, 0x72, 0x44, 0x74,
-	0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x49,
-	0x64, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x6f, 0x6c,
-	0x65, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x72, 0x6f, 0x6c, 0x65, 0x49,
-	0x64, 0x42, 0x1b, 0x5a, 0x19, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72,
-	0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x73, 0x22, 0x90, 0x01, 0x0a, 0x0b, 0x52, 0x6f, 0x6c, 0x65, 0x50, 0x61, 0x67, 0x65, 0x44,
+	0x74, 0x6f, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x18,
+	0x0a, 0x07, 0x70, 0x61, 0x67, 0x65, 0x4e, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x07, 0x70, 0x61, 0x67, 0x65, 0x4e, 0x75, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x6f, 0x72, 0x74,
+	0x42, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x72, 0x74, 0x42, 0x79,
+	0x12, 0x10, 0x0a, 0x03, 0x61, 0x73, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x03, 0x61,
+	0x73, 0x63, 0x12, 0x21, 0x0a, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x0d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x52, 0x6f, 0x6c, 0x65, 0x44, 0x74, 0x6f, 0x52,
+	0x04, 0x72, 0x6f, 0x77, 0x73, 0x22, 0x4d, 0x0a, 0x0b, 0x52, 0x6f, 0x6c, 0x65, 0x55, 0x73, 0x65,
+	0x72, 0x44, 0x74, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06,
+	0x72, 0x6f, 0x6c, 0x65, 0x49, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x72, 0x6f,
+	0x6c, 0x65, 0x49, 0x64, 0x42, 0x1b, 0x5a, 0x19, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x75,
+	0x73, 0x65, 0x72, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -361,21 +449,23 @@ func file_course_user_srv_proto_dto_resource_proto_rawDescGZIP() []byte {
 	return file_course_user_srv_proto_dto_resource_proto_rawDescData
 }
 
-var file_course_user_srv_proto_dto_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_course_user_srv_proto_dto_resource_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_course_user_srv_proto_dto_resource_proto_goTypes = []interface{}{
 	(*ResourceDto)(nil),     // 0: user.ResourceDto
 	(*ResourceDtoList)(nil), // 1: user.ResourceDtoList
 	(*RoleDto)(nil),         // 2: user.RoleDto
-	(*RoleUserDto)(nil),     // 3: user.RoleUserDto
+	(*RolePageDto)(nil),     // 3: user.RolePageDto
+	(*RoleUserDto)(nil),     // 4: user.RoleUserDto
 }
 var file_course_user_srv_proto_dto_resource_proto_depIdxs = []int32{
 	0, // 0: user.ResourceDto.children:type_name -> user.ResourceDto
 	0, // 1: user.ResourceDtoList.rows:type_name -> user.ResourceDto
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 2: user.RolePageDto.rows:type_name -> user.RoleDto
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_course_user_srv_proto_dto_resource_proto_init() }
@@ -421,6 +511,18 @@ func file_course_user_srv_proto_dto_resource_proto_init() {
 			}
 		}
 		file_course_user_srv_proto_dto_resource_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RolePageDto); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_user_srv_proto_dto_resource_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*RoleUserDto); i {
 			case 0:
 				return &v.state
@@ -439,7 +541,7 @@ func file_course_user_srv_proto_dto_resource_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_course_user_srv_proto_dto_resource_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

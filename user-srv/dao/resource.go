@@ -6,6 +6,7 @@ import (
 	"course/user-srv/proto/dto"
 	"database/sql"
 	"encoding/json"
+	"gorm.io/gorm"
 	"log"
 )
 
@@ -20,17 +21,13 @@ type Resource struct {
 	Request *string
 }
 
+func (Resource) TableName() string {
+	return "resource"
+}
+
 // Delete : 删除权限
 func (r *ResourceDao) Delete(ctx context.Context, id string) public.BusinessException {
-	stmt, err := public.DB.PrepareContext(ctx, "delete from resource where id = ?")
-	if err != nil {
-		return public.NewBusinessException(public.PREPARE_SQL_ERROR)
-	}
-	defer stmt.Close()
-	_, err = stmt.ExecContext(ctx, id)
-	if err != nil {
-		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-	}
+	public.DB.Delete(&Resource{Id: id})
 	return public.NoException("")
 }
 
@@ -38,7 +35,7 @@ func (r *ResourceDao) Delete(ctx context.Context, id string) public.BusinessExce
 func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.BusinessException {
 	// rollback 逻辑
 	var exception public.BusinessException
-	var tx *sql.Tx
+	var tx *gorm.DB
 	defer func() {
 		if exception.Code() != int32(public.OK) {
 			tx.Rollback()
@@ -55,24 +52,21 @@ func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.Busin
 		}
 	}
 	//删除数据库中的所有resource, 然后保存新的resource
-	tx, err = public.DB.Begin()
-	if err != nil {
+	tx = public.DB.Begin()
+	if err = tx.Error; err != nil {
 		return public.NewBusinessException(public.BEGIN_TRANSACTION_ERROR)
 	}
-	_, err = tx.Exec("delete from resource")
-	if err != nil {
+	if err = tx.Exec("delete from resource").Error; err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-
 	for _, resourceDto := range list {
-		_, err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Page, resourceDto.Request, resourceDto.Parent)
+		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Page, resourceDto.Request, resourceDto.Parent).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
 
-	err = tx.Commit()
-	if err != nil {
+	if err = tx.Commit().Error; err != nil {
 		log.Println("transaction commit error, need roll back")
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -92,12 +86,7 @@ func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
 
 // LoadTree : 按约定将列表转成树, ID要正序排列
 func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.BusinessException) {
-	stmt, err := public.DB.Prepare("select distinct r.id, r.name, r.page, r.request, r.parent from resource r order by r.id")
-	if err != nil {
-		return nil, public.NewBusinessException(public.PREPARE_SQL_ERROR)
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query()
+	rows, err := public.DB.Raw("select distinct r.id, r.name, r.page, r.request, r.parent from resource r order by r.id").Rows()
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -152,12 +141,8 @@ func reverseChild(res []*dto.ResourceDto) {
 
 // FindUserResources 获取用户的权限
 func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, public.BusinessException) {
-	stmt, err := public.DB.Prepare("select distinct r.id, r.name, r.page, r.request, r.parent from role_user ru, role_resource rr, resource r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id")
-	if err != nil {
-		return nil, public.NewBusinessException(public.PREPARE_SQL_ERROR)
-	}
-	defer stmt.Close()
-	rows, err := stmt.Query(userId)
+	rows, err := public.DB.Raw("select distinct r.id, r.name, r.page, r.request, r.parent from role_user ru, role_resource rr, resource r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id", userId).Rows()
+
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -176,26 +161,26 @@ func scanResources(rows *sql.Rows) ([]*dto.ResourceDto, public.BusinessException
 			log.Println("row scan failed, err is " + err.Error())
 			return nil, public.NewBusinessException(public.ROW_SCAN_ERROR)
 		}
-		dto := &dto.ResourceDto{
+		d := &dto.ResourceDto{
 			Id:   r.Id,
 			Name: r.Name,
 		}
 		if r.Page == nil {
-			dto.Page = ""
+			d.Page = ""
 		} else {
-			dto.Page = *r.Page
+			d.Page = *r.Page
 		}
 		if r.Parent == nil {
-			dto.Parent = ""
+			d.Parent = ""
 		} else {
-			dto.Parent = *r.Parent
+			d.Parent = *r.Parent
 		}
 		if r.Request == nil {
-			dto.Request = ""
+			d.Request = ""
 		} else {
-			dto.Request = *r.Request
+			d.Request = *r.Request
 		}
-		res = append(res, dto)
+		res = append(res, d)
 	}
 	return res, public.NoException("")
 }

@@ -72,6 +72,53 @@ func (x *String) GetStr() string {
 	return ""
 }
 
+type StringList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rows []string `protobuf:"bytes,1,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *StringList) Reset() {
+	*x = StringList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_user_srv_proto_dto_basic_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *StringList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StringList) ProtoMessage() {}
+
+func (x *StringList) ProtoReflect() protoreflect.Message {
+	mi := &file_course_user_srv_proto_dto_basic_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StringList.ProtoReflect.Descriptor instead.
+func (*StringList) Descriptor() ([]byte, []int) {
+	return file_course_user_srv_proto_dto_basic_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *StringList) GetRows() []string {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
 var File_course_user_srv_proto_dto_basic_proto protoreflect.FileDescriptor
 
 var file_course_user_srv_proto_dto_basic_proto_rawDesc = []byte{
@@ -79,9 +126,11 @@ var file_course_user_srv_proto_dto_basic_proto_rawDesc = []byte{
 	0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x62, 0x61, 0x73, 0x69,
 	0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0x1a, 0x0a,
 	0x06, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x74, 0x72, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x74, 0x72, 0x42, 0x1b, 0x5a, 0x19, 0x63, 0x6f, 0x75,
-	0x72, 0x73, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x74, 0x72, 0x22, 0x20, 0x0a, 0x0a, 0x53, 0x74, 0x72,
+	0x69, 0x6e, 0x67, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x42, 0x1b, 0x5a, 0x19, 0x63,
+	0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -96,9 +145,10 @@ func file_course_user_srv_proto_dto_basic_proto_rawDescGZIP() []byte {
 	return file_course_user_srv_proto_dto_basic_proto_rawDescData
 }
 
-var file_course_user_srv_proto_dto_basic_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_course_user_srv_proto_dto_basic_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_course_user_srv_proto_dto_basic_proto_goTypes = []interface{}{
-	(*String)(nil), // 0: user.String
+	(*String)(nil),     // 0: user.String
+	(*StringList)(nil), // 1: user.StringList
 }
 var file_course_user_srv_proto_dto_basic_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -126,6 +176,18 @@ func file_course_user_srv_proto_dto_basic_proto_init() {
 				return nil
 			}
 		}
+		file_course_user_srv_proto_dto_basic_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StringList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -133,7 +195,7 @@ func file_course_user_srv_proto_dto_basic_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_course_user_srv_proto_dto_basic_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

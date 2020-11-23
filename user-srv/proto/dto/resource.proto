@@ -45,6 +45,14 @@ message RoleDto{
   repeated string userIds = 5;
 }
 
+message RolePageDto{
+  int64 pageSize = 1;
+  int64 pageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated RoleDto rows = 5;
+}
+
 message RoleUserDto {
   string Id = 1;
   string userId = 2;

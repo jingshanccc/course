@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	defer public.DB.Close()
+	//defer public.DB.Close()
 	defer redis.RedisClient.Close()
 	log.SetFlags(log.Llongfile)
 	r := consul.NewRegistry(

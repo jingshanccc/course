@@ -8,7 +8,7 @@ package user;
 option go_package="course/user-srv/proto/user";
 
 service UserService{
-  // 用户接口
+  //----------- 用户接口 -------------
   rpc List(PageDto) returns (PageDto){}
   rpc Save(UserDto) returns (UserDto){}
   rpc Delete(String) returns (String){}
@@ -16,10 +16,19 @@ service UserService{
   rpc Login(UserDto) returns (LoginUserDto){}
   rpc Logout(String) returns (String){}
 
-  //权限管理
+  //---------- 权限管理 ---------------
+  //resource
   rpc LoadTree(String) returns (ResourceDtoList);
   rpc SaveJson(String) returns (String);
   rpc DeleteResource(String) returns (String);
+  //role
+  rpc RoleList(RolePageDto) returns (RolePageDto);
+  rpc SaveRole(RoleDto) returns (RoleDto);
+  rpc DeleteRole(String) returns (String);
+  rpc SaveRoleResource(RoleDto) returns (RoleDto);
+  rpc ListRoleResource(String) returns (StringList);
+  rpc SaveRoleUser(RoleDto) returns (RoleDto);
+  rpc ListRoleUser(String) returns (StringList);
 }
 
 message UserDto{

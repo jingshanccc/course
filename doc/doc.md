@@ -1,4 +1,14 @@
-# Consul
+# Proto
+```bash
+# 位于目录: 项目目录的上级目录
+# 编译dto下的文件
+protoc --proto_path=. --go_out=. course/user-srv/proto/dto/user.proto
+# 编译微服务文件
+protoc --proto_path=. --go_out=. --micro_out=. course/user-srv/proto/user/user.proto
+```
+
+# Docker
+## Consul
 
 ```bash
 # 启动第一个server节点
@@ -12,18 +22,18 @@ docker run --name consul3 -d -p 8502:8500 consul agent -server -ui -bind=0.0.0.0
 docker exec -it consul1 consul members
 ```
 
-# Mysql
+## Mysql
 ```
 docker run -itd -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
 ```
 
-# MariaDB
+## MariaDB
 
 ```
 docker run --name mariadb -v /var/lib/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root@123456 -e MYSQL_ROOT_HOST=% -d mariadb --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ```
 
-# Redis
+## Redis
 ```
 docker run -itd -p 6379:6379 redis
 ```

@@ -44,7 +44,7 @@ func (u *UserServiceHandler) List(ctx context.Context, in *user.PageDto, out *us
 	return nil
 }
 
-func (h *UserServiceHandler) Save(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
+func (u *UserServiceHandler) Save(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
 	outUser, err := userDao.Save(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
@@ -56,7 +56,7 @@ func (h *UserServiceHandler) Save(ctx context.Context, in *user.UserDto, out *us
 	return nil
 }
 
-func (h *UserServiceHandler) Delete(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) Delete(ctx context.Context, in *dto.String, out *dto.String) error {
 	exception := userDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -65,7 +65,7 @@ func (h *UserServiceHandler) Delete(ctx context.Context, in *dto.String, out *dt
 }
 
 //SavePassword : reset password
-func (h *UserServiceHandler) SavePassword(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
+func (u *UserServiceHandler) SavePassword(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
 	in.Password = str
 	password, err := userDao.SavePassword(ctx, in)
@@ -79,7 +79,7 @@ func (h *UserServiceHandler) SavePassword(ctx context.Context, in *user.UserDto,
 	return nil
 }
 
-func (h *UserServiceHandler) Login(ctx context.Context, in *user.UserDto, out *dto.LoginUserDto) error {
+func (u *UserServiceHandler) Login(ctx context.Context, in *user.UserDto, out *dto.LoginUserDto) error {
 	//better than in.Password = fmt.Sprintf("%x", sum)
 	//in.Password = *(*string)(unsafe.Pointer(&sum))
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
@@ -100,7 +100,7 @@ func (h *UserServiceHandler) Login(ctx context.Context, in *user.UserDto, out *d
 	return nil
 }
 
-func (h *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dto.String) error {
 	redis.RedisClient.Del(in.Str)
 	log.Println("从redis中删除token: ", in.Str)
 	return nil
@@ -109,7 +109,7 @@ func (h *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dt
 //---------- 权限管理 -------------
 
 //LoadTree : 加载权限树
-func (r *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *dto.ResourceDtoList) error {
+func (u *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *dto.ResourceDtoList) error {
 	resourceDtos, exception := resourceDao.LoadTree(ctx)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -119,7 +119,7 @@ func (r *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *
 }
 
 // SaveJson : 保存权限树
-func (r *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *dto.String) error {
 	exception := resourceDao.SaveJson(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -128,10 +128,45 @@ func (r *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *
 }
 
 // DeleteResource: 删除权限
-func (r *UserServiceHandler) DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error {
 	exception := resourceDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
 	}
+	return nil
+}
+
+//RoleList : 获取所有角色
+func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
+	return nil
+}
+
+//SaveRole: 保存一种角色
+func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return nil
+}
+
+//DeleteRole: 删除一种角色
+func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *dto.String, out *dto.String) error {
+	return nil
+}
+
+//SaveRoleResource: 保存角色权限
+func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return nil
+}
+
+//ListRoleResource: 获取角色权限
+func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *dto.String, out *dto.StringList) error {
+	return nil
+}
+
+//SaveRoleUser: 保存某个角色的所有用户
+func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
+	return nil
+}
+
+//ListRoleUser: 获取某个角色的所有用户
+func (u *UserServiceHandler) ListRoleUser(ctx context.Context, in *dto.String, out *dto.StringList) error {
 	return nil
 }
