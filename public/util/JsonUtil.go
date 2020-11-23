@@ -1,6 +1,9 @@
 package util
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"log"
+)
 
 /*
   JSON (map转json)
@@ -27,9 +30,10 @@ func ToJsonString(data interface{}) (string, error) {
 /*
 	JSON (json转map)
 */
-func ParseJsonString(data string) map[string]interface{} {
+func ParseJsonToMap(data string) map[string]interface{} {
 	var jsonData map[string]interface{}
-	json.Unmarshal([]byte(data), &jsonData)
+	err := json.Unmarshal([]byte(data), &jsonData)
+	log.Println(err)
 	return jsonData
 }
 

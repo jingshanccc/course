@@ -24,6 +24,12 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			user.GET("/logout", handler.Logout)
 		}
 		admin.GET("/captcha/image-code", handler.GetCaptcha)
+		resource := admin.Group("/resource")
+		{
+			resource.GET("/load-tree", handler.LoadTree)
+			resource.POST("/save", handler.SaveJson)
+			resource.DELETE("/delete", handler.Delete)
+		}
 	}
 
 	return ginRouter

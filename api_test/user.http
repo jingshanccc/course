@@ -1,3 +1,86 @@
+###
+DELETE {{base}}/resource/delete?Str=010104
+Content-Type: application/x-www-form-urlencoded
+
+
+###
+POST {{base}}/resource/save
+Content-Type: application/x-www-form-urlencoded
+
+Str=[
+   {
+     "id": "01",
+     "name": "系统管理",
+     "children": [
+       {
+         "id": "0101",
+         "name": "用户管理",
+         "page": "/system/user",
+         "parent": "01",
+         "children": [
+           {
+             "id": "010101",
+             "name": "保存",
+             "request": "[\"/system/admin/user/list\", \"/system/admin/user/save\"]",
+             "parent": "0101"
+           },
+           {
+             "id": "010102",
+             "name": "删除",
+             "request": "[\"/system/admin/user/delete\"]",
+             "parent": "0101"
+           },
+           {
+             "id": "010103",
+             "name": "重置密码",
+             "request": "[\"/system/admin/user/save-password\"]",
+             "parent": "0101"
+           },
+           {
+             "id": "010104",
+             "name": "重置你的密码",
+             "request": "[\"/system/admin/user/save-password\"]",
+             "parent": "0101"
+           }
+         ]
+       },
+       {
+         "id": "0102",
+         "name": "资源管理",
+         "page": "/system/resource",
+         "parent": "01",
+         "children": [
+           {
+             "id": "010201",
+             "name": "保存/显示",
+             "request": "[\"/system/admin/resource\"]",
+             "parent": "0102"
+           }
+         ]
+       },
+       {
+         "id": "0103",
+         "name": "角色管理",
+         "page": "/system/role",
+         "parent": "01",
+         "children": [
+           {
+             "id": "010301",
+             "name": "角色/权限管理",
+             "request": "[\"/system/admin/role\"]",
+             "parent": "0103"
+           }
+         ]
+       }
+     ]
+   }
+ ]
+
+###
+GET {{base}}/resource/load-tree
+Accept: application/json
+
+###
 GET {{base}}/captcha/image-code?Id=b6ef9ba21b54428296ab902d14d0572b
 Accept: application/json
 

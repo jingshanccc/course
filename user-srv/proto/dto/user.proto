@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+import "course/user-srv/proto/dto/resource.proto";
+
+package user;
+
+option go_package = "course/user-srv/proto/dto";
+
+message LoginUserDto{
+  string id = 1;
+  string login_name = 2;
+  string name = 3;
+  string token = 4;
+  repeated ResourceDto resources = 5;
+  repeated string requests = 6;
+}

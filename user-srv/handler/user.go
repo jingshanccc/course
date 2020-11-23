@@ -6,6 +6,7 @@ import (
 	"course/public"
 	"course/public/util"
 	"course/user-srv/dao"
+	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"crypto/md5"
 	"fmt"
@@ -21,12 +22,15 @@ import (
  so that we can let the gateway response in our way.
 */
 
-var userDao = &dao.UserDao{}
+var (
+	userDao     = &dao.UserDao{}
+	resourceDao = &dao.ResourceDao{}
+)
 
-type UserHandler struct {
+type UserServiceHandler struct {
 }
 
-func (u *UserHandler) List(ctx context.Context, in *user.PageDto, out *user.PageDto) error {
+func (u *UserServiceHandler) List(ctx context.Context, in *user.PageDto, out *user.PageDto) error {
 	users, err := userDao.List(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
@@ -40,7 +44,7 @@ func (u *UserHandler) List(ctx context.Context, in *user.PageDto, out *user.Page
 	return nil
 }
 
-func (h *UserHandler) Save(ctx context.Context, in *user.User, out *user.User) error {
+func (h *UserServiceHandler) Save(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
 	outUser, err := userDao.Save(ctx, in)
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
@@ -52,8 +56,8 @@ func (h *UserHandler) Save(ctx context.Context, in *user.User, out *user.User) e
 	return nil
 }
 
-func (h *UserHandler) Delete(ctx context.Context, in *user.User, out *user.User) error {
-	exception := userDao.Delete(ctx, in)
+func (h *UserServiceHandler) Delete(ctx context.Context, in *dto.String, out *dto.String) error {
+	exception := userDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
 	}
@@ -61,7 +65,7 @@ func (h *UserHandler) Delete(ctx context.Context, in *user.User, out *user.User)
 }
 
 //SavePassword : reset password
-func (h *UserHandler) SavePassword(ctx context.Context, in *user.User, out *user.User) error {
+func (h *UserServiceHandler) SavePassword(ctx context.Context, in *user.UserDto, out *user.UserDto) error {
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
 	in.Password = str
 	password, err := userDao.SavePassword(ctx, in)
@@ -75,7 +79,7 @@ func (h *UserHandler) SavePassword(ctx context.Context, in *user.User, out *user
 	return nil
 }
 
-func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginUserDto) error {
+func (h *UserServiceHandler) Login(ctx context.Context, in *user.UserDto, out *dto.LoginUserDto) error {
 	//better than in.Password = fmt.Sprintf("%x", sum)
 	//in.Password = *(*string)(unsafe.Pointer(&sum))
 	str := fmt.Sprintf("%x", md5.Sum([]byte(in.Password)))
@@ -96,8 +100,38 @@ func (h *UserHandler) Login(ctx context.Context, in *user.User, out *user.LoginU
 	return nil
 }
 
-func (h *UserHandler) Logout(ctx context.Context, in *user.LoginUserDto, out *user.User) error {
-	redis.RedisClient.Del(in.Token)
-	log.Println("从redis中删除token: ", in.Token)
+func (h *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dto.String) error {
+	redis.RedisClient.Del(in.Str)
+	log.Println("从redis中删除token: ", in.Str)
+	return nil
+}
+
+//---------- 权限管理 -------------
+
+//LoadTree : 加载权限树
+func (r *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *dto.ResourceDtoList) error {
+	resourceDtos, exception := resourceDao.LoadTree(ctx)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
+	}
+	out.Rows = resourceDtos
+	return nil
+}
+
+// SaveJson : 保存权限树
+func (r *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *dto.String) error {
+	exception := resourceDao.SaveJson(ctx, in.Str)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
+	}
+	return nil
+}
+
+// DeleteResource: 删除权限
+func (r *UserServiceHandler) DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error {
+	exception := resourceDao.Delete(ctx, in.Str)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
+	}
 	return nil
 }

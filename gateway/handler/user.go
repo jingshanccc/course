@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"course/public"
+	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,7 @@ func GetUserList(ctx *gin.Context) {
 }
 
 func Login(ctx *gin.Context) {
-	var req user.User
+	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
 		//图形验证码校验-user的id作为验证码id name作为验证码值
 		exception := VerifyCaptcha(req.Id, req.Name)
@@ -38,7 +39,7 @@ func Login(ctx *gin.Context) {
 
 //SavePassword : reset password
 func SavePassword(ctx *gin.Context) {
-	var req user.User
+	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.SavePassword(context.Background(), &req)
@@ -50,7 +51,7 @@ func SavePassword(ctx *gin.Context) {
 
 //Save : insert or update user
 func Save(ctx *gin.Context) {
-	var req user.User
+	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Save(context.Background(), &req)
@@ -62,7 +63,7 @@ func Save(ctx *gin.Context) {
 
 //DeleteUser : 删除用户
 func DeleteUser(ctx *gin.Context) {
-	var req user.User
+	var req dto.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
@@ -74,7 +75,7 @@ func DeleteUser(ctx *gin.Context) {
 
 //Logout : 退出
 func Logout(ctx *gin.Context) {
-	var req user.LoginUserDto
+	var req dto.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Logout(context.Background(), &req)
