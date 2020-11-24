@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "course/user-srv/proto/dto";
+
+message String {
+  string str = 1;
+}
+
+message StringList {
+  repeated string rows = 1;
+}

@@ -4,10 +4,11 @@ type ExceptionEnum int32
 
 const (
 	//not business exception : dao,valid,etc.
-	VALID_PARM_ERROR  ExceptionEnum = 10000
-	PREPARE_SQL_ERROR ExceptionEnum = 10001
-	EXECUTE_SQL_ERROR ExceptionEnum = 10002
-	ROW_SCAN_ERROR    ExceptionEnum = 10003
+	VALID_PARM_ERROR        ExceptionEnum = 10000
+	PREPARE_SQL_ERROR       ExceptionEnum = 10001
+	EXECUTE_SQL_ERROR       ExceptionEnum = 10002
+	ROW_SCAN_ERROR          ExceptionEnum = 10003
+	BEGIN_TRANSACTION_ERROR ExceptionEnum = 10004
 
 	OK                      ExceptionEnum = 20000
 	MEMBER_NOT_EXIST        ExceptionEnum = 20001
@@ -35,6 +36,8 @@ func (code ExceptionEnum) getDesc() string {
 		return "执行sql语句失败"
 	case ROW_SCAN_ERROR:
 		return "查询结果赋值失败"
+	case BEGIN_TRANSACTION_ERROR:
+		return "开始数据库事务失败"
 	case MEMBER_NOT_EXIST:
 		return "会员不存在"
 	case USER_LOGIN_NAME_EXIST:

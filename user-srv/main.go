@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	defer public.DB.Close()
+	//defer public.DB.Close()
 	defer redis.RedisClient.Close()
 	log.SetFlags(log.Llongfile)
 	r := consul.NewRegistry(
@@ -23,7 +23,7 @@ func main() {
 		micro.Name(public.UserServiceName),
 	)
 	service.Init()
-	err := user.RegisterUserServiceHandler(service.Server(), new(handler.UserHandler))
+	err := user.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
 	if err != nil {
 		log.Fatal(errors.WithMessage(err, "register server"))
 		return

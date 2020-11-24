@@ -1,15 +1,16 @@
 package public
+
 import (
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 )
 
-var DB *sql.DB
+var DB *gorm.DB
 
 func init() {
 	var err error
-	DB, err = sql.Open("mysql", MySQLUrl)
+	DB, err = gorm.Open(mysql.Open(MySQLUrl), &gorm.Config{})
 	if err != nil {
 		log.Println("open database failed, err is " + err.Error())
 		return
@@ -17,8 +18,4 @@ func init() {
 	//DB.SetMaxOpenConns(20)
 	//DB.SetConnMaxLifetime(time.Second * 10)
 	//DB.SetMaxIdleConns(10)
-	if err = DB.Ping(); err != nil {
-		log.Println("connect database failed, err is " + err.Error())
-		return
-	}
 }

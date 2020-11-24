@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "course/user-srv/proto/dto";
+
+message ResourceDto{
+  /*
+   * id
+   */
+  string id = 1;
+
+  /*
+   * 名称|菜单或按钮
+   */
+  string name = 2;
+
+  /*
+   * 页面|路由
+   */
+  string page = 3;
+
+  /*
+   * 请求|接口
+   */
+  string request = 4;
+
+  /*
+   * 父id
+   */
+  string parent = 5;
+
+  repeated ResourceDto children = 6;
+}
+
+message ResourceDtoList{
+  repeated ResourceDto rows = 1;
+}
+
+message RoleDto{
+  string Id = 1;
+  string Name = 2;
+  string Desc = 3;
+  repeated string resourceIds = 4;
+  repeated string userIds = 5;
+}
+
+message RolePageDto{
+  int64 pageSize = 1;
+  int64 pageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated RoleDto rows = 5;
+}
+
+message RoleUserDto {
+  string Id = 1;
+  string userId = 2;
+  string roleId = 3;
+}
