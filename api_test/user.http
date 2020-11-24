@@ -1,7 +1,50 @@
+### save role resource
+POST {{base}}/role/save-resource
+Content-Type: application/json
+
+{
+  "Id": "00000001",
+  "resourceIds": [
+    "010101",
+    "010102"
+  ]
+}
+
+### list role resource
+GET {{base}}/role/list-resource/?Str=00000001
+Content-Type: application/x-www-form-urlencoded
+
+### save role user
+POST {{base}}/role/save-user
+Content-Type: application/json
+
+{
+  "Id": "00000001",
+  "userIds": [
+    "r8TBK7bO"
+  ]
+}
+
+### list role user
+GET {{base}}/role/list-user/?Str=00000001
+Content-Type: application/x-www-form-urlencoded
+
+### delete role
+DELETE {{base}}/role/delete?Str=lltewdEp
+Content-Type: application/x-www-form-urlencoded
+
+### save role
+POST {{base}}/role/save?Name=小业务管理员&Desc=负责小业务管理
+Content-Type: application/x-www-form-urlencoded
+
+### get role list
+POST  {{base}}/role/list?PageSize=10&PageNum=1&SortBy=name&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
 ###
 DELETE {{base}}/resource/delete?Str=010104
 Content-Type: application/x-www-form-urlencoded
-
 
 ###
 POST {{base}}/resource/save

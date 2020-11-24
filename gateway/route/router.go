@@ -30,6 +30,16 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			resource.POST("/save", handler.SaveJson)
 			resource.DELETE("/delete", handler.Delete)
 		}
+		role := admin.Group("/role")
+		{
+			role.POST("/list", handler.RoleList)
+			role.POST("/save", handler.SaveRole)
+			role.DELETE("/delete", handler.DeleteRole)
+			role.POST("/save-resource", handler.SaveRoleResource)
+			role.GET("/list-resource", handler.ListRoleResource)
+			role.POST("/save-user", handler.SaveRoleUser)
+			role.GET("/list-user", handler.ListRoleUser)
+		}
 	}
 
 	return ginRouter

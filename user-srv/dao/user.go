@@ -143,13 +143,6 @@ func (u *UserDao) Save(ctx context.Context, dto *user.UserDto) (*user.UserDto, p
 // Delete 删除用户
 func (u *UserDao) Delete(ctx context.Context, id string) public.BusinessException {
 	err := public.DB.Delete(&User{Id: id}).Error
-	//stmt, err := public.DB.Prepare("delete from user where id = ?")
-	//if err != nil {
-	//	log.Println("prepare sql failed, err is " + err.Error())
-	//	return public.NewBusinessException(public.PREPARE_SQL_ERROR)
-	//}
-	//defer stmt.Close()
-	//_, err = stmt.Exec(id)
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
