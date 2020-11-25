@@ -1,3 +1,42 @@
+###
+POST {{base}}/section/list?PageSize=10&PageNum=1&SortBy=title&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/section/delete?Str=UMvUm1Ol
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/section/save
+Content-Type: application/json
+
+{
+  "Title": "测试小节02",
+  "CourseId": "00000001",
+  "ChapterId": "y4fdOzUM",
+  "Time": 320,
+  "Charge": "f",
+  "Sort": 2
+}
+###
+POST {{base}}/chapter/list?PageSize=10&PageNum=2&SortBy=name&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/chapter/delete?Str=y4fdOzUM
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/chapter/save
+Content-Type: application/json
+
+{
+  "id": "y4fdOzUM",
+  "name": "测试大章15",
+  "courseId": "00000000"
+}
 
 ###
 DELETE {{base}}/category/delete?Str=IwxjVVKF

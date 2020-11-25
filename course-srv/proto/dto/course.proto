@@ -131,6 +131,15 @@ message ChapterDto{
   string Name = 3;
 }
 
+message ChapterPageDto{
+  int32 PageSize = 1;
+  int32 PageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  string CourseId = 5;
+  repeated ChapterDto rows = 6;
+}
+
 //Section Dto
 message SectionDto{
   /*
@@ -182,6 +191,16 @@ message SectionDto{
    * 修改时间
    */
   string UpdatedAt = 10;
+}
+
+message SectionPageDto{
+  int32 PageSize = 1;
+  int32 PageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  string CourseId = 5;
+  string ChapterId = 6;
+  repeated SectionDto rows = 8;
 }
 
 //Teacher Dto

@@ -3,6 +3,7 @@ package public
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 )
 
@@ -10,7 +11,9 @@ var DB *gorm.DB
 
 func init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open(MySQLUrl), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(MySQLUrl), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		log.Println("open database failed, err is " + err.Error())
 		return

@@ -2,6 +2,8 @@ package route
 
 import (
 	"course/gateway/handler"
+	"course/gateway/handler/course"
+	"course/gateway/handler/user"
 	"course/public"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,48 +16,60 @@ func NewRouter(service ...interface{}) *gin.Engine {
 
 	admin := v1.Group("/admin")
 	{
-		user := admin.Group("/user")
+		userGroup := admin.Group("/user")
 		{
-			user.GET("/list", handler.GetUserList)
-			user.POST("/login", handler.Login)
-			user.POST("/save-password", handler.SavePassword)
-			user.POST("/save", handler.Save)
-			user.POST("/delete", handler.DeleteUser)
-			user.GET("/logout", handler.Logout)
+			userGroup.GET("/list", user.GetUserList)
+			userGroup.POST("/login", user.Login)
+			userGroup.POST("/save-password", user.SavePassword)
+			userGroup.POST("/save", user.Save)
+			userGroup.POST("/delete", user.DeleteUser)
+			userGroup.GET("/logout", user.Logout)
 		}
 		admin.GET("/captcha/image-code", handler.GetCaptcha)
 		resource := admin.Group("/resource")
 		{
-			resource.GET("/load-tree", handler.LoadTree)
-			resource.POST("/save", handler.SaveJson)
-			resource.DELETE("/delete", handler.Delete)
+			resource.GET("/load-tree", user.LoadTree)
+			resource.POST("/save", user.SaveJson)
+			resource.DELETE("/delete", user.Delete)
 		}
 		role := admin.Group("/role")
 		{
-			role.POST("/list", handler.RoleList)
-			role.POST("/save", handler.SaveRole)
-			role.DELETE("/delete", handler.DeleteRole)
-			role.POST("/save-resource", handler.SaveRoleResource)
-			role.GET("/list-resource", handler.ListRoleResource)
-			role.POST("/save-user", handler.SaveRoleUser)
-			role.GET("/list-user", handler.ListRoleUser)
+			role.POST("/list", user.RoleList)
+			role.POST("/save", user.SaveRole)
+			role.DELETE("/delete", user.DeleteRole)
+			role.POST("/save-resource", user.SaveRoleResource)
+			role.GET("/list-resource", user.ListRoleResource)
+			role.POST("/save-user", user.SaveRoleUser)
+			role.GET("/list-user", user.ListRoleUser)
 		}
 
-		course := admin.Group("/course")
+		courseGroup := admin.Group("/courseGroup")
 		{
-			course.POST("/list", handler.ListCourse)
-			course.POST("/save", handler.SaveCourse)
-			course.DELETE("/delete", handler.DelCourse)
-			course.POST("/save-content", handler.SaveCourseContent)
-			course.GET("/list-category", handler.ListCourseCategory)
-			course.POST("/sort", handler.SortCourse)
-			course.GET("/find-content", handler.FindCourseContent)
+			courseGroup.POST("/list", course.ListCourse)
+			courseGroup.POST("/save", course.SaveCourse)
+			courseGroup.DELETE("/delete", course.DelCourse)
+			courseGroup.POST("/save-content", course.SaveCourseContent)
+			courseGroup.GET("/list-category", course.ListCourseCategory)
+			courseGroup.POST("/sort", course.SortCourse)
+			courseGroup.GET("/find-content", course.FindCourseContent)
 		}
 		category := admin.Group("/category")
 		{
-			category.GET("/all", handler.AllCategory)
-			category.POST("/save", handler.SaveCategory)
-			category.DELETE("/delete", handler.DeleteCategory)
+			category.GET("/all", course.AllCategory)
+			category.POST("/save", course.SaveCategory)
+			category.DELETE("/delete", course.DeleteCategory)
+		}
+		chapter := admin.Group("/chapter")
+		{
+			chapter.POST("/list", course.ListChapter)
+			chapter.POST("/save", course.SaveChapter)
+			chapter.DELETE("/delete", course.DelChapter)
+		}
+		section := admin.Group("/section")
+		{
+			section.POST("/list", course.ListSection)
+			section.POST("/save", course.SaveSection)
+			section.DELETE("/delete", course.DelSection)
 		}
 	}
 
