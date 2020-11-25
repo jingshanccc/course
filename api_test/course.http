@@ -1,0 +1,171 @@
+###
+GET {{base}}/course-file/list?Str=qy0nBv71
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/course-file/delete?Str=jSpXJ0eI
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/course-file/save
+Content-Type: application/json
+
+{
+  "Id": "8GDU51sV",
+  "courseId": "qy0nBv71",
+  "url": "www.a.com/b.mp4",
+  "size": 1024
+}
+
+###
+GET {{base}}/teacher/all
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/teacher/list?PageSize=10&PageNum=1&SortBy=name&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/teacher/delete?Str=qy0nBv71
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/teacher/save
+Content-Type: application/json
+
+{
+  "Id": "qy0nBv71",
+  "name": "测试",
+  "nickname": "ceshi",
+  "image": "www.a.com/a.jpg",
+  "motto": "this is a motto",
+  "intro": "this is a intro",
+  "position": "架构师"
+}
+
+###
+POST {{base}}/section/list?PageSize=10&PageNum=1&SortBy=title&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/section/delete?Str=UMvUm1Ol
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/section/save
+Content-Type: application/json
+
+{
+  "Title": "测试小节02",
+  "CourseId": "00000001",
+  "ChapterId": "y4fdOzUM",
+  "Time": 320,
+  "Charge": "f",
+  "Sort": 2
+}
+###
+POST {{base}}/chapter/list?PageSize=10&PageNum=2&SortBy=name&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/chapter/delete?Str=y4fdOzUM
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/chapter/save
+Content-Type: application/json
+
+{
+  "id": "y4fdOzUM",
+  "name": "测试大章15",
+  "courseId": "00000000"
+}
+
+###
+DELETE {{base}}/category/delete?Str=IwxjVVKF
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/category/save
+Content-Type: application/json
+
+{
+  "id": "IwxjVVKF",
+  "name": "测试分类",
+  "parent": "00000000",
+  "sort": 800
+}
+
+###
+GET {{base}}/category/all
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/course/sort
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "oldSort": 0,
+  "newSort": 1
+}
+
+###
+POST {{base}}/course/save-content
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "content": "这是一段很长的文字啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊"
+}
+
+###
+GET {{base}}/course/find-content?Str=v9lb34pF
+Accept: */*
+Cache-Control: no-cache
+
+###
+GET {{base}}/course/list-category?Str=v9lb34pF
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/course/list?PageSize=10&PageNum=1&SortBy=sort&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/course/delete?Str=v9lb34pF
+Content-Type: application/json
+
+###
+POST {{base}}/course/save
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "name": "一门课程",
+  "summary": "一门课程的概述",
+  "time": 3999,
+  "price": 10.9,
+  "level": "2",
+  "charge": "C",
+  "enroll": 10,
+  "status": "P",
+  "sort": 1,
+  "categories": [
+    {
+      "id": "00000100",
+      "name": "前端技术"
+    },
+    {
+      "id": "00000101"
+    }
+  ]
+}

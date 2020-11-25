@@ -32,11 +32,17 @@ func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleD
 	if page.Asc {
 		orderby = "asc"
 	}
-	var res []*dto.RoleDto
-	err := public.DB.Model(&Role{}).Order(page.SortBy + " " + orderby).Limit(int(page.PageSize)).Offset(int((page.PageNum - 1) * page.PageSize)).Find(&res).Error
+	var roles []*Role
+	err := public.DB.Model(&Role{}).Order(page.SortBy + " " + orderby).Limit(int(page.PageSize)).Offset(int((page.PageNum - 1) * page.PageSize)).Find(&roles).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	res := make([]*dto.RoleDto, len(roles))
+	for i, role := range roles {
+		a := &dto.RoleDto{}
+		_ = util.CopyProperties(a, role)
+		res[i] = a
 	}
 	return res, public.NewBusinessException(public.OK)
 }

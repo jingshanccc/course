@@ -3,7 +3,7 @@ POST {{base}}/role/save-resource
 Content-Type: application/json
 
 {
-  "Id": "00000001",
+  "Id": "lF9nAse1",
   "resourceIds": [
     "010101",
     "010102"
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### list role resource
-GET {{base}}/role/list-resource/?Str=00000001
+GET {{base}}/role/list-resource/?Str=lF9nAse1
 Content-Type: application/x-www-form-urlencoded
 
 ### save role user
@@ -21,7 +21,7 @@ Content-Type: application/json
 {
   "Id": "00000001",
   "userIds": [
-    "r8TBK7bO"
+    "lF9nAse1"
   ]
 }
 
@@ -30,7 +30,7 @@ GET {{base}}/role/list-user/?Str=00000001
 Content-Type: application/x-www-form-urlencoded
 
 ### delete role
-DELETE {{base}}/role/delete?Str=lltewdEp
+DELETE {{base}}/role/delete?Str=ZFQbXUdQ
 Content-Type: application/x-www-form-urlencoded
 
 ### save role
@@ -128,7 +128,7 @@ GET {{base}}/captcha/image-code?Id=b6ef9ba21b54428296ab902d14d0572b
 Accept: application/json
 
 ###
-GET {{base}}/user/logout?Token=b6ef9ba21b54428296ab902d14d0572b
+GET {{base}}/user/logout?Str=b6ef9ba21b54428296ab902d14d0572b
 Accept: application/json
 
 ###
@@ -148,7 +148,7 @@ LoginName=test1&Password=test1&Name=testuser1
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test&Password=test&Id=b6ef9ba21b54428296ab902d14d0572b&Name=6278
+LoginName=test&Password=test&Id=b6ef9ba21b54428296ab902d14d0572b&Name=4820
 
 ###
 POST {{base}}/user/save-password

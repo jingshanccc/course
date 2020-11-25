@@ -1,9 +1,9 @@
 package main
 
 import (
+	"course/course-srv/handler"
+	"course/course-srv/proto/course"
 	"course/public"
-	"course/user-srv/handler"
-	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-plugins/registry/consul/v2"
@@ -17,13 +17,12 @@ func main() {
 		registry.Addrs(public.RegistryAddr))
 	service := micro.NewService(
 		micro.Registry(r),
-		micro.Name(public.UserServiceName),
+		micro.Name(public.CourseServiceName),
 	)
 	service.Init()
-	err := user.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))
+	err := course.RegisterCourseServiceHandler(service.Server(), new(handler.CourseServiceHandler))
 	if err != nil {
 		log.Fatal(errors.WithMessage(err, "register server"))
-		return
 	}
 	// Run service
 	if err := service.Run(); err != nil {

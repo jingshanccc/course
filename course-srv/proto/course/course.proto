@@ -1,0 +1,41 @@
+syntax = "proto3";
+package course;
+option go_package = "course/course-srv/proto/course";
+import "course/proto/basic/basic.proto";
+import "course/course-srv/proto/dto/course.proto";
+service CourseService {
+  //Course
+  rpc CourseList(CoursePageDto) returns (CoursePageDto);
+  rpc SaveCourse(CourseDto) returns (CourseDto);
+  rpc DeleteCourse(basic.String) returns (basic.String);
+  rpc ListCourseCategory(basic.String) returns (CourseCategoryDtoList);
+  rpc SortCourse(SortDto) returns (basic.String);
+  rpc FindCourseContent(basic.String) returns (CourseContentDto);
+  rpc SaveCourseContent(CourseContentDto) returns (basic.String);
+
+  //Category
+  rpc AllCategory(basic.String) returns (CategoryDtoList);
+  rpc SaveCategory(CategoryDto) returns (CategoryDto);
+  rpc DeleteCategory(basic.String) returns (basic.String);
+
+  //Chapter
+  rpc ListChapter(ChapterPageDto) returns (ChapterPageDto);
+  rpc SaveChapter(ChapterDto) returns (ChapterDto);
+  rpc DeleteChapter(basic.String) returns (basic.String);
+
+  //Section
+  rpc ListSection(SectionPageDto) returns (SectionPageDto);
+  rpc SaveSection(SectionDto) returns (SectionDto);
+  rpc DeleteSection(basic.String) returns (basic.String);
+
+  //CourseFile
+  rpc ListCourseFile(basic.String) returns (CourseFileDtoList);
+  rpc SaveCourseFile(CourseFileDto) returns (CourseFileDto);
+  rpc DeleteCourseFile(basic.String) returns (basic.String);
+
+  //Teacher
+  rpc ListTeacher(TeacherPageDto) returns (TeacherPageDto);
+  rpc AllTeacher(basic.String) returns (TeacherDtoList);
+  rpc SaveTeacher(TeacherDto) returns (TeacherDto);
+  rpc DeleteTeacher(basic.String) returns (basic.String);
+}

@@ -1,9 +1,10 @@
-package handler
+package user
 
 import (
 	"context"
+	"course/gateway/handler"
+	"course/proto/basic"
 	"course/public"
-	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,7 @@ func Login(ctx *gin.Context) {
 	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
 		//图形验证码校验-user的id作为验证码id name作为验证码值
-		exception := VerifyCaptcha(req.Id, req.Name)
+		exception := handler.VerifyCaptcha(req.Id, req.Name)
 		if exception.Code() == int32(public.OK) {
 			userService := ctx.Keys[public.UserServiceName].(user.UserService)
 			loginUserDto, err := userService.Login(context.Background(), &req)
@@ -63,7 +64,7 @@ func Save(ctx *gin.Context) {
 
 //DeleteUser : 删除用户
 func DeleteUser(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
@@ -75,7 +76,7 @@ func DeleteUser(ctx *gin.Context) {
 
 //Logout : 退出
 func Logout(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Logout(context.Background(), &req)

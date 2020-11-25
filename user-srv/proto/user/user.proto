@@ -1,7 +1,7 @@
 syntax="proto3";
 
 import "course/user-srv/proto/dto/user.proto";
-import "course/user-srv/proto/dto/basic.proto";
+import "course/proto/basic/basic.proto";
 import "course/user-srv/proto/dto/resource.proto";
 package user;
 
@@ -11,24 +11,24 @@ service UserService{
   //----------- 用户接口 -------------
   rpc List(PageDto) returns (PageDto){}
   rpc Save(UserDto) returns (UserDto){}
-  rpc Delete(String) returns (String){}
+  rpc Delete(basic.String) returns (basic.String){}
   rpc SavePassword(UserDto) returns (UserDto){}
   rpc Login(UserDto) returns (LoginUserDto){}
-  rpc Logout(String) returns (String){}
+  rpc Logout(basic.String) returns (basic.String){}
 
   //---------- 权限管理 ---------------
   //resource
-  rpc LoadTree(String) returns (ResourceDtoList);
-  rpc SaveJson(String) returns (String);
-  rpc DeleteResource(String) returns (String);
+  rpc LoadTree(basic.String) returns (ResourceDtoList);
+  rpc SaveJson(basic.String) returns (basic.String);
+  rpc DeleteResource(basic.String) returns (basic.String);
   //role
   rpc RoleList(RolePageDto) returns (RolePageDto);
   rpc SaveRole(RoleDto) returns (RoleDto);
-  rpc DeleteRole(String) returns (String);
+  rpc DeleteRole(basic.String) returns (basic.String);
   rpc SaveRoleResource(RoleDto) returns (RoleDto);
-  rpc ListRoleResource(String) returns (StringList);
+  rpc ListRoleResource(basic.String) returns (basic.StringList);
   rpc SaveRoleUser(RoleDto) returns (RoleDto);
-  rpc ListRoleUser(String) returns (StringList);
+  rpc ListRoleUser(basic.String) returns (basic.StringList);
 }
 
 message UserDto{

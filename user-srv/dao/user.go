@@ -104,7 +104,7 @@ func setAuth(ctx context.Context, loginUser *dto.LoginUserDto) public.BusinessEx
 
 //SavePassword : reset password
 func (u *UserDao) SavePassword(ctx context.Context, dto *user.UserDto) (string, public.BusinessException) {
-	err := public.DB.Model(&User{LoginName: dto.LoginName}).Update("password", dto.Password).Error
+	err := public.DB.Model(&User{}).Where("login_name=?", dto.LoginName).Update("password", dto.Password).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return "", public.NewBusinessException(public.EXECUTE_SQL_ERROR)
