@@ -1,3 +1,23 @@
+
+# Git
+## 修改上次提交信息 commit message
+```bash
+# 进入修改 (vim)
+git commit --amend
+# 修改后退出
+:wq
+#推送到仓库
+git push -f
+```
+## 拷贝git仓库（包含提交日志）
+```bash
+# 从原始仓库拷贝一份不包含工作区的裸版本库
+git clone --bare git@原仓库地址
+# 进入项目目录并推送到新的仓库地址
+cd xx
+git push --mirror git@目标仓库地址
+```
+
 # Proto
 ```bash
 # 位于目录: 项目目录的上级目录
