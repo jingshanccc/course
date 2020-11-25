@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"course/proto/basic"
 	"course/public"
 	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
@@ -34,7 +35,7 @@ func RoleList(ctx *gin.Context) {
 
 //DeleteRole: gateway handler 删除角色
 func DeleteRole(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
 		list, err := roleService.DeleteRole(context.Background(), &req)
@@ -58,7 +59,7 @@ func SaveRoleResource(ctx *gin.Context) {
 
 //ListRoleResource: gateway handler 按角色加载权限
 func ListRoleResource(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
 		list, err := roleService.ListRoleResource(context.Background(), &req)
@@ -82,7 +83,7 @@ func SaveRoleUser(ctx *gin.Context) {
 
 //ListRoleUser: gateway handler 按角色加载用户
 func ListRoleUser(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
 		list, err := roleService.ListRoleUser(context.Background(), &req)

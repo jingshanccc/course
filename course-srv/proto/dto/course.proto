@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package course;
+
+option go_package = "course/course-srv/proto/dto";
+
+//Course Dto
+message CourseDto{
+  /*
+   * id
+   */
+  string Id = 1;
+
+  /*
+   * 名称
+   */
+  string Name = 2;
+
+  /*
+   * 概述
+   */
+  string Summary = 3;
+
+  /*
+   * 时长|单位秒
+   */
+  int32 Time = 4;
+
+  /*
+   * 价格（元）
+   */
+  double Price = 5;
+
+  /*
+   * 封面
+   */
+  string Image = 6;
+
+  /*
+   * 级别|枚举[CourseLevelEnum]：ONE("1", "初级"),TWO("2", "中级"),THREE("3", "高级")
+   */
+  string Level = 7;
+
+  /*
+   * 收费|枚举[CourseChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
+   */
+  string Charge = 8;
+
+  /*
+   * 状态|枚举[CourseStatusEnum]：PUBLISH("P", "发布"),DRAFT("D", "草稿")
+   */
+  string Status = 9;
+
+  /*
+   * 报名数
+   */
+  int32 Enroll = 10;
+
+  /*
+   * 顺序
+   */
+  int32 Sort = 11;
+
+  /*
+   * 创建时间
+   */
+  string CreatedAt = 12;
+
+  /*
+   * 修改时间
+   */
+  string UpdatedAt = 13;
+
+  repeated CategoryDto Categories = 14;
+
+  repeated ChapterDto Chapters = 15;
+
+  repeated SectionDto Sections = 16;
+
+  string Content = 17;
+
+  TeacherDto Teacher = 18;
+
+  /*
+   * 讲师|teacher.id
+   */
+  string TeacherId = 19;
+}
+
+message CoursePageDto {
+
+  int32 PageSize = 1;
+  int32 PageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated CourseDto rows = 5;
+}
+
+message CourseContentDto {
+  string Id = 1; //课程ID
+  string Content = 2; //课程内容
+}
+
+message CourseCategoryDto {
+  string Id = 1;
+  string CourseId = 2;
+  string CategoryId = 3;
+}
+
+message CourseCategoryDtoList{
+  repeated CourseCategoryDto rows = 1;
+}
+
+//Category Dto
+
+message CategoryDto{
+  string Id = 1;
+  string Name = 2;
+  string Parent = 3;
+  int32 sort = 4;
+}
+
+message CategoryDtoList{
+  repeated CategoryDto rows = 1;
+}
+
+//Chapter Dto
+message ChapterDto{
+  string Id = 1;
+  string CourseId = 2;
+  string Name = 3;
+}
+
+//Section Dto
+message SectionDto{
+  /*
+   * id
+   */
+  string Id = 1;
+
+  /*
+   * 标题
+   */
+  string Title = 2;
+
+  /*
+   * 课程|course.id
+   */
+  string CourseId = 3;
+
+  /*
+   * 大章|chapter.id
+   */
+  string ChapterId = 4;
+
+  /*
+   * 视频
+   */
+  string Video = 5;
+
+  /*
+   * 时长|单位秒
+   */
+  int32 Time = 6;
+
+  /*
+   * 收费|枚举[SectionChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
+   */
+  string Charge = 7;
+
+  /*
+   * 顺序
+   */
+  int32 Sort = 8;
+
+  /*
+   * 创建时间
+   */
+  string CreatedAt = 9;
+
+  /*
+   * 修改时间
+   */
+  string UpdatedAt = 10;
+}
+
+//Teacher Dto
+message TeacherDto {
+  /*
+   * id
+   */
+  string Id = 1;
+
+  /*
+   * 姓名
+   */
+  string Name = 2;
+
+  /*
+   * 昵称
+   */
+  string Nickname = 3;
+
+  /*
+   * 头像
+   */
+  string Image = 4;
+
+  /*
+   * 职位
+   */
+  string Position = 5;
+
+  /*
+   * 座右铭
+   */
+  string Motto = 6;
+
+  /*
+   * 简介
+   */
+  string Intro = 7;
+}
+
+//修改排序使用
+message SortDto {
+  string Id =1;
+  int32 OldSort = 2;
+  int32 NewSort = 3;
+}

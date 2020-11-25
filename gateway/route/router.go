@@ -40,6 +40,23 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			role.POST("/save-user", handler.SaveRoleUser)
 			role.GET("/list-user", handler.ListRoleUser)
 		}
+
+		course := admin.Group("/course")
+		{
+			course.POST("/list", handler.ListCourse)
+			course.POST("/save", handler.SaveCourse)
+			course.DELETE("/delete", handler.DelCourse)
+			course.POST("/save-content", handler.SaveCourseContent)
+			course.GET("/list-category", handler.ListCourseCategory)
+			course.POST("/sort", handler.SortCourse)
+			course.GET("/find-content", handler.FindCourseContent)
+		}
+		category := admin.Group("/category")
+		{
+			category.GET("/all", handler.AllCategory)
+			category.POST("/save", handler.SaveCategory)
+			category.DELETE("/delete", handler.DeleteCategory)
+		}
 	}
 
 	return ginRouter
@@ -51,6 +68,7 @@ func SaveServices(service []interface{}) gin.HandlerFunc {
 		//将实例存到gin.Keys里
 		context.Keys = make(map[string]interface{})
 		context.Keys[public.UserServiceName] = service[0]
+		context.Keys[public.CourseServiceName] = service[1]
 		context.Next()
 	}
 }

@@ -2,8 +2,8 @@ package handler
 
 import (
 	"context"
+	"course/proto/basic"
 	"course/public"
-	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
 )
@@ -63,7 +63,7 @@ func Save(ctx *gin.Context) {
 
 //DeleteUser : 删除用户
 func DeleteUser(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
@@ -75,7 +75,7 @@ func DeleteUser(ctx *gin.Context) {
 
 //Logout : 退出
 func Logout(ctx *gin.Context) {
-	var req dto.String
+	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		result, err := userService.Logout(context.Background(), &req)

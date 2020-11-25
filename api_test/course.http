@@ -1,0 +1,84 @@
+
+###
+DELETE {{base}}/category/delete?Str=IwxjVVKF
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/category/save
+Content-Type: application/json
+
+{
+  "id": "IwxjVVKF",
+  "name": "测试分类",
+  "parent": "00000000",
+  "sort": 800
+}
+
+###
+GET {{base}}/category/all
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/course/sort
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "oldSort": 0,
+  "newSort": 1
+}
+
+###
+POST {{base}}/course/save-content
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "content": "这是一段很长的文字啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊"
+}
+
+###
+GET {{base}}/course/find-content?Str=v9lb34pF
+Accept: */*
+Cache-Control: no-cache
+
+###
+GET {{base}}/course/list-category?Str=v9lb34pF
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/course/list?PageSize=10&PageNum=1&SortBy=sort&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/course/delete?Str=v9lb34pF
+Content-Type: application/json
+
+###
+POST {{base}}/course/save
+Content-Type: application/json
+
+{
+  "id": "v9lb34pF",
+  "name": "一门课程",
+  "summary": "一门课程的概述",
+  "time": 3999,
+  "price": 10.9,
+  "level": "2",
+  "charge": "C",
+  "enroll": 10,
+  "status": "P",
+  "sort": 1,
+  "categories": [
+    {
+      "id": "00000100",
+      "name": "前端技术"
+    },
+    {
+      "id": "00000101"
+    }
+  ]
+}

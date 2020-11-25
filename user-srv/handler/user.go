@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"course/middleware/redis"
+	"course/proto/basic"
 	"course/public"
 	"course/public/util"
 	"course/user-srv/dao"
@@ -36,10 +37,7 @@ func (u *UserServiceHandler) List(ctx context.Context, in *user.PageDto, out *us
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
-	out.PageSize = in.PageSize
-	out.PageNum = in.PageNum
-	out.SortBy = in.SortBy
-	out.Asc = in.Asc
+	_ = util.CopyProperties(out, in)
 	out.Users = users
 
 	return nil
@@ -50,14 +48,11 @@ func (u *UserServiceHandler) Save(ctx context.Context, in *user.UserDto, out *us
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
-	out.Id = outUser.Id
-	out.LoginName = outUser.LoginName
-	out.Name = outUser.Name
-	out.Password = outUser.Password
+	_ = util.CopyProperties(out, outUser)
 	return nil
 }
 
-func (u *UserServiceHandler) Delete(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) Delete(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := userDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -73,9 +68,7 @@ func (u *UserServiceHandler) SavePassword(ctx context.Context, in *user.UserDto,
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
-	out.Id = in.Id
-	out.LoginName = in.LoginName
-	out.Name = in.Name
+	_ = util.CopyProperties(out, in)
 	out.Password = password
 	return nil
 }
@@ -89,19 +82,14 @@ func (u *UserServiceHandler) Login(ctx context.Context, in *user.UserDto, out *d
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
-	out.Id = loginUserDto.Id
-	out.Name = loginUserDto.Name
-	out.LoginName = loginUserDto.LoginName
-	out.Token = loginUserDto.Token
-	out.Requests = loginUserDto.Requests
-	out.Resources = loginUserDto.Resources
+	_ = util.CopyProperties(out, loginUserDto)
 	// 存储token
 	jsonString, _ := util.ToJsonString(loginUserDto)
 	redis.RedisClient.Set(loginUserDto.Token, jsonString, time.Second*3600)
 	return nil
 }
 
-func (u *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) Logout(ctx context.Context, in *basic.String, out *basic.String) error {
 	redis.RedisClient.Del(in.Str)
 	log.Println("从redis中删除token: ", in.Str)
 	return nil
@@ -110,7 +98,7 @@ func (u *UserServiceHandler) Logout(ctx context.Context, in *dto.String, out *dt
 //---------- 权限管理 -------------
 
 //LoadTree : 加载权限树
-func (u *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *dto.ResourceDtoList) error {
+func (u *UserServiceHandler) LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {
 	resourceDtos, exception := resourceDao.LoadTree(ctx)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -120,7 +108,7 @@ func (u *UserServiceHandler) LoadTree(ctx context.Context, in *dto.String, out *
 }
 
 // SaveJson : 保存权限树
-func (u *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) SaveJson(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := resourceDao.SaveJson(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -129,7 +117,7 @@ func (u *UserServiceHandler) SaveJson(ctx context.Context, in *dto.String, out *
 }
 
 // DeleteResource: 删除权限
-func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := resourceDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -143,11 +131,8 @@ func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, 
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
 	}
+	_ = util.CopyProperties(out, in)
 	out.Rows = list
-	out.Asc = in.Asc
-	out.SortBy = in.SortBy
-	out.PageSize = in.PageSize
-	out.PageNum = in.PageNum
 	return nil
 }
 
@@ -157,14 +142,12 @@ func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out 
 	if err.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, err.Error(), err.Code())
 	}
-	out.Id = roleDto.Id
-	out.Desc = roleDto.Desc
-	out.Name = roleDto.Name
+	_ = util.CopyProperties(out, roleDto)
 	return nil
 }
 
 //DeleteRole: 删除一种角色
-func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *dto.String, out *dto.String) error {
+func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := roleDao.Delete(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -182,7 +165,7 @@ func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleD
 }
 
 //ListRoleResource: 获取角色权限
-func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *dto.String, out *dto.StringList) error {
+func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	resources, exception := roleDao.ListRoleResource(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())
@@ -201,7 +184,7 @@ func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, 
 }
 
 //ListRoleUser: 获取某个角色的所有用户
-func (u *UserServiceHandler) ListRoleUser(ctx context.Context, in *dto.String, out *dto.StringList) error {
+func (u *UserServiceHandler) ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	users, exception := roleDao.ListRoleUser(ctx, in.Str)
 	if exception.Code() != int32(public.OK) {
 		return errors.New(public.UserServiceName, exception.Error(), exception.Code())

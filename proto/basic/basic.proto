@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package user;
+package basic;
 
-option go_package = "course/user-srv/proto/dto";
+option go_package = "course/proto/basic";
 
 message String {
   string str = 1;
