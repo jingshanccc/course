@@ -94,3 +94,32 @@ func (c *CourseServiceHandler) SaveCourseContent(ctx context.Context, in *dto.Co
 	}
 	return nil
 }
+
+//ListCourseFile: 获取课程文件
+func (c *CourseServiceHandler) ListCourseFile(ctx context.Context, in *basic.String, out *dto.CourseFileDtoList) error {
+	list, exception := courseFileDao.List(in.Str)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.CourseServiceName, exception.Error(), exception.Code())
+	}
+	out.Rows = list
+	return nil
+}
+
+//SaveCourseFile: 保存课程文件
+func (c *CourseServiceHandler) SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, out *dto.CourseFileDto) error {
+	fileDto, exception := courseFileDao.Save(in)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.CourseServiceName, exception.Error(), exception.Code())
+	}
+	_ = util.CopyProperties(out, fileDto)
+	return nil
+}
+
+//DeleteCourseFile: 删除课程文件
+func (c *CourseServiceHandler) DeleteCourseFile(ctx context.Context, in *basic.String, out *basic.String) error {
+	exception := courseFileDao.Delete(in.Str)
+	if exception.Code() != int32(public.OK) {
+		return errors.New(public.CourseServiceName, exception.Error(), exception.Code())
+	}
+	return nil
+}

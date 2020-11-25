@@ -92,3 +92,39 @@ func SortCourse(ctx *gin.Context) {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
 }
+
+//ListCourseFile: 获取课程文件
+func ListCourseFile(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		list, err := courseService.ListCourseFile(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//SaveCourseFile: 保存课程
+func SaveCourseFile(ctx *gin.Context) {
+	var req dto.CourseFileDto
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		list, err := courseService.SaveCourseFile(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//DelCourseFile: 删除课程
+func DelCourseFile(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		list, err := courseService.DeleteCourseFile(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}

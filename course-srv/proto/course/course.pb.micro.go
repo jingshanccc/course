@@ -64,6 +64,15 @@ type CourseService interface {
 	ListSection(ctx context.Context, in *dto.SectionPageDto, opts ...client.CallOption) (*dto.SectionPageDto, error)
 	SaveSection(ctx context.Context, in *dto.SectionDto, opts ...client.CallOption) (*dto.SectionDto, error)
 	DeleteSection(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	//CourseFile
+	ListCourseFile(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseFileDtoList, error)
+	SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, opts ...client.CallOption) (*dto.CourseFileDto, error)
+	DeleteCourseFile(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	//Teacher
+	ListTeacher(ctx context.Context, in *dto.TeacherPageDto, opts ...client.CallOption) (*dto.TeacherPageDto, error)
+	AllTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error)
+	SaveTeacher(ctx context.Context, in *dto.TeacherDto, opts ...client.CallOption) (*dto.TeacherDto, error)
+	DeleteTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -238,6 +247,76 @@ func (c *courseService) DeleteSection(ctx context.Context, in *basic.String, opt
 	return out, nil
 }
 
+func (c *courseService) ListCourseFile(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseFileDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.ListCourseFile", in)
+	out := new(dto.CourseFileDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, opts ...client.CallOption) (*dto.CourseFileDto, error) {
+	req := c.c.NewRequest(c.name, "CourseService.SaveCourseFile", in)
+	out := new(dto.CourseFileDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) DeleteCourseFile(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.DeleteCourseFile", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) ListTeacher(ctx context.Context, in *dto.TeacherPageDto, opts ...client.CallOption) (*dto.TeacherPageDto, error) {
+	req := c.c.NewRequest(c.name, "CourseService.ListTeacher", in)
+	out := new(dto.TeacherPageDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) AllTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.AllTeacher", in)
+	out := new(dto.TeacherDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) SaveTeacher(ctx context.Context, in *dto.TeacherDto, opts ...client.CallOption) (*dto.TeacherDto, error) {
+	req := c.c.NewRequest(c.name, "CourseService.SaveTeacher", in)
+	out := new(dto.TeacherDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) DeleteTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.DeleteTeacher", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -261,6 +340,15 @@ type CourseServiceHandler interface {
 	ListSection(context.Context, *dto.SectionPageDto, *dto.SectionPageDto) error
 	SaveSection(context.Context, *dto.SectionDto, *dto.SectionDto) error
 	DeleteSection(context.Context, *basic.String, *basic.String) error
+	//CourseFile
+	ListCourseFile(context.Context, *basic.String, *dto.CourseFileDtoList) error
+	SaveCourseFile(context.Context, *dto.CourseFileDto, *dto.CourseFileDto) error
+	DeleteCourseFile(context.Context, *basic.String, *basic.String) error
+	//Teacher
+	ListTeacher(context.Context, *dto.TeacherPageDto, *dto.TeacherPageDto) error
+	AllTeacher(context.Context, *basic.String, *dto.TeacherDtoList) error
+	SaveTeacher(context.Context, *dto.TeacherDto, *dto.TeacherDto) error
+	DeleteTeacher(context.Context, *basic.String, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -281,6 +369,13 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		ListSection(ctx context.Context, in *dto.SectionPageDto, out *dto.SectionPageDto) error
 		SaveSection(ctx context.Context, in *dto.SectionDto, out *dto.SectionDto) error
 		DeleteSection(ctx context.Context, in *basic.String, out *basic.String) error
+		ListCourseFile(ctx context.Context, in *basic.String, out *dto.CourseFileDtoList) error
+		SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, out *dto.CourseFileDto) error
+		DeleteCourseFile(ctx context.Context, in *basic.String, out *basic.String) error
+		ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error
+		AllTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error
+		SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error
+		DeleteTeacher(ctx context.Context, in *basic.String, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -355,4 +450,32 @@ func (h *courseServiceHandler) SaveSection(ctx context.Context, in *dto.SectionD
 
 func (h *courseServiceHandler) DeleteSection(ctx context.Context, in *basic.String, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteSection(ctx, in, out)
+}
+
+func (h *courseServiceHandler) ListCourseFile(ctx context.Context, in *basic.String, out *dto.CourseFileDtoList) error {
+	return h.CourseServiceHandler.ListCourseFile(ctx, in, out)
+}
+
+func (h *courseServiceHandler) SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, out *dto.CourseFileDto) error {
+	return h.CourseServiceHandler.SaveCourseFile(ctx, in, out)
+}
+
+func (h *courseServiceHandler) DeleteCourseFile(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.CourseServiceHandler.DeleteCourseFile(ctx, in, out)
+}
+
+func (h *courseServiceHandler) ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error {
+	return h.CourseServiceHandler.ListTeacher(ctx, in, out)
+}
+
+func (h *courseServiceHandler) AllTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error {
+	return h.CourseServiceHandler.AllTeacher(ctx, in, out)
+}
+
+func (h *courseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error {
+	return h.CourseServiceHandler.SaveTeacher(ctx, in, out)
+}
+
+func (h *courseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.CourseServiceHandler.DeleteTeacher(ctx, in, out)
 }

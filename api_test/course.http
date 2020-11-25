@@ -1,4 +1,52 @@
 ###
+GET {{base}}/course-file/list?Str=qy0nBv71
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/course-file/delete?Str=jSpXJ0eI
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/course-file/save
+Content-Type: application/json
+
+{
+  "Id": "8GDU51sV",
+  "courseId": "qy0nBv71",
+  "url": "www.a.com/b.mp4",
+  "size": 1024
+}
+
+###
+GET {{base}}/teacher/all
+Accept: */*
+Cache-Control: no-cache
+
+###
+POST {{base}}/teacher/list?PageSize=10&PageNum=1&SortBy=name&Asc=true
+Accept: */*
+Cache-Control: no-cache
+
+###
+DELETE {{base}}/teacher/delete?Str=qy0nBv71
+Content-Type: application/x-www-form-urlencoded
+
+###
+POST {{base}}/teacher/save
+Content-Type: application/json
+
+{
+  "Id": "qy0nBv71",
+  "name": "测试",
+  "nickname": "ceshi",
+  "image": "www.a.com/a.jpg",
+  "motto": "this is a motto",
+  "intro": "this is a intro",
+  "position": "架构师"
+}
+
+###
 POST {{base}}/section/list?PageSize=10&PageNum=1&SortBy=title&Asc=true
 Accept: */*
 Cache-Control: no-cache

@@ -28,4 +28,14 @@ service CourseService {
   rpc SaveSection(SectionDto) returns (SectionDto);
   rpc DeleteSection(basic.String) returns (basic.String);
 
+  //CourseFile
+  rpc ListCourseFile(basic.String) returns (CourseFileDtoList);
+  rpc SaveCourseFile(CourseFileDto) returns (CourseFileDto);
+  rpc DeleteCourseFile(basic.String) returns (basic.String);
+
+  //Teacher
+  rpc ListTeacher(TeacherPageDto) returns (TeacherPageDto);
+  rpc AllTeacher(basic.String) returns (TeacherDtoList);
+  rpc SaveTeacher(TeacherDto) returns (TeacherDto);
+  rpc DeleteTeacher(basic.String) returns (basic.String);
 }

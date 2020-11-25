@@ -241,6 +241,49 @@ message TeacherDto {
   string Intro = 7;
 }
 
+message TeacherPageDto {
+  int32 PageSize = 1;
+  int32 PageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated TeacherDto rows = 5;
+}
+
+message TeacherDtoList {
+  repeated TeacherDto rows = 1;
+}
+
+//CourseFileDto
+message CourseFileDto{
+  /**
+   * id
+   */
+  string Id = 1;
+
+  /**
+   * 课程id
+   */
+  string CourseId = 2;
+
+  /**
+   * 地址
+   */
+  string Url = 3;
+
+  /**
+   * 文件名
+   */
+  string Name = 4;
+
+  /**
+   * 大小|字节b
+   */
+  int32 Size = 5;
+}
+message CourseFileDtoList {
+  repeated CourseFileDto rows = 1;
+}
+
 //修改排序使用
 message SortDto {
   string Id =1;

@@ -217,9 +217,9 @@ create table `course_content`
 ) engine = innodb
   default charset = utf8mb4 comment ='课程内容';
 
--- 课程内容文件
-drop table if exists `course_content_file`;
-create table `course_content_file`
+-- 课程文件
+drop table if exists course_file;
+create table `course_file`
 (
     `id`        char(8) not null default '' comment 'id',
     `course_id` char(8) not null comment '课程id',
@@ -228,7 +228,7 @@ create table `course_content_file`
     `size`      int comment '大小|字节b',
     primary key (`id`)
 ) engine = innodb
-  default charset = utf8mb4 comment ='课程内容文件';
+  default charset = utf8mb4 comment ='课程文件';
 
 -- 讲师
 drop table if exists `teacher`;

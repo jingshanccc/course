@@ -1103,6 +1103,269 @@ func (x *TeacherDto) GetIntro() string {
 	return ""
 }
 
+type TeacherPageDto struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PageSize int32         `protobuf:"varint,1,opt,name=PageSize,proto3" json:"PageSize,omitempty"`
+	PageNum  int32         `protobuf:"varint,2,opt,name=PageNum,proto3" json:"PageNum,omitempty"`
+	SortBy   string        `protobuf:"bytes,3,opt,name=sortBy,proto3" json:"sortBy,omitempty"`
+	Asc      bool          `protobuf:"varint,4,opt,name=asc,proto3" json:"asc,omitempty"`
+	Rows     []*TeacherDto `protobuf:"bytes,5,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *TeacherPageDto) Reset() {
+	*x = TeacherPageDto{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TeacherPageDto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TeacherPageDto) ProtoMessage() {}
+
+func (x *TeacherPageDto) ProtoReflect() protoreflect.Message {
+	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TeacherPageDto.ProtoReflect.Descriptor instead.
+func (*TeacherPageDto) Descriptor() ([]byte, []int) {
+	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *TeacherPageDto) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *TeacherPageDto) GetPageNum() int32 {
+	if x != nil {
+		return x.PageNum
+	}
+	return 0
+}
+
+func (x *TeacherPageDto) GetSortBy() string {
+	if x != nil {
+		return x.SortBy
+	}
+	return ""
+}
+
+func (x *TeacherPageDto) GetAsc() bool {
+	if x != nil {
+		return x.Asc
+	}
+	return false
+}
+
+func (x *TeacherPageDto) GetRows() []*TeacherDto {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
+type TeacherDtoList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rows []*TeacherDto `protobuf:"bytes,1,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *TeacherDtoList) Reset() {
+	*x = TeacherDtoList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TeacherDtoList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TeacherDtoList) ProtoMessage() {}
+
+func (x *TeacherDtoList) ProtoReflect() protoreflect.Message {
+	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TeacherDtoList.ProtoReflect.Descriptor instead.
+func (*TeacherDtoList) Descriptor() ([]byte, []int) {
+	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *TeacherDtoList) GetRows() []*TeacherDto {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
+//CourseFileDto
+type CourseFileDto struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	//*
+	// id
+	Id string `protobuf:"bytes,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	//*
+	// 课程id
+	CourseId string `protobuf:"bytes,2,opt,name=CourseId,proto3" json:"CourseId,omitempty"`
+	//*
+	// 地址
+	Url string `protobuf:"bytes,3,opt,name=Url,proto3" json:"Url,omitempty"`
+	//*
+	// 文件名
+	Name string `protobuf:"bytes,4,opt,name=Name,proto3" json:"Name,omitempty"`
+	//*
+	// 大小|字节b
+	Size int32 `protobuf:"varint,5,opt,name=Size,proto3" json:"Size,omitempty"`
+}
+
+func (x *CourseFileDto) Reset() {
+	*x = CourseFileDto{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CourseFileDto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CourseFileDto) ProtoMessage() {}
+
+func (x *CourseFileDto) ProtoReflect() protoreflect.Message {
+	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CourseFileDto.ProtoReflect.Descriptor instead.
+func (*CourseFileDto) Descriptor() ([]byte, []int) {
+	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *CourseFileDto) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CourseFileDto) GetCourseId() string {
+	if x != nil {
+		return x.CourseId
+	}
+	return ""
+}
+
+func (x *CourseFileDto) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *CourseFileDto) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CourseFileDto) GetSize() int32 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+type CourseFileDtoList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Rows []*CourseFileDto `protobuf:"bytes,1,rep,name=rows,proto3" json:"rows,omitempty"`
+}
+
+func (x *CourseFileDtoList) Reset() {
+	*x = CourseFileDtoList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CourseFileDtoList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CourseFileDtoList) ProtoMessage() {}
+
+func (x *CourseFileDtoList) ProtoReflect() protoreflect.Message {
+	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CourseFileDtoList.ProtoReflect.Descriptor instead.
+func (*CourseFileDtoList) Descriptor() ([]byte, []int) {
+	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CourseFileDtoList) GetRows() []*CourseFileDto {
+	if x != nil {
+		return x.Rows
+	}
+	return nil
+}
+
 //修改排序使用
 type SortDto struct {
 	state         protoimpl.MessageState
@@ -1117,7 +1380,7 @@ type SortDto struct {
 func (x *SortDto) Reset() {
 	*x = SortDto{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[12]
+		mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1130,7 +1393,7 @@ func (x *SortDto) String() string {
 func (*SortDto) ProtoMessage() {}
 
 func (x *SortDto) ProtoReflect() protoreflect.Message {
-	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[12]
+	mi := &file_course_course_srv_proto_dto_course_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1143,7 +1406,7 @@ func (x *SortDto) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SortDto.ProtoReflect.Descriptor instead.
 func (*SortDto) Descriptor() ([]byte, []int) {
-	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{12}
+	return file_course_course_srv_proto_dto_course_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *SortDto) GetId() string {
@@ -1298,14 +1561,39 @@ var file_course_course_srv_proto_dto_course_proto_rawDesc = []byte{
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x14,
 	0x0a, 0x05, 0x4d, 0x6f, 0x74, 0x74, 0x6f, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x4d,
 	0x6f, 0x74, 0x74, 0x6f, 0x12, 0x14, 0x0a, 0x05, 0x49, 0x6e, 0x74, 0x72, 0x6f, 0x18, 0x07, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x49, 0x6e, 0x74, 0x72, 0x6f, 0x22, 0x4d, 0x0a, 0x07, 0x53, 0x6f,
-	0x72, 0x74, 0x44, 0x74, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x02, 0x49, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x4f, 0x6c, 0x64, 0x53, 0x6f, 0x72, 0x74,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x4f, 0x6c, 0x64, 0x53, 0x6f, 0x72, 0x74, 0x12,
-	0x18, 0x0a, 0x07, 0x4e, 0x65, 0x77, 0x53, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05,
-	0x52, 0x07, 0x4e, 0x65, 0x77, 0x53, 0x6f, 0x72, 0x74, 0x42, 0x1d, 0x5a, 0x1b, 0x63, 0x6f, 0x75,
-	0x72, 0x73, 0x65, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x49, 0x6e, 0x74, 0x72, 0x6f, 0x22, 0x98, 0x01, 0x0a, 0x0e, 0x54,
+	0x65, 0x61, 0x63, 0x68, 0x65, 0x72, 0x50, 0x61, 0x67, 0x65, 0x44, 0x74, 0x6f, 0x12, 0x1a, 0x0a,
+	0x08, 0x50, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x08, 0x50, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x50, 0x61, 0x67,
+	0x65, 0x4e, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x50, 0x61, 0x67, 0x65,
+	0x4e, 0x75, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x6f, 0x72, 0x74, 0x42, 0x79, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x6f, 0x72, 0x74, 0x42, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x61,
+	0x73, 0x63, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x03, 0x61, 0x73, 0x63, 0x12, 0x26, 0x0a,
+	0x04, 0x72, 0x6f, 0x77, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f,
+	0x75, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x65, 0x61, 0x63, 0x68, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x52,
+	0x04, 0x72, 0x6f, 0x77, 0x73, 0x22, 0x38, 0x0a, 0x0e, 0x54, 0x65, 0x61, 0x63, 0x68, 0x65, 0x72,
+	0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x26, 0x0a, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x54,
+	0x65, 0x61, 0x63, 0x68, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x52, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x22,
+	0x75, 0x0a, 0x0d, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x44, 0x74, 0x6f,
+	0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x49, 0x64,
+	0x12, 0x1a, 0x0a, 0x08, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x49, 0x64, 0x12, 0x10, 0x0a, 0x03,
+	0x55, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x55, 0x72, 0x6c, 0x12, 0x12,
+	0x0a, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61,
+	0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05,
+	0x52, 0x04, 0x53, 0x69, 0x7a, 0x65, 0x22, 0x3e, 0x0a, 0x11, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65,
+	0x46, 0x69, 0x6c, 0x65, 0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x29, 0x0a, 0x04, 0x72,
+	0x6f, 0x77, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72,
+	0x73, 0x65, 0x2e, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x46, 0x69, 0x6c, 0x65, 0x44, 0x74, 0x6f,
+	0x52, 0x04, 0x72, 0x6f, 0x77, 0x73, 0x22, 0x4d, 0x0a, 0x07, 0x53, 0x6f, 0x72, 0x74, 0x44, 0x74,
+	0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x49,
+	0x64, 0x12, 0x18, 0x0a, 0x07, 0x4f, 0x6c, 0x64, 0x53, 0x6f, 0x72, 0x74, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x05, 0x52, 0x07, 0x4f, 0x6c, 0x64, 0x53, 0x6f, 0x72, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x4e,
+	0x65, 0x77, 0x53, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x4e, 0x65,
+	0x77, 0x53, 0x6f, 0x72, 0x74, 0x42, 0x1d, 0x5a, 0x1b, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f,
+	0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1320,7 +1608,7 @@ func file_course_course_srv_proto_dto_course_proto_rawDescGZIP() []byte {
 	return file_course_course_srv_proto_dto_course_proto_rawDescData
 }
 
-var file_course_course_srv_proto_dto_course_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_course_course_srv_proto_dto_course_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_course_course_srv_proto_dto_course_proto_goTypes = []interface{}{
 	(*CourseDto)(nil),             // 0: course.CourseDto
 	(*CoursePageDto)(nil),         // 1: course.CoursePageDto
@@ -1334,7 +1622,11 @@ var file_course_course_srv_proto_dto_course_proto_goTypes = []interface{}{
 	(*SectionDto)(nil),            // 9: course.SectionDto
 	(*SectionPageDto)(nil),        // 10: course.SectionPageDto
 	(*TeacherDto)(nil),            // 11: course.TeacherDto
-	(*SortDto)(nil),               // 12: course.SortDto
+	(*TeacherPageDto)(nil),        // 12: course.TeacherPageDto
+	(*TeacherDtoList)(nil),        // 13: course.TeacherDtoList
+	(*CourseFileDto)(nil),         // 14: course.CourseFileDto
+	(*CourseFileDtoList)(nil),     // 15: course.CourseFileDtoList
+	(*SortDto)(nil),               // 16: course.SortDto
 }
 var file_course_course_srv_proto_dto_course_proto_depIdxs = []int32{
 	5,  // 0: course.CourseDto.Categories:type_name -> course.CategoryDto
@@ -1346,11 +1638,14 @@ var file_course_course_srv_proto_dto_course_proto_depIdxs = []int32{
 	5,  // 6: course.CategoryDtoList.rows:type_name -> course.CategoryDto
 	7,  // 7: course.ChapterPageDto.rows:type_name -> course.ChapterDto
 	9,  // 8: course.SectionPageDto.rows:type_name -> course.SectionDto
-	9,  // [9:9] is the sub-list for method output_type
-	9,  // [9:9] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	11, // 9: course.TeacherPageDto.rows:type_name -> course.TeacherDto
+	11, // 10: course.TeacherDtoList.rows:type_name -> course.TeacherDto
+	14, // 11: course.CourseFileDtoList.rows:type_name -> course.CourseFileDto
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_course_course_srv_proto_dto_course_proto_init() }
@@ -1504,6 +1799,54 @@ func file_course_course_srv_proto_dto_course_proto_init() {
 			}
 		}
 		file_course_course_srv_proto_dto_course_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TeacherPageDto); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_course_srv_proto_dto_course_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TeacherDtoList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_course_srv_proto_dto_course_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CourseFileDto); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_course_srv_proto_dto_course_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CourseFileDtoList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_course_srv_proto_dto_course_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*SortDto); i {
 			case 0:
 				return &v.state
@@ -1522,7 +1865,7 @@ func file_course_course_srv_proto_dto_course_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_course_course_srv_proto_dto_course_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

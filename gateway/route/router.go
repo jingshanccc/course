@@ -43,7 +43,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			role.GET("/list-user", user.ListRoleUser)
 		}
 
-		courseGroup := admin.Group("/courseGroup")
+		courseGroup := admin.Group("/course")
 		{
 			courseGroup.POST("/list", course.ListCourse)
 			courseGroup.POST("/save", course.SaveCourse)
@@ -70,6 +70,19 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			section.POST("/list", course.ListSection)
 			section.POST("/save", course.SaveSection)
 			section.DELETE("/delete", course.DelSection)
+		}
+		courseFile := admin.Group("/course-file")
+		{
+			courseFile.GET("/list", course.ListCourseFile)
+			courseFile.POST("/save", course.SaveCourseFile)
+			courseFile.DELETE("/delete", course.DelCourseFile)
+		}
+		teacher := admin.Group("/teacher")
+		{
+			teacher.GET("/all", course.AllTeacher)
+			teacher.POST("/list", course.ListTeacher)
+			teacher.POST("/save", course.SaveTeacher)
+			teacher.DELETE("/delete", course.DeleteTeacher)
 		}
 	}
 
