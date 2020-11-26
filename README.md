@@ -1,6 +1,6 @@
 # Micah在线视频课程系统
 
-![license-Apache License 2.0-blue](https://gitee.com/jingshanccc/image/raw/master/image/license-Apache License 2.0-blue.svg)![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/jingshanccc/course)[![GitHub Repo stars](https://img.shields.io/github/stars/jingshanccc/course?style=flat&color=red)![GitHub forks](https://img.shields.io/github/forks/jingshanccc/course?label=Fork&color=yellow)](https://github.com/jingshanccc/course)![GitHub last commit](https://img.shields.io/github/last-commit/jingshanccc/course)
+![license](https://gitee.com/jingshanccc/image/raw/master/image/license.svg)![Go version](https://img.shields.io/github/go-mod/go-version/jingshanccc/course)[![stars](https://img.shields.io/github/stars/jingshanccc/course?style=flat&color=red)![forks](https://img.shields.io/github/forks/jingshanccc/course?label=Fork&color=yellow)](https://github.com/jingshanccc/course)![commit](https://img.shields.io/github/last-commit/jingshanccc/course)
 
 
 
