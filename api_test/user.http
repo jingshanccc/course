@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ### list role user
-GET {{base}}/role/list-user/?Str=00000001
+GET {{base}}/role/list-user?Str=00000001
 Content-Type: application/x-www-form-urlencoded
 
 ### delete role

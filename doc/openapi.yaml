@@ -1,0 +1,1011 @@
+openapi: 3.0.1
+info:
+  title: Micah在线视频课程系统
+  description: 这是Micah在线视频课程系统的 API 文档。
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: jingshancccc@163.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: 获取更多
+  url: https://course-realmicah.doc.coding.io
+servers:
+- url: https://course.com/api/v1
+- url: http://course.com/api/v1
+tags:
+- name: 课程
+  description: 课程相关接口
+- name: 用户
+  description: 用户相关接口
+- name: 权限
+  description: 权限相关接口
+paths:
+  /user/list:
+    get:
+      tags:
+      - 用户
+      summary: 获取用户列表
+      description: 分页获取用户列表
+      operationId: list
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /user/save:
+    post:
+      tags:
+      - 用户
+      summary: 新增/更新一个用户
+      description: 当传入ID不为空时更新用户信息，否则新增一个用户
+      operationId: /save
+      requestBody:
+        description: 用户实体
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /user/login:
+    post:
+      tags:
+      - 用户
+      summary: 登录
+      description: 用户登录
+      operationId: login
+      requestBody:
+        description: 用户实体
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /user/logout:
+    get:
+      tags:
+      - 用户
+      summary: 登出
+      operationId: logout
+      parameters:
+      - name: Str
+        in: query
+        description: token
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /user/save-password:
+    post:
+      tags:
+      - 用户
+      summary: 更新密码
+      operationId: savePassword
+      requestBody:
+        description: 用户名和密码
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /user/delete:
+    delete:
+      tags:
+      - 用户
+      summary: 删除一个用户
+      operationId: delete
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /captcha/image-code:
+    get:
+      tags:
+      - 用户
+      summary: 获取图形验证码
+      operationId: image-code
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Captcha'
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: captcha
+  /resource/load-tree:
+    get:
+      tags:
+      - 权限
+      summary: 加载资源树
+      description: 以树的形式返回系统资源
+      operationId: load-tree
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /resource/save:
+    post:
+      tags:
+      - 权限
+      summary: 保存/更新资源树
+      description: 保存/更新系统资源
+      operationId: save
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /resource/delete:
+    delete:
+      tags:
+      - 权限
+      summary: 删除一个资源
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /role/list:
+    post:
+      tags:
+      - 权限
+      summary: 获取角色列表
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /role/save:
+    post:
+      tags:
+      - 权限
+      summary: 保存一种角色
+      requestBody:
+        description: 角色实体
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                desc:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /role/delete:
+    delete:
+      tags:
+      - 权限
+      summary: 删除一个角色
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /role/list-user:
+    get:
+      tags:
+      - 权限
+      summary: 获取一种角色的所有用户
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /role/save-user:
+    post:
+      tags:
+      - 权限
+      summary: 保存一种角色的所有用户
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                userIds:
+                  type: array
+                  items:
+                    type: string
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /role/list-resource:
+    get:
+      tags:
+      - 权限
+      summary: 获取一种角色的所有权限
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /role/save-resource:
+    post:
+      tags:
+      - 权限
+      summary: 保存一种角色的所有用户
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                resourceIds:
+                  type: array
+                  items:
+                    type: string
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /course/list:
+    post:
+      tags:
+      - 课程
+      summary: 获取课程列表
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /course/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个课程
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /course/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增课程
+      requestBody:
+        description: 课程DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /course/list-category:
+    get:
+      tags:
+      - 课程
+      summary: 获取一门课程的所属分类
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /course/find-content:
+    get:
+      tags:
+      - 课程
+      summary: 获取一门课程的内容
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /course/save-content:
+    post:
+      tags:
+      - 课程
+      summary: 保存一门课程的内容
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                content:
+                  type: string
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /course/sort:
+    post:
+      tags:
+      - 课程
+      summary: 修改课程排序
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                oldSort:
+                  type: integer
+                newSort:
+                  type: integer
+        required: false
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /category/all:
+    get:
+      tags:
+      - 课程
+      summary: 获取所有分类
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /category/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增分类
+      requestBody:
+        description: 分类DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /category/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个分类
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /chapter/list:
+    post:
+      tags:
+      - 课程
+      summary: 获取大章列表
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /chapter/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增大章
+      requestBody:
+        description: 大章DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Chapter'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /chapter/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个大章
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /section/list:
+    post:
+      tags:
+      - 课程
+      summary: 获取小节列表
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /section/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增小节
+      requestBody:
+        description: 小节DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Section'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /section/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个小节
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /teacher/all:
+    get:
+      tags:
+      - 课程
+      summary: 获取所有讲师
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /teacher/list:
+    post:
+      tags:
+      - 课程
+      summary: 获取讲师列表
+      requestBody:
+        description: 分页DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/PageDto'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /teacher/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增讲师
+      requestBody:
+        description: 讲师DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Teacher'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /teacher/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个讲师
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /course-file/list:
+    post:
+      tags:
+      - 课程
+      summary: 获取课程文件列表
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /course-file/save:
+    post:
+      tags:
+      - 课程
+      summary: 更新/新增课程文件
+      requestBody:
+        description: 课程文件DTO
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/CourseFile'
+        required: true
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      x-codegen-request-body-name: body
+  /course-file/delete:
+    delete:
+      tags:
+      - 课程
+      summary: 删除一个课程文件
+      parameters:
+      - name: Str
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: 统一返回
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+components:
+  schemas:
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+        time:
+          type: integer
+          format: int32
+        price:
+          type: number
+        image:
+          type: string
+        level:
+          type: string
+          description: 级别|枚举[CourseLevelEnum]：ONE("1", "初级"),TWO("2", "中级"),THREE("3",
+            "高级")
+          enum:
+          - ONE
+          - TWO
+          - THREE
+        charge:
+          type: string
+          description: 收费|枚举[CourseChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
+          enum:
+          - C
+          - F
+        status:
+          type: string
+          description: 状态|枚举[CourseStatusEnum]：PUBLISH("P", "发布"),DRAFT("D", "草稿")
+          enum:
+          - P
+          - D
+        enroll:
+          type: integer
+          format: int32
+        sort:
+          type: integer
+          format: int32
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        chapters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Chapter'
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Section'
+        content:
+          type: string
+        teacherId:
+          type: string
+        teacher:
+          $ref: '#/components/schemas/Teacher'
+      xml:
+        name: Course
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        parent:
+          type: string
+        sort:
+          type: integer
+          format: int32
+      xml:
+        name: Category
+    Chapter:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        courseId:
+          type: string
+      xml:
+        name: Chapter
+    Section:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        courseId:
+          type: string
+        chapterId:
+          type: string
+        video:
+          type: string
+        time:
+          type: integer
+          format: int32
+        charge:
+          type: string
+          description: 收费|枚举[CourseChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
+          enum:
+          - C
+          - F
+        sort:
+          type: integer
+          format: int32
+      xml:
+        name: Section
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nickname:
+          type: string
+        image:
+          type: string
+        position:
+          type: string
+        motto:
+          type: string
+        intro:
+          type: string
+      xml:
+        name: Teacher
+    CourseFile:
+      type: object
+      properties:
+        id:
+          type: string
+        courseId:
+          type: string
+        url:
+          type: string
+        name:
+          type: string
+        size:
+          type: integer
+          format: int32
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        loginName:
+          type: string
+        password:
+          type: string
+      xml:
+        name: User
+    Captcha:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        verifyValue:
+          type: string
+        base64String:
+          type: string
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        success:
+          type: boolean
+        message:
+          type: string
+        content:
+          type: string
+    PageDto:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          format: int32
+        pageNum:
+          type: integer
+          format: int32
+        asc:
+          type: boolean
+        sortBy:
+          type: string
+        rows:
+          type: array
+          items:
+            type: object
+            properties: {}
