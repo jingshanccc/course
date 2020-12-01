@@ -17,6 +17,15 @@ git clone --bare git@原仓库地址
 cd xx
 git push --mirror git@目标仓库地址
 ```
+## 代码关联到多个git仓库
+```bash
+# 查看当前代码关联的仓库
+git remote -v
+# 关联新的仓库
+git remote add 仓库名 地址
+# 查看是否生效
+git remote -v
+```
 
 # Proto
 ```bash
