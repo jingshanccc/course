@@ -57,3 +57,38 @@ docker run --name mariadb -v /var/lib/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL
 ```
 docker run -itd -p 6379:6379 redis
 ```
+
+## 自动化发布API
+- 基础命令
+```bash
+docker run -it --rm \
+  -e ACCESS_TOKEN={访问令牌} \
+  -e APIDOC_TEAM={企业域名} \
+  -e APIDOC_PROJECT={项目地址名称} \
+  -e APIDOC_ID={API 文档资源 ID} \
+  -e APIDOC_RELEASE_TYPE=file \
+  -v {API 数据文件路径}/data.txt:/opt/data.txt \
+  ecoding/apidoc-publisher
+```
+- 编写dockerfile构建自己的镜像用于发布API
+> 主要是在Dockerfile中，定义需要的环境变量，以及API文件路径。
+```bash
+# 运行 ecoding/apidoc-publisher，从容器中获取其发布API的脚本
+docker cp 容器ID:/my_shell/api_doc_release.sh /xx/
+# 修改脚本内容，增加下载文件命令（line 52-53）
+```
+![](https://gitee.com/jingshanccc/image/raw/master/image/image-20201201120717958.png)
+```bash
+# 编写Dockerfile
+vim Dockerfile
+FROM ecoding/apidoc-publisher:20200115.1
+ADD api_doc_release.sh /my_shell/api_doc_release.sh
+ENV FILE_URL=https://gitee.com/jingshanccc/course/raw/main/doc/openapi.yaml
+ENV ACCESS_TOKEN=your token
+ENV APIDOC_TEAM=your team
+ENV APIDOC_PROJECT=your project
+ENV APIDOC_ID=1
+ENV APIDOC_RELEASE_TYPE=file
+# 构建镜像
+docker build -t xx/xxx .
+```
