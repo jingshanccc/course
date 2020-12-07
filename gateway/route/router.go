@@ -11,7 +11,7 @@ import (
 
 func NewRouter(service ...interface{}) *gin.Engine {
 	ginRouter := gin.Default()
-	ginRouter.Use(SaveServices(service))
+	ginRouter.Use(SaveServices(service), Cors())
 	v1 := ginRouter.Group("/api/v1")
 
 	admin := v1.Group("/admin")
