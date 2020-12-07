@@ -960,8 +960,10 @@ components:
       properties:
         id:
           type: string
+          description: "用户Id，登陆时作为验证码token"
         name:
           type: string
+          description: "用户昵称，登陆时作为验证码"
         loginName:
           type: string
         password:
@@ -985,6 +987,8 @@ components:
         code:
           type: integer
           format: int32
+          minimum: 20000
+          maximum: 20007
         success:
           type: boolean
         message:
