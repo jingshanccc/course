@@ -292,36 +292,75 @@ insert into `user` (id, login_name, name, password)
 values ('10000000', 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
 
 -- 资源
-drop table if exists `resource`;
-create table `resource`
+drop table if exists `menu`;
+create table `menu`
 (
-    `id`      char(6)      not null default '' comment 'id',
-    `name`    varchar(100) not null comment '名称|菜单或按钮',
-    `page`    varchar(50)  null comment '页面|路由',
-    `request` varchar(200) null comment '请求|接口',
-    `parent`  char(6) comment '父id',
+    `id`          char(6)      not null default '' comment 'id',
+    `title`       varchar(255)          DEFAULT NULL COMMENT '菜单标题',
+    `name`        varchar(255)          DEFAULT NULL COMMENT '组件名称',
+    `component`   varchar(255)          DEFAULT NULL COMMENT '组件',
+    `path`        varchar(200) null comment '路由地址',
+    `icon`        varchar(255)          DEFAULT NULL COMMENT '图标',
+    `parent`      int(11) comment '父id',
+    `request`     varchar(255)          DEFAULT NULL comment '请求接口',
+    `create_by`   varchar(255)          DEFAULT NULL COMMENT '创建者',
+    `update_by`   varchar(255)          DEFAULT NULL COMMENT '更新者',
+    `create_time` datetime              DEFAULT NULL COMMENT '创建日期',
+    `update_time` datetime              DEFAULT NULL COMMENT '更新时间',
     primary key (`id`)
 ) engine = innodb
-  default charset = utf8mb4 comment ='资源';
+  default charset = utf8mb4 comment ='菜单';
 
-insert into `resource`
-values ('01', '系统管理', null, null, null);
-insert into `resource`
-values ('0101', '用户管理', '/system/user', null, '01');
-insert into `resource`
-values ('010101', '保存', null, '["/system/admin/user/list", "/system/admin/user/save"]', '0101');
-insert into `resource`
-values ('010102', '删除', null, '["/system/admin/user/delete"]', '0101');
-insert into `resource`
-values ('010103', '重置密码', null, '["/system/admin/user/save-password"]', '0101');
-insert into `resource`
-values ('0102', '资源管理', '/system/resource', null, '01');
-insert into `resource`
-values ('010201', '保存/显示', null, '["/system/admin/resource"]', '0102');
-insert into `resource`
-values ('0103', '角色管理', '/system/role', null, '01');
-insert into `resource`
-values ('010301', '角色/权限管理', null, '["/system/admin/role"]', '0103');
+insert into `menu`
+values ('1', '系统管理', null, null, 'system', 'system', null, null, 'admin', 'admin', now(), null);
+insert into `menu`
+values ('2', '用户管理', 'User', 'system/user/index', 'user', 'peoples', 1, '["/system/user/list"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('3', '权限管理', 'Menu', 'system/menu/index', 'menu', 'menu', 1, '["/system/menu/list"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('4', '角色管理', 'Role', 'system/role/index', 'role', 'role', 1, '["/system/role/list"]', 'admin', 'admin', now(), null);
+
+
+insert into `menu`
+values ('5', '业务管理', null, null, 'business', 'app', null, null, 'admin', 'admin', now(), null);
+insert into `menu`
+values ('6', '分类管理', 'Category', 'business/category/index', 'category', 'category', 5, '["/business/category/list"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('7', '课程管理', 'Course', 'business/course/index', 'course', 'course', 5, '["/business/course/list"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('8', '讲师管理', 'Teacher', 'business/teacher/index', 'teacher', 'teacher', 5, '["/business/teacher/list"]', 'admin', 'admin', now(), null);
+
+insert into `menu`
+values ('9', '保存用户', null, '', '', '', 2, '["/system/user/save","/system/user/save-password"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('10', '删除用户', null, '', '', '', 2, '["/system/user/delete"]', 'admin', 'admin', now(), null);
+
+insert into `menu`
+values ('11', '新增权限', null, '', '', '', 3, '["/system/menu/save"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('12', '删除权限', null, '', '', '', 3, '["/system/menu/delete"]', 'admin', 'admin', now(), null);
+
+insert into `menu`
+values ('13', '保存角色', null, '', '', '', 4, '["/system/role/save"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('14', '删除角色', null, '', '', '', 4, '["/system/role/delete"]', 'admin', 'admin', now(), null);
+
+
+insert into `menu`
+values ('15', '保存分类', null, '', '', '', 6, '["/business/category/save"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('16', '删除分类', null, '', '', '', 6, '["/business/category/delete"]', 'admin', 'admin', now(), null);
+
+insert into `menu`
+values ('17', '新增课程', null, '', '', '', 7, '["/business/course/save"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('18', '删除课程', null, '', '', '', 7, '["/business/course/delete"]', 'admin', 'admin', now(), null);
+
+insert into `menu`
+values ('19', '保存讲师', null, '', '', '', 8, '["/business/teacher/save"]', 'admin', 'admin', now(), null);
+insert into `menu`
+values ('20', '删除讲师', null, '', '', '', 8, '["/business/teacher/delete"]', 'admin', 'admin', now(), null);
+
 
 drop table if exists `role`;
 create table `role`
@@ -340,8 +379,8 @@ values ('00000001', '开发', '维护资源');
 insert into `role`
 values ('00000002', '业务管理员', '负责业务管理');
 
-drop table if exists `role_resource`;
-create table `role_resource`
+drop table if exists `role_menu`;
+create table `role_menu`
 (
     `id`          char(8) not null default '' comment 'id',
     `role_id`     char(8) not null comment '角色|id',
@@ -350,24 +389,44 @@ create table `role_resource`
 ) engine = innodb
   default charset = utf8mb4 comment ='角色资源关联';
 
-insert into `role_resource`
-values ('00000000', '00000000', '01');
-insert into `role_resource`
-values ('00000001', '00000000', '0101');
-insert into `role_resource`
-values ('00000002', '00000000', '010101');
-insert into `role_resource`
-values ('00000003', '00000000', '010102');
-insert into `role_resource`
-values ('00000004', '00000000', '010103');
-insert into `role_resource`
-values ('00000005', '00000000', '0102');
-insert into `role_resource`
-values ('00000006', '00000000', '010201');
-insert into `role_resource`
-values ('00000007', '00000000', '0103');
-insert into `role_resource`
-values ('00000008', '00000000', '010301');
+insert into `role_menu`
+values ('00000000', '00000000', '1');
+insert into `role_menu`
+values ('00000001', '00000000', '2');
+insert into `role_menu`
+values ('00000002', '00000000', '3');
+insert into `role_menu`
+values ('00000003', '00000000', '4');
+insert into `role_menu`
+values ('00000004', '00000000', '5');
+insert into `role_menu`
+values ('00000005', '00000000', '6');
+insert into `role_menu`
+values ('00000006', '00000000', '7');
+insert into `role_menu`
+values ('00000007', '00000000', '8');
+insert into `role_menu`
+values ('00000008', '00000000', '9');
+insert into `role_menu`
+values ('00000009', '00000000', '10');
+insert into `role_menu`
+values ('00000010', '00000000', '11');
+insert into `role_menu`
+values ('00000011', '00000000', '12');
+insert into `role_menu`
+values ('00000012', '00000000', '13');
+insert into `role_menu`
+values ('00000013', '00000000', '14');
+insert into `role_menu`
+values ('00000014', '00000000', '15');
+insert into `role_menu`
+values ('00000015', '00000000', '16');
+insert into `role_menu`
+values ('00000016', '00000000', '17');
+insert into `role_menu`
+values ('00000017', '00000000', '18');
+insert into `role_menu`
+values ('00000018', '00000000', '19');
 
 drop table if exists `role_user`;
 create table `role_user`

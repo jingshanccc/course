@@ -5,32 +5,15 @@ package user;
 option go_package = "course/user-srv/proto/dto";
 
 message ResourceDto{
-  /*
-   * id
-   */
   string id = 1;
-
-  /*
-   * 名称|菜单或按钮
-   */
-  string name = 2;
-
-  /*
-   * 页面|路由
-   */
-  string page = 3;
-
-  /*
-   * 请求|接口
-   */
-  string request = 4;
-
-  /*
-   * 父id
-   */
-  string parent = 5;
-
-  repeated ResourceDto children = 6;
+  string title = 2;
+  string name = 3;
+  string component = 4;
+  string icon = 5;
+  string path = 6;
+  string request = 7;
+  string parent = 8;
+  repeated ResourceDto children = 9;
 }
 
 message ResourceDtoList{

@@ -3,26 +3,34 @@ package dao
 import (
 	"context"
 	"course/public"
+	"course/public/util"
 	"course/user-srv/proto/dto"
-	"database/sql"
 	"encoding/json"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 type ResourceDao struct {
 }
 type Resource struct {
 	//可能为空的字段使用指针类型
-	Id      string
-	Name    string
-	Page    *string
-	Parent  *string
-	Request *string
+	Id         string
+	Title      string
+	Component  string
+	Name       string
+	Icon       string
+	Path       string
+	Parent     string
+	Request    string
+	CreateBy   string
+	UpdateBy   string
+	CreateTime time.Time
+	UpdateTime time.Time
 }
 
 func (Resource) TableName() string {
-	return "resource"
+	return "menu"
 }
 
 // Delete : 删除权限
@@ -60,7 +68,7 @@ func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.Busin
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	for _, resourceDto := range list {
-		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Page, resourceDto.Request, resourceDto.Parent).Error
+		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Path, resourceDto.Request, resourceDto.Parent).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
@@ -86,14 +94,15 @@ func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
 
 // LoadTree : 按约定将列表转成树, ID要正序排列
 func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.BusinessException) {
-	rows, err := public.DB.Raw("select distinct r.id, r.name, r.page, r.request, r.parent from resource r order by r.id").Rows()
+	var res []*dto.ResourceDto
+	err := public.DB.Raw("select * from menu r").Find(&res).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	res, exception := scanResources(rows)
-	if exception.Code() != int32(public.OK) {
-		return nil, exception
-	}
+	//res, exception := scanResources(rows)
+	//if exception.Code() != int32(public.OK) {
+	//	return nil, exception
+	//}
 	for i := len(res) - 1; i >= 0; i-- {
 		child := res[i]
 		if child.Parent == "" {
@@ -141,46 +150,53 @@ func reverseChild(res []*dto.ResourceDto) {
 
 // FindUserResources 获取用户的权限
 func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, public.BusinessException) {
-	rows, err := public.DB.Raw("select distinct r.id, r.name, r.page, r.request, r.parent from role_user ru, role_resource rr, resource r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id", userId).Rows()
+	var resources []*Resource
+	err := public.DB.Raw("select distinct r.id, r.name, r.title, r.request, r.parent, r.path, r.component, r.icon from role_user ru, role_menu rr, menu r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id", userId).Find(&resources).Error
 
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 
-	return scanResources(rows)
-}
-
-// scanResources : 从查询得到的rows中将数据scan到返回值中
-func scanResources(rows *sql.Rows) ([]*dto.ResourceDto, public.BusinessException) {
-	var res []*dto.ResourceDto
-
-	for rows.Next() {
-		r := &Resource{}
-		err := rows.Scan(&r.Id, &r.Name, &r.Page, &r.Request, &r.Parent)
-		if err != nil {
-			log.Println("row scan failed, err is " + err.Error())
-			return nil, public.NewBusinessException(public.ROW_SCAN_ERROR)
-		}
-		d := &dto.ResourceDto{
-			Id:   r.Id,
-			Name: r.Name,
-		}
-		if r.Page == nil {
-			d.Page = ""
-		} else {
-			d.Page = *r.Page
-		}
-		if r.Parent == nil {
-			d.Parent = ""
-		} else {
-			d.Parent = *r.Parent
-		}
-		if r.Request == nil {
-			d.Request = ""
-		} else {
-			d.Request = *r.Request
-		}
-		res = append(res, d)
+	res := make([]*dto.ResourceDto, len(resources))
+	for i, resource := range resources {
+		r := dto.ResourceDto{}
+		_ = util.CopyProperties(&r, resource)
+		res[i] = &r
 	}
 	return res, public.NoException("")
 }
+
+// scanResources : 从查询得到的rows中将数据scan到返回值中
+//func scanResources(rows *sql.Rows) ([]*dto.ResourceDto, public.BusinessException) {
+//	var res []*dto.ResourceDto
+//
+//	for rows.Next() {
+//		r := &Resource{}
+//		err := rows.Scan(&r.Id, &r.Name, &r.Page, &r.Request, &r.Parent)
+//		if err != nil {
+//			log.Println("row scan failed, err is " + err.Error())
+//			return nil, public.NewBusinessException(public.ROW_SCAN_ERROR)
+//		}
+//		d := &dto.ResourceDto{
+//			Id:   r.Id,
+//			Name: r.Name,
+//		}
+//		if r.Page == nil {
+//			d.Page = ""
+//		} else {
+//			d.Page = *r.Page
+//		}
+//		if r.Parent == nil {
+//			d.Parent = ""
+//		} else {
+//			d.Parent = *r.Parent
+//		}
+//		if r.Request == nil {
+//			d.Request = ""
+//		} else {
+//			d.Request = *r.Request
+//		}
+//		res = append(res, d)
+//	}
+//	return res, public.NoException("")
+//}
