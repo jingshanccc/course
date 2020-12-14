@@ -2,6 +2,7 @@ package course
 
 import (
 	"context"
+	"course/config"
 	"course/course-srv/proto/course"
 	"course/course-srv/proto/dto"
 	"course/proto/basic"
@@ -12,7 +13,7 @@ import (
 func ListChapter(ctx *gin.Context) {
 	var req dto.ChapterPageDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.ListChapter(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -24,7 +25,7 @@ func ListChapter(ctx *gin.Context) {
 func SaveChapter(ctx *gin.Context) {
 	var req dto.ChapterDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SaveChapter(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -36,7 +37,7 @@ func SaveChapter(ctx *gin.Context) {
 func DelChapter(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteChapter(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {

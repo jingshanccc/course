@@ -148,7 +148,7 @@ LoginName=test1&Password=test1&Name=testuser1
 POST {{base}}/user/login
 Content-Type: application/x-www-form-urlencoded
 
-LoginName=test&Password=test&Id=b6ef9ba21b54428296ab902d14d0572b&Name=4820
+LoginName=test&Password=test&Id=b6ef9ba21b54428296ab902d14d0572b&Name=8102
 
 ###
 POST {{base}}/user/save-password

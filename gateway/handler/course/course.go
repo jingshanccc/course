@@ -2,6 +2,7 @@ package course
 
 import (
 	"context"
+	"course/config"
 	"course/course-srv/proto/course"
 	"course/course-srv/proto/dto"
 	"course/proto/basic"
@@ -13,7 +14,7 @@ import (
 func ListCourse(ctx *gin.Context) {
 	var req dto.CoursePageDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.CourseList(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -25,7 +26,7 @@ func ListCourse(ctx *gin.Context) {
 func SaveCourse(ctx *gin.Context) {
 	var req dto.CourseDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SaveCourse(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -37,7 +38,7 @@ func SaveCourse(ctx *gin.Context) {
 func DelCourse(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteCourse(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -49,7 +50,7 @@ func DelCourse(ctx *gin.Context) {
 func FindCourseContent(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.FindCourseContent(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -61,7 +62,7 @@ func FindCourseContent(ctx *gin.Context) {
 func SaveCourseContent(ctx *gin.Context) {
 	var req dto.CourseContentDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SaveCourseContent(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -73,7 +74,7 @@ func SaveCourseContent(ctx *gin.Context) {
 func ListCourseCategory(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.ListCourseCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -85,7 +86,7 @@ func ListCourseCategory(ctx *gin.Context) {
 func SortCourse(ctx *gin.Context) {
 	var req dto.SortDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SortCourse(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -97,7 +98,7 @@ func SortCourse(ctx *gin.Context) {
 func ListCourseFile(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.ListCourseFile(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -109,7 +110,7 @@ func ListCourseFile(ctx *gin.Context) {
 func SaveCourseFile(ctx *gin.Context) {
 	var req dto.CourseFileDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SaveCourseFile(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -121,7 +122,7 @@ func SaveCourseFile(ctx *gin.Context) {
 func DelCourseFile(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[public.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteCourseFile(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {

@@ -1,10 +1,10 @@
 package main
 
 import (
+	"course/config"
 	"course/course-srv/proto/course"
 	"course/gateway/route"
 	"course/middleware/redis"
-	"course/public"
 	"course/public/util"
 	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
@@ -16,25 +16,25 @@ import (
 func main() {
 	defer redis.RedisClient.Close()
 	//initial registry
-	r := consul.NewRegistry(registry.Addrs(public.RegistryAddr))
+	r := consul.NewRegistry(registry.Addrs(config.RegistryAddr))
 
-	client := micro.NewService(micro.Name(public.UserClientName))
+	client := micro.NewService(micro.Name(config.UserClientName))
 	//get UserService from registry
 	client.Init(micro.Registry(r))
-	userService := user.NewUserService(public.UserServiceName, client.Client())
+	userService := user.NewUserService(config.UserServiceName, client.Client())
 
-	client = micro.NewService(micro.Name(public.CourseCliName))
+	client = micro.NewService(micro.Name(config.CourseCliName))
 	//get CourseService from registry
 	client.Init(micro.Registry(r))
-	courseService := course.NewCourseService(public.CourseServiceName, client.Client())
+	courseService := course.NewCourseService(config.CourseServiceName, client.Client())
 
 	//create web micro service, register in consul, use gin router to handler request
 	server := web.NewService(
-		web.Name(public.GatewayName),
+		web.Name(config.GatewayName),
 		web.Address(":4000"),
 		web.Handler(route.NewRouter(userService, courseService)),
 		web.Registry(r),
 	)
-	util.PanicIfErr(server.Init(), public.GatewayName)
-	util.PanicIfErr(server.Run(), public.GatewayName)
+	util.PanicIfErr(server.Init(), config.GatewayName)
+	util.PanicIfErr(server.Run(), config.GatewayName)
 }

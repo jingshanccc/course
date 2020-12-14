@@ -1,7 +1,7 @@
 package main
 
 import (
-	"course/public"
+	"course/config"
 	"course/user-srv/handler"
 	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
@@ -14,10 +14,10 @@ import (
 func main() {
 	log.SetFlags(log.Llongfile)
 	r := consul.NewRegistry(
-		registry.Addrs(public.RegistryAddr))
+		registry.Addrs(config.RegistryAddr))
 	service := micro.NewService(
 		micro.Registry(r),
-		micro.Name(public.UserServiceName),
+		micro.Name(config.UserServiceName),
 	)
 	service.Init()
 	err := user.RegisterUserServiceHandler(service.Server(), new(handler.UserServiceHandler))

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"course/public"
+	"course/config"
 	"course/user-srv/proto/user"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
@@ -14,13 +14,13 @@ import (
 func main() {
 	log.SetFlags(log.Llongfile)
 	client := micro.NewService(micro.Name("go.micro.client.user"))
-	client.Init(micro.Registry(consul.NewRegistry(registry.Addrs(public.RegistryAddr))))
-	usercli := user.NewUserService(public.UserServiceName, client.Client())
+	client.Init(micro.Registry(consul.NewRegistry(registry.Addrs(config.RegistryAddr))))
+	usercli := user.NewUserService(config.UserServiceName, client.Client())
 	list, err := usercli.List(context.Background(), &user.PageDto{
 		PageSize: 10,
 		PageNum:  1,
 		SortBy:   "Id",
-		Asc:    true,
+		Asc:      true,
 	})
 	//us, err := usercli.Login(context.Background(), &user.User{
 	//	Id:        "00000001",

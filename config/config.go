@@ -1,6 +1,7 @@
-package public
+package config
 
 const (
+	JwtKey = "micah"
 	//192.168.10.130 127.0.0.1
 	MySQLUrl          = "root:123456@tcp(192.168.10.130:33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
 	RedisUrl          = "192.168.10.130:6379"
