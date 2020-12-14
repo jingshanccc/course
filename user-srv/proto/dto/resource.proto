@@ -5,15 +5,22 @@ package user;
 option go_package = "course/user-srv/proto/dto";
 
 message ResourceDto{
-  string id = 1;
-  string title = 2;
-  string name = 3;
-  string component = 4;
-  string icon = 5;
-  string path = 6;
-  string request = 7;
-  string parent = 8;
-  repeated ResourceDto children = 9;
+  int32 id = 1;
+  int32 parent = 2;
+  int32 type = 3;
+  string title = 4;
+  string name = 5;
+  string component = 6;
+  int32 sort = 7;
+  string icon = 8;
+  string path = 9;
+  bool IFrame = 10;
+  bool cache = 11;
+  bool hidden = 12;
+  string permission = 13;
+  bool AlwaysShow = 14;
+  string redirect = 15;
+  repeated ResourceDto children = 16;
 }
 
 message ResourceDtoList{
@@ -24,7 +31,7 @@ message RoleDto{
   string Id = 1;
   string Name = 2;
   string Desc = 3;
-  repeated string resourceIds = 4;
+  repeated int32 resourceIds = 4;
   repeated string userIds = 5;
 }
 

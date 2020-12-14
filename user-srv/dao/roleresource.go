@@ -10,7 +10,7 @@ type RoleResourceDao struct {
 type RoleResource struct {
 	Id         string
 	RoleId     string
-	ResourceId string
+	ResourceId int32
 }
 
 func (RoleResource) TableName() string {

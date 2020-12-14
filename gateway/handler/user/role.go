@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"course/config"
 	"course/proto/basic"
 	"course/public"
 	"course/user-srv/proto/dto"
@@ -13,7 +14,7 @@ import (
 func SaveRole(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.SaveRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -25,7 +26,7 @@ func SaveRole(ctx *gin.Context) {
 func RoleList(ctx *gin.Context) {
 	var req dto.RolePageDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.RoleList(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -37,7 +38,7 @@ func RoleList(ctx *gin.Context) {
 func DeleteRole(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.DeleteRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -49,7 +50,7 @@ func DeleteRole(ctx *gin.Context) {
 func SaveRoleResource(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.SaveRoleResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -61,7 +62,7 @@ func SaveRoleResource(ctx *gin.Context) {
 func ListRoleResource(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.ListRoleResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -73,7 +74,7 @@ func ListRoleResource(ctx *gin.Context) {
 func SaveRoleUser(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.SaveRoleUser(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -85,7 +86,7 @@ func SaveRoleUser(ctx *gin.Context) {
 func ListRoleUser(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[public.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.ListRoleUser(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {

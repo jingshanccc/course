@@ -292,75 +292,114 @@ insert into `user` (id, login_name, name, password)
 values ('10000000', 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
 
 -- 资源
-drop table if exists `menu`;
-create table `menu`
+DROP TABLE IF EXISTS `menu`;
+CREATE TABLE `menu`
 (
-    `id`          char(6)      not null default '' comment 'id',
-    `title`       varchar(255)          DEFAULT NULL COMMENT '菜单标题',
-    `name`        varchar(255)          DEFAULT NULL COMMENT '组件名称',
-    `component`   varchar(255)          DEFAULT NULL COMMENT '组件',
-    `path`        varchar(200) null comment '路由地址',
-    `icon`        varchar(255)          DEFAULT NULL COMMENT '图标',
-    `parent`      int(11) comment '父id',
-    `request`     varchar(255)          DEFAULT NULL comment '请求接口',
-    `create_by`   varchar(255)          DEFAULT NULL COMMENT '创建者',
-    `update_by`   varchar(255)          DEFAULT NULL COMMENT '更新者',
-    `create_time` datetime              DEFAULT NULL COMMENT '创建日期',
-    `update_time` datetime              DEFAULT NULL COMMENT '更新时间',
-    primary key (`id`)
-) engine = innodb
-  default charset = utf8mb4 comment ='菜单';
+    `id`     bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `parent`         bigint(20)   DEFAULT NULL COMMENT '上级菜单ID',
+    `type`        int(11)      DEFAULT NULL COMMENT '菜单类型',
+    `title`       varchar(255) DEFAULT NULL COMMENT '菜单标题',
+    `name`        varchar(255) DEFAULT NULL COMMENT '组件名称',
+    `component`   varchar(255) DEFAULT NULL COMMENT '组件',
+    `sort`   int(5)       DEFAULT NULL COMMENT '排序',
+    `icon`        varchar(255) DEFAULT NULL COMMENT '图标',
+    `path`        varchar(255) DEFAULT NULL COMMENT '链接地址',
+    `i_frame`     bool      DEFAULT NULL COMMENT '是否外链',
+    `cache`       bool       DEFAULT false COMMENT '缓存',
+    `hidden`      bool       DEFAULT false COMMENT '隐藏',
+    `permission`  varchar(255) DEFAULT NULL COMMENT '权限',
+    `create_by`   varchar(255) DEFAULT NULL COMMENT '创建者',
+    `update_by`   varchar(255) DEFAULT NULL COMMENT '更新者',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建日期',
+    `update_time` datetime     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    UNIQUE KEY `uniq_title` (`title`),
+    UNIQUE KEY `uniq_name` (`name`),
+    KEY `inx_pid` (`parent`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  ROW_FORMAT = COMPACT COMMENT ='资源';
+INSERT INTO `menu`
+VALUES (1, NULL, 0, '系统管理', NULL, NULL, 1, 'system', 'system', false, false, false, NULL, 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (2, 1, 1, '用户管理', 'User', 'system/user/index', 2, 'peoples', 'user', false, false, false, 'user:list',  'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (3, 1, 1, '角色管理', 'Role', 'system/role/index', 3, 'role', 'role', false, false, false, 'roles:list',  'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (4, 1, 1, '权限管理', 'Menu', 'system/menu/index', 4, 'menu', 'menu', false, false, false, 'menu:list',  'admin', 'admin',
+        now(), now());
 
-insert into `menu`
-values ('1', '系统管理', null, null, 'system', 'system', null, null, 'admin', 'admin', now(), null);
-insert into `menu`
-values ('2', '用户管理', 'User', 'system/user/index', 'user', 'peoples', 1, '["/system/user/list"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('3', '权限管理', 'Menu', 'system/menu/index', 'menu', 'menu', 1, '["/system/menu/list"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('4', '角色管理', 'Role', 'system/role/index', 'role', 'role', 1, '["/system/role/list"]', 'admin', 'admin', now(), null);
+INSERT INTO `menu`
+VALUES (5, NULL, 0, '业务管理', NULL, NULL, 5, 'app', 'business', false, false, false, NULL,  'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (6, 5, 1, '分类管理', 'Category', 'business/category/index', 6, 'category', 'category', false, false, false, NULL,  'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (7, 5, 1, '课程管理', 'Course', 'business/course/index', 7, 'course', 'course', false, false, false, NULL,  'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (8, 5, 1, '讲师管理', 'Teacher', 'business/teacher/index', 8, 'teacher', 'teacher', false, false, false, NULL,  'admin', 'admin',
+        now(), now());
 
+INSERT INTO `menu`
+VALUES (9, 2, 2, '用户新增', NULL, '', 2, '', '', false, false, false, 'user:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (10, 2, 2, '用户编辑', NULL, '', 3, '', '', false, false, false, 'user:edit','admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (11, 2, 2, '用户删除', NULL, '', 4, '', '', false, false, false, 'user:del', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (12, 3, 2, '角色创建', NULL, '', 2, '', '', false, false, false, 'roles:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (13, 3, 2, '角色修改', NULL, '', 3, '', '', false, false, false, 'roles:edit', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (14, 3, 2, '角色删除', NULL, '', 4, '', '', false, false, false, 'roles:del', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (15, 4, 2, '权限新增', NULL, '', 2, '', '', false, false, false, 'menu:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (16, 4, 2, '权限编辑', NULL, '', 3, '', '', false, false, false, 'menu:edit', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (17, 4, 2, '权限删除', NULL, '', 4, '', '', false, false, false, 'menu:del', 'admin', 'admin',
+        now(), now());
 
-insert into `menu`
-values ('5', '业务管理', null, null, 'business', 'app', null, null, 'admin', 'admin', now(), null);
-insert into `menu`
-values ('6', '分类管理', 'Category', 'business/category/index', 'category', 'category', 5, '["/business/category/list"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('7', '课程管理', 'Course', 'business/course/index', 'course', 'course', 5, '["/business/course/list"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('8', '讲师管理', 'Teacher', 'business/teacher/index', 'teacher', 'teacher', 5, '["/business/teacher/list"]', 'admin', 'admin', now(), null);
-
-insert into `menu`
-values ('9', '保存用户', null, '', '', '', 2, '["/system/user/save","/system/user/save-password"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('10', '删除用户', null, '', '', '', 2, '["/system/user/delete"]', 'admin', 'admin', now(), null);
-
-insert into `menu`
-values ('11', '新增权限', null, '', '', '', 3, '["/system/menu/save"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('12', '删除权限', null, '', '', '', 3, '["/system/menu/delete"]', 'admin', 'admin', now(), null);
-
-insert into `menu`
-values ('13', '保存角色', null, '', '', '', 4, '["/system/role/save"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('14', '删除角色', null, '', '', '', 4, '["/system/role/delete"]', 'admin', 'admin', now(), null);
-
-
-insert into `menu`
-values ('15', '保存分类', null, '', '', '', 6, '["/business/category/save"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('16', '删除分类', null, '', '', '', 6, '["/business/category/delete"]', 'admin', 'admin', now(), null);
-
-insert into `menu`
-values ('17', '新增课程', null, '', '', '', 7, '["/business/course/save"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('18', '删除课程', null, '', '', '', 7, '["/business/course/delete"]', 'admin', 'admin', now(), null);
-
-insert into `menu`
-values ('19', '保存讲师', null, '', '', '', 8, '["/business/teacher/save"]', 'admin', 'admin', now(), null);
-insert into `menu`
-values ('20', '删除讲师', null, '', '', '', 8, '["/business/teacher/delete"]', 'admin', 'admin', now(), null);
-
+INSERT INTO `menu`
+VALUES (18, 6, 2, '分类新增', NULL, '', 2, '', '', false, false, false, 'category:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (19, 6, 2, '分类编辑', NULL, '', 3, '', '', false, false, false, 'category:edit','admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (20, 6, 2, '分类删除', NULL, '', 4, '', '', false, false, false, 'category:del', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (21, 7, 2, '课程创建', NULL, '', 2, '', '', false, false, false, 'course:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (22, 7, 2, '课程修改', NULL, '', 3, '', '', false, false, false, 'course:edit', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (23, 7, 2, '课程删除', NULL, '', 4, '', '', false, false, false, 'course:del', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (24, 8, 2, '讲师新增', NULL, '', 2, '', '', false, false, false, 'teacher:add', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (25, 8, 2, '讲师编辑', NULL, '', 3, '', '', false, false, false, 'teacher:edit', 'admin', 'admin',
+        now(), now());
+INSERT INTO `menu`
+VALUES (26, 8, 2, '讲师删除', NULL, '', 4, '', '', false, false, false, 'teacher:del', 'admin', 'admin',
+        now(), now());
 
 drop table if exists `role`;
 create table `role`
@@ -388,45 +427,6 @@ create table `role_menu`
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='角色资源关联';
-
-insert into `role_menu`
-values ('00000000', '00000000', '1');
-insert into `role_menu`
-values ('00000001', '00000000', '2');
-insert into `role_menu`
-values ('00000002', '00000000', '3');
-insert into `role_menu`
-values ('00000003', '00000000', '4');
-insert into `role_menu`
-values ('00000004', '00000000', '5');
-insert into `role_menu`
-values ('00000005', '00000000', '6');
-insert into `role_menu`
-values ('00000006', '00000000', '7');
-insert into `role_menu`
-values ('00000007', '00000000', '8');
-insert into `role_menu`
-values ('00000008', '00000000', '9');
-insert into `role_menu`
-values ('00000009', '00000000', '10');
-insert into `role_menu`
-values ('00000010', '00000000', '11');
-insert into `role_menu`
-values ('00000011', '00000000', '12');
-insert into `role_menu`
-values ('00000012', '00000000', '13');
-insert into `role_menu`
-values ('00000013', '00000000', '14');
-insert into `role_menu`
-values ('00000014', '00000000', '15');
-insert into `role_menu`
-values ('00000015', '00000000', '16');
-insert into `role_menu`
-values ('00000016', '00000000', '17');
-insert into `role_menu`
-values ('00000017', '00000000', '18');
-insert into `role_menu`
-values ('00000018', '00000000', '19');
 
 drop table if exists `role_user`;
 create table `role_user`

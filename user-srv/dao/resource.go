@@ -14,15 +14,19 @@ import (
 type ResourceDao struct {
 }
 type Resource struct {
-	//可能为空的字段使用指针类型
-	Id         string
+	Id         int32
+	Parent     int32
+	Type       int32
 	Title      string
-	Component  string
 	Name       string
+	Component  string
+	Sort       int32
 	Icon       string
 	Path       string
-	Parent     string
-	Request    string
+	IFrame     bool
+	Cache      bool
+	Hidden     bool
+	Permission string
 	CreateBy   string
 	UpdateBy   string
 	CreateTime time.Time
@@ -34,7 +38,7 @@ func (Resource) TableName() string {
 }
 
 // Delete : 删除权限
-func (r *ResourceDao) Delete(ctx context.Context, id string) public.BusinessException {
+func (r *ResourceDao) Delete(ctx context.Context, id int32) public.BusinessException {
 	public.DB.Delete(&Resource{Id: id})
 	return public.NoException("")
 }
@@ -55,7 +59,7 @@ func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.Busin
 	var list []*dto.ResourceDto
 	if err == nil && len(inputList) > 0 {
 		for _, resourceDto := range inputList {
-			resourceDto.Parent = ""
+			//resourceDto.Parent = ""
 			add(&list, resourceDto)
 		}
 	}
@@ -68,7 +72,7 @@ func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.Busin
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	for _, resourceDto := range list {
-		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Path, resourceDto.Request, resourceDto.Parent).Error
+		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Path, resourceDto.Parent, resourceDto.Parent).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
@@ -94,18 +98,103 @@ func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
 
 // LoadTree : 按约定将列表转成树, ID要正序排列
 func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.BusinessException) {
-	var res []*dto.ResourceDto
-	err := public.DB.Raw("select * from menu r").Find(&res).Error
+	var resources []*Resource
+	err := public.DB.Raw("select * from menu r order by id").Find(&resources).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	//res, exception := scanResources(rows)
-	//if exception.Code() != int32(public.OK) {
-	//	return nil, exception
-	//}
+	res := make([]*dto.ResourceDto, len(resources))
+	for i, resource := range resources {
+		r := dto.ResourceDto{}
+		_ = util.CopyProperties(&r, resource)
+		res[i] = &r
+	}
+	buildTree(res)
+	return res, public.NoException("")
+}
+
+// FindUserResources 获取用户的权限
+func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, public.BusinessException) {
+	var resources []*Resource
+	err := public.DB.Raw("select r.* from role_user ru, role_menu rr, menu r where ru.user_id = ? and type != ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.sort asc", userId, 2).Find(&resources).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+
+	res := make([]*dto.ResourceDto, len(resources))
+	for i, resource := range resources {
+		r := dto.ResourceDto{}
+		_ = util.CopyProperties(&r, resource)
+		res[i] = &r
+	}
+	res = buildTree(res)
+	return buildMenus(res), public.NoException("")
+}
+
+// 将权限转化为前端侧边栏要求的格式
+func buildMenus(resources []*dto.ResourceDto) []*dto.ResourceDto {
+	var res []*dto.ResourceDto
+	for _, resource := range resources {
+		children := resource.Children
+		r := &dto.ResourceDto{}
+		if resource.Name == "" {
+			r.Name = resource.Title
+		} else {
+			r.Name = resource.Name
+		}
+		if resource.Parent == 0 { //一级菜单需要添加"/"消除警告
+			r.Path = "/" + resource.Path
+		} else {
+			r.Path = resource.Path
+		}
+		r.Hidden = resource.Hidden
+		if !resource.IFrame {
+			if resource.Parent == 0 {
+				if resource.Component == "" {
+					r.Component = "Layout"
+				} else {
+					r.Component = resource.Component
+				}
+			} else if resource.Component != "" {
+				r.Component = resource.Component
+			}
+		}
+		r.Title = resource.Title
+		r.Icon = resource.Icon
+		r.Cache = resource.Cache
+		if children != nil && len(children) > 0 {
+			r.Redirect = "noRedirect"
+			r.AlwaysShow = true
+			r.Children = buildMenus(children)
+		} else if resource.Parent == 0 { //一级菜单并且没有子菜单
+			rr := &dto.ResourceDto{}
+			rr.Title = r.Title
+			rr.Icon = r.Icon
+			rr.Cache = r.Cache
+			if !resource.IFrame {
+				rr.Path = "index"
+				rr.Name = r.Name
+				rr.Component = r.Component
+			} else {
+				rr.Path = resource.Path
+			}
+			r.Name = ""
+			r.Component = "Layout"
+			children1 := []*dto.ResourceDto{rr}
+			r.Children = children1
+		}
+		res = append(res, r)
+	}
+	return res
+}
+
+// buildTree: 将资源转换为树结构
+func buildTree(res []*dto.ResourceDto) []*dto.ResourceDto {
+	var resp []*dto.ResourceDto
 	for i := len(res) - 1; i >= 0; i-- {
 		child := res[i]
-		if child.Parent == "" {
+		if child.Parent == 0 {
+			resp = append(resp, child)
 			continue
 		}
 		for j := i - 1; j >= 0; j-- {
@@ -126,77 +215,24 @@ func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.
 			}
 		}
 	}
-	reverseChild(res)
-	return res, public.NoException("")
+	reverseChild(resp)
+	return resp
 }
 
 //reverseChild : 将子节点list反转为正序
 func reverseChild(res []*dto.ResourceDto) {
-	for _, val := range res {
-		if val.Children != nil {
-			left := 0
-			right := len(val.Children) - 1
-			for left < right {
-				temp := val.Children[left]
-				val.Children[left] = val.Children[right]
-				val.Children[right] = temp
-				left++
-				right--
-			}
-			reverseChild(val.Children)
+	if res != nil {
+		left := 0
+		right := len(res) - 1
+		for left < right {
+			temp := res[left]
+			res[left] = res[right]
+			res[right] = temp
+			left++
+			right--
+		}
+		for _, re := range res {
+			reverseChild(re.Children)
 		}
 	}
 }
-
-// FindUserResources 获取用户的权限
-func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, public.BusinessException) {
-	var resources []*Resource
-	err := public.DB.Raw("select distinct r.id, r.name, r.title, r.request, r.parent, r.path, r.component, r.icon from role_user ru, role_menu rr, menu r where ru.user_id = ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id", userId).Find(&resources).Error
-
-	if err != nil {
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-	}
-
-	res := make([]*dto.ResourceDto, len(resources))
-	for i, resource := range resources {
-		r := dto.ResourceDto{}
-		_ = util.CopyProperties(&r, resource)
-		res[i] = &r
-	}
-	return res, public.NoException("")
-}
-
-// scanResources : 从查询得到的rows中将数据scan到返回值中
-//func scanResources(rows *sql.Rows) ([]*dto.ResourceDto, public.BusinessException) {
-//	var res []*dto.ResourceDto
-//
-//	for rows.Next() {
-//		r := &Resource{}
-//		err := rows.Scan(&r.Id, &r.Name, &r.Page, &r.Request, &r.Parent)
-//		if err != nil {
-//			log.Println("row scan failed, err is " + err.Error())
-//			return nil, public.NewBusinessException(public.ROW_SCAN_ERROR)
-//		}
-//		d := &dto.ResourceDto{
-//			Id:   r.Id,
-//			Name: r.Name,
-//		}
-//		if r.Page == nil {
-//			d.Page = ""
-//		} else {
-//			d.Page = *r.Page
-//		}
-//		if r.Parent == nil {
-//			d.Parent = ""
-//		} else {
-//			d.Parent = *r.Parent
-//		}
-//		if r.Request == nil {
-//			d.Request = ""
-//		} else {
-//			d.Request = *r.Request
-//		}
-//		res = append(res, d)
-//	}
-//	return res, public.NoException("")
-//}
