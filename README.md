@@ -14,20 +14,20 @@
 course/
 ├─api_test/			······接口测试文件
 ├─config/			······配置文件
-├─course-srv/		······课程服务
+├─course-srv/		    ······课程服务
 │  ├─dao/			······数据库查询
-│  ├─handler/		······课程服务RPC接口实现
+│  ├─handler/		    ······课程服务RPC接口实现
 │  └─proto/			······课程服务ProtoBuf文件夹
-│      ├─course/	······课程服务RPC接口声明
-│      └─dto/		......课程服务使用的DTO
+│      ├─course/	    ······课程服务RPC接口声明
+│      └─dto/		    ......课程服务使用的DTO
 ├─doc/				......项目相关文档
 ├─gateway/			......网关服务
-│  ├─handler/		......网关HTTP接口实现
-│  │  ├─course/		......课程服务HTTP接口实现
-│  │  └─user/		......用户服务HTTP接口实现
-│  ├─middleware/	......网关中间件
+│  ├─handler/		    ......网关HTTP接口实现
+│  │  ├─course/		    ......课程服务HTTP接口实现
+│  │  └─user/		    ......用户服务HTTP接口实现
+│  ├─middleware/	    ......网关中间件
 │  └─route/			......网关路由
-├─middleware/		......中间件
+├─middleware/		    ......中间件
 │  └─redis/			......Redis缓存
 ├─proto/			......项目ProtoBuf文件夹
 │  └─basic/			......项目公用的DTO
@@ -35,8 +35,8 @@ course/
 │  └─util/			......工具类
 └─user-srv/			......用户服务
     ├─dao/			......数据库查询
-    ├─handler/		......用户服务RPC接口实现
-    └─proto/		......用户服务ProtoBuf文件夹
-        ├─dto/		......用户服务使用的DTO
-        └─user/		......用户服务RPC接口声明
+    ├─handler/		    ......用户服务RPC接口实现
+    └─proto/		    ......用户服务ProtoBuf文件夹
+        ├─dto/		    ......用户服务使用的DTO
+        └─user/		    ......用户服务RPC接口声明
 ```
