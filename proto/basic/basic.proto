@@ -4,6 +4,10 @@ package basic;
 
 option go_package = "course/proto/basic";
 
+message Integer {
+  int32 id = 1;
+}
+
 message String {
   string str = 1;
 }

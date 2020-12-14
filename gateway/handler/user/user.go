@@ -2,17 +2,20 @@ package user
 
 import (
 	"context"
-	"course/gateway/handler"
+	"course/config"
+	"course/gateway/middleware"
 	"course/proto/basic"
 	"course/public"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"strings"
 )
 
 func GetUserList(ctx *gin.Context) {
 	var req user.PageDto
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := userService.List(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -21,28 +24,23 @@ func GetUserList(ctx *gin.Context) {
 
 }
 
-func Login(ctx *gin.Context) {
-	var req user.UserDto
-	if err := ctx.Bind(&req); err == nil {
-		//图形验证码校验-user的id作为验证码id name作为验证码值
-		exception := handler.VerifyCaptcha(req.Id, req.Name)
-		if exception.Code() == int32(public.OK) {
-			userService := ctx.Keys[public.UserServiceName].(user.UserService)
-			loginUserDto, err := userService.Login(context.Background(), &req)
-			public.ResponseAny(ctx, err, loginUserDto)
-		} else {
-			public.ResponseError(ctx, exception)
-		}
-	} else {
-		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+//UserInfo: 获取用户信息
+func UserInfo(ctx *gin.Context) {
+	currentUser, err := middleware.GetCurrentUser(ctx)
+	if err != nil {
+		ctx.AbortWithError(http.StatusUnauthorized, err)
+		return
 	}
+	userService := ctx.Keys[config.UserServiceName].(user.UserService)
+	userDto, err := userService.UserInfo(context.Background(), &basic.String{Str: currentUser})
+	public.ResponseAny(ctx, err, userDto)
 }
 
 //SavePassword : reset password
 func SavePassword(ctx *gin.Context) {
 	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.SavePassword(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -54,7 +52,7 @@ func SavePassword(ctx *gin.Context) {
 func Save(ctx *gin.Context) {
 	var req user.UserDto
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.Save(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -66,7 +64,7 @@ func Save(ctx *gin.Context) {
 func DeleteUser(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -78,9 +76,12 @@ func DeleteUser(ctx *gin.Context) {
 func Logout(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[public.UserServiceName].(user.UserService)
-		result, err := userService.Logout(context.Background(), &req)
-		public.ResponseAny(ctx, err, result)
+		strs := strings.Split(req.Str, "$")
+		err := middleware.AuthServer.Manager.RemoveAccessToken(ctx, strs[0])
+		err = middleware.AuthServer.Manager.RemoveRefreshToken(ctx, strs[1])
+		//userService := ctx.Keys[public.UserServiceName].(user.UserService)
+		//result, err := userService.Logout(context.Background(), &req)
+		public.ResponseAny(ctx, err, nil)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}

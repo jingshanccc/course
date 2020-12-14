@@ -7,7 +7,6 @@ import (
 	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"crypto/md5"
-	"encoding/json"
 	"fmt"
 	"log"
 )
@@ -50,6 +49,16 @@ func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (*use
 	return us, public.NoException("")
 }
 
+//SelectById : get user by id
+func (u *UserDao) SelectById(ctx context.Context, id string) (*user.UserDto, public.BusinessException) {
+	us := &user.UserDto{}
+	err := public.DB.Model(&User{}).Where("id = ?", id).First(&us).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.MEMBER_NOT_EXIST)
+	}
+	return us, public.NoException("")
+}
+
 //Login : login
 func (u *UserDao) Login(ctx context.Context, user *user.UserDto) (*dto.LoginUserDto, public.BusinessException) {
 	usr, err := u.SelectByLoginName(ctx, user.LoginName)
@@ -64,9 +73,11 @@ func (u *UserDao) Login(ctx context.Context, user *user.UserDto) (*dto.LoginUser
 				LoginName: usr.LoginName,
 				Name:      usr.Name,
 			}
-			res.Token = util.GetUuid()
-			exception := setAuth(ctx, res)
-			return res, exception
+			//res.Token = util.GetUuid()
+			//var exception public.BusinessException
+			//res.Resources, exception = (&ResourceDao{}).FindUserResources(ctx, res.Id)
+			//exception := setAuth(ctx, res)
+			return res, public.NoException("")
 		} else {
 			err = public.NewBusinessException(public.LOGIN_USER_ERROR)
 			log.Println(err.Error() + user.LoginName)
@@ -77,28 +88,28 @@ func (u *UserDao) Login(ctx context.Context, user *user.UserDto) (*dto.LoginUser
 
 //setAuth : set user's resources (access control)
 func setAuth(ctx context.Context, loginUser *dto.LoginUserDto) public.BusinessException {
-	resources, exception := (&ResourceDao{}).FindUserResources(ctx, loginUser.Id)
-	if exception.Code() != int32(public.OK) {
-		return exception
-	}
-	requestSet := public.NewHashSet()
-	if len(resources) > 0 {
-		for _, resource := range resources {
-			var requests []string
-			request := resource.Request
-			json.Unmarshal([]byte(request), &requests)
-			if len(requests) > 0 {
-				for _, v := range requests {
-					requestSet.Add(v)
-				}
-			}
-		}
-	}
-	var reqs []string
-	requestJson, _ := requestSet.ToJSON()
-	json.Unmarshal(requestJson, &reqs)
-	loginUser.Resources = resources
-	loginUser.Requests = reqs
+	_, exception := (&ResourceDao{}).FindUserResources(ctx, loginUser.Id)
+	//if exception.Code() != int32(public.OK) {
+	//	return exception
+	//}
+	//requestSet := public.NewHashSet()
+	//if len(resources) > 0 {
+	//	for _, resource := range resources {
+	//		var requests []string
+	//		request := resource.Request
+	//		json.Unmarshal([]byte(request), &requests)
+	//		if len(requests) > 0 {
+	//			for _, v := range requests {
+	//				requestSet.Add(v)
+	//			}
+	//		}
+	//	}
+	//}
+	//var reqs []string
+	//requestJson, _ := requestSet.ToJSON()
+	//json.Unmarshal(requestJson, &reqs)
+	//loginUser.Resources = resources
+	//loginUser.Requests = reqs
 	return exception
 }
 

@@ -15,12 +15,14 @@ service UserService{
   rpc SavePassword(UserDto) returns (UserDto){}
   rpc Login(UserDto) returns (LoginUserDto){}
   rpc Logout(basic.String) returns (basic.String){}
+  rpc UserInfo(basic.String) returns (UserDto){}
 
   //---------- 权限管理 ---------------
   //resource
+  rpc LoadMenus(basic.String) returns (ResourceDtoList);
   rpc LoadTree(basic.String) returns (ResourceDtoList);
   rpc SaveJson(basic.String) returns (basic.String);
-  rpc DeleteResource(basic.String) returns (basic.String);
+  rpc DeleteResource(basic.Integer) returns (basic.String);
   //role
   rpc RoleList(RolePageDto) returns (RolePageDto);
   rpc SaveRole(RoleDto) returns (RoleDto);

@@ -1,8 +1,8 @@
 package redis
 
 import (
-	"course/public"
-	"github.com/go-redis/redis"
+	"course/config"
+	"github.com/go-redis/redis/v8"
 )
 
 var (
@@ -11,7 +11,7 @@ var (
 
 func init() {
 	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     public.RedisUrl,
+		Addr:     config.RedisUrl,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

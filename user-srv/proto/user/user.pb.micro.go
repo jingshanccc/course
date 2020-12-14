@@ -51,11 +51,13 @@ type UserService interface {
 	SavePassword(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error)
 	Login(ctx context.Context, in *UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
 	Logout(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*UserDto, error)
 	//---------- 权限管理 ---------------
 	//resource
+	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	LoadTree(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	SaveJson(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
-	DeleteResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error)
 	//role
 	RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error)
 	SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
@@ -138,6 +140,26 @@ func (c *userService) Logout(ctx context.Context, in *basic.String, opts ...clie
 	return out, nil
 }
 
+func (c *userService) UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*UserDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.UserInfo", in)
+	out := new(UserDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error) {
+	req := c.c.NewRequest(c.name, "UserService.LoadMenus", in)
+	out := new(dto.ResourceDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) LoadTree(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error) {
 	req := c.c.NewRequest(c.name, "UserService.LoadTree", in)
 	out := new(dto.ResourceDtoList)
@@ -158,7 +180,7 @@ func (c *userService) SaveJson(ctx context.Context, in *basic.String, opts ...cl
 	return out, nil
 }
 
-func (c *userService) DeleteResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *userService) DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.DeleteResource", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -248,11 +270,13 @@ type UserServiceHandler interface {
 	SavePassword(context.Context, *UserDto, *UserDto) error
 	Login(context.Context, *UserDto, *dto.LoginUserDto) error
 	Logout(context.Context, *basic.String, *basic.String) error
+	UserInfo(context.Context, *basic.String, *UserDto) error
 	//---------- 权限管理 ---------------
 	//resource
+	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
 	LoadTree(context.Context, *basic.String, *dto.ResourceDtoList) error
 	SaveJson(context.Context, *basic.String, *basic.String) error
-	DeleteResource(context.Context, *basic.String, *basic.String) error
+	DeleteResource(context.Context, *basic.Integer, *basic.String) error
 	//role
 	RoleList(context.Context, *dto.RolePageDto, *dto.RolePageDto) error
 	SaveRole(context.Context, *dto.RoleDto, *dto.RoleDto) error
@@ -271,9 +295,11 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		SavePassword(ctx context.Context, in *UserDto, out *UserDto) error
 		Login(ctx context.Context, in *UserDto, out *dto.LoginUserDto) error
 		Logout(ctx context.Context, in *basic.String, out *basic.String) error
+		UserInfo(ctx context.Context, in *basic.String, out *UserDto) error
+		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
-		DeleteResource(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error
 		RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error
 		SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
 		DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error
@@ -317,6 +343,14 @@ func (h *userServiceHandler) Logout(ctx context.Context, in *basic.String, out *
 	return h.UserServiceHandler.Logout(ctx, in, out)
 }
 
+func (h *userServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *UserDto) error {
+	return h.UserServiceHandler.UserInfo(ctx, in, out)
+}
+
+func (h *userServiceHandler) LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {
+	return h.UserServiceHandler.LoadMenus(ctx, in, out)
+}
+
 func (h *userServiceHandler) LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {
 	return h.UserServiceHandler.LoadTree(ctx, in, out)
 }
@@ -325,7 +359,7 @@ func (h *userServiceHandler) SaveJson(ctx context.Context, in *basic.String, out
 	return h.UserServiceHandler.SaveJson(ctx, in, out)
 }
 
-func (h *userServiceHandler) DeleteResource(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *userServiceHandler) DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error {
 	return h.UserServiceHandler.DeleteResource(ctx, in, out)
 }
 

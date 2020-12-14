@@ -11,6 +11,4 @@ message LoginUserDto{
   string login_name = 2;
   string name = 3;
   string token = 4;
-  repeated ResourceDto resources = 5;
-  repeated string requests = 6;
 }
