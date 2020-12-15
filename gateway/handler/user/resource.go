@@ -8,16 +8,12 @@ import (
 	"course/public"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 //LoadMenus: 加载前端侧边栏菜单
 func LoadMenus(ctx *gin.Context) {
-	currentUser, err := middleware.GetCurrentUser(ctx)
-	if err != nil {
-		ctx.AbortWithError(http.StatusUnauthorized, err)
-		return
-	}
+	currentUser := middleware.GetCurrentUser(ctx)
+
 	resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
 	list, err := resourceService.LoadMenus(context.Background(), &basic.String{Str: currentUser})
 	public.ResponseAny(ctx, err, list)

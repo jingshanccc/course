@@ -18,6 +18,8 @@ const (
 	IMAGE_CODE_TOO_FREQUENT ExceptionEnum = 20005
 	IMAGE_CODE_ERROR        ExceptionEnum = 20006
 	IMAGE_CODE_EXPIRED      ExceptionEnum = 20007
+	ERROR_PASSWORD          ExceptionEnum = 20008
+	SAME_PASSWORD           ExceptionEnum = 20009
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -43,15 +45,19 @@ func (code ExceptionEnum) getDesc() string {
 	case USER_LOGIN_NAME_EXIST:
 		return "登录名已存在"
 	case LOGIN_USER_ERROR:
-		return "用户名不存在或密码错误"
+		return "用户名不存在"
 	case LOGIN_MEMBER_ERROR:
-		return "手机号不存在或密码错误"
+		return "手机号不存在"
 	case IMAGE_CODE_TOO_FREQUENT:
 		return "获取验证码过于频繁"
 	case IMAGE_CODE_ERROR:
 		return "验证码不正确"
 	case IMAGE_CODE_EXPIRED:
 		return "验证码不存在或已过期，请重新发送"
+	case ERROR_PASSWORD:
+		return "密码错误"
+	case SAME_PASSWORD:
+		return "新密码不能与旧密码相同"
 	default:
 		return "未知错误"
 	}

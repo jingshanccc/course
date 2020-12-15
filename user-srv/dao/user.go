@@ -5,8 +5,8 @@ import (
 	"course/public"
 	"course/public/util"
 	"course/user-srv/proto/dto"
-	"course/user-srv/proto/user"
 	"crypto/md5"
+	"encoding/base64"
 	"fmt"
 	"log"
 )
@@ -25,13 +25,13 @@ func (User) TableName() string {
 }
 
 //List : get user page
-func (u *UserDao) List(ctx context.Context, dto *user.PageDto) ([]*user.UserDto, public.BusinessException) {
+func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, public.BusinessException) {
 	orderby := "desc"
-	if dto.Asc {
+	if in.Asc {
 		orderby = "asc"
 	}
-	var res []*user.UserDto
-	err := public.DB.Model(&User{}).Order(dto.SortBy + " " + orderby).Limit(int(dto.PageSize)).Offset(int((dto.PageNum - 1) * dto.PageSize)).Find(&res).Error
+	var res []*dto.UserDto
+	err := public.DB.Model(&User{}).Order(in.SortBy + " " + orderby).Limit(int(in.PageSize)).Offset(int((in.PageNum - 1) * in.PageSize)).Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -40,8 +40,8 @@ func (u *UserDao) List(ctx context.Context, dto *user.PageDto) ([]*user.UserDto,
 }
 
 //SelectByLoginName : get user by login name
-func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (*user.UserDto, public.BusinessException) {
-	us := &user.UserDto{}
+func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (*dto.UserDto, public.BusinessException) {
+	us := &dto.UserDto{}
 	err := public.DB.Model(&User{}).Where("login_name = ?", loginName).First(&us).Error
 	if err != nil {
 		return nil, public.NoException("")
@@ -50,105 +50,96 @@ func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (*use
 }
 
 //SelectById : get user by id
-func (u *UserDao) SelectById(ctx context.Context, id string) (*user.UserDto, public.BusinessException) {
-	us := &user.UserDto{}
+func (u *UserDao) SelectById(ctx context.Context, id string) (*dto.UserDto, public.BusinessException) {
+	us := &dto.UserDto{}
 	err := public.DB.Model(&User{}).Where("id = ?", id).First(&us).Error
-	if err != nil {
-		return nil, public.NewBusinessException(public.MEMBER_NOT_EXIST)
+	if err != nil || us == nil {
+		return nil, public.NewBusinessException(public.LOGIN_USER_ERROR)
 	}
 	return us, public.NoException("")
 }
 
 //Login : login
-func (u *UserDao) Login(ctx context.Context, user *user.UserDto) (*dto.LoginUserDto, public.BusinessException) {
+func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserDto, public.BusinessException) {
 	usr, err := u.SelectByLoginName(ctx, user.LoginName)
 	if usr == nil {
-		err = public.NewBusinessException(public.MEMBER_NOT_EXIST)
+		err = public.NewBusinessException(public.LOGIN_USER_ERROR)
 		log.Println(err.Error() + user.LoginName)
 		return nil, err
 	} else {
+		bytes, _ := base64.StdEncoding.DecodeString(user.Password)
+		user.Password, _ = util.RsaDecrypt(bytes)
+		user.Password = fmt.Sprintf("%x", md5.Sum([]byte(user.Password)))
 		if usr.Password == user.Password {
 			res := &dto.LoginUserDto{
 				Id:        usr.Id,
 				LoginName: usr.LoginName,
 				Name:      usr.Name,
 			}
-			//res.Token = util.GetUuid()
-			//var exception public.BusinessException
-			//res.Resources, exception = (&ResourceDao{}).FindUserResources(ctx, res.Id)
-			//exception := setAuth(ctx, res)
 			return res, public.NoException("")
 		} else {
-			err = public.NewBusinessException(public.LOGIN_USER_ERROR)
+			err = public.NewBusinessException(public.ERROR_PASSWORD)
 			log.Println(err.Error() + user.LoginName)
 			return nil, err
 		}
 	}
 }
 
-//setAuth : set user's resources (access control)
-func setAuth(ctx context.Context, loginUser *dto.LoginUserDto) public.BusinessException {
-	_, exception := (&ResourceDao{}).FindUserResources(ctx, loginUser.Id)
-	//if exception.Code() != int32(public.OK) {
-	//	return exception
-	//}
-	//requestSet := public.NewHashSet()
-	//if len(resources) > 0 {
-	//	for _, resource := range resources {
-	//		var requests []string
-	//		request := resource.Request
-	//		json.Unmarshal([]byte(request), &requests)
-	//		if len(requests) > 0 {
-	//			for _, v := range requests {
-	//				requestSet.Add(v)
-	//			}
-	//		}
-	//	}
-	//}
-	//var reqs []string
-	//requestJson, _ := requestSet.ToJSON()
-	//json.Unmarshal(requestJson, &reqs)
-	//loginUser.Resources = resources
-	//loginUser.Requests = reqs
-	return exception
-}
-
 //SavePassword : reset password
-func (u *UserDao) SavePassword(ctx context.Context, dto *user.UserDto) (string, public.BusinessException) {
-	err := public.DB.Model(&User{}).Where("login_name=?", dto.LoginName).Update("password", dto.Password).Error
+func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) public.BusinessException {
+	byId, exception := u.SelectById(ctx, updatePass.UserId)
+	if exception.Code() != int32(public.OK) {
+		return exception
+	}
+	oldBytes, _ := base64.StdEncoding.DecodeString(updatePass.OldPass)
+	newBytes, _ := base64.StdEncoding.DecodeString(updatePass.NewPass)
+	oldP, err := util.RsaDecrypt(oldBytes)
+	newP, err := util.RsaDecrypt(newBytes)
+	if err != nil {
+		return public.NewBusinessException(public.VALID_PARM_ERROR)
+	}
+	updatePass.OldPass = fmt.Sprintf("%x", md5.Sum([]byte(oldP)))
+	updatePass.NewPass = fmt.Sprintf("%x", md5.Sum([]byte(newP)))
+	if byId.Password != updatePass.OldPass {
+		return public.NewBusinessException(public.ERROR_PASSWORD)
+	}
+	if byId.Password != updatePass.NewPass {
+		return public.NewBusinessException(public.SAME_PASSWORD)
+	}
+	err = public.DB.Model(&User{}).Where("id=?", updatePass.UserId).Update("password", updatePass.NewPass).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return "", public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return dto.Password, public.NoException("")
+	return public.NoException("")
 }
 
 //Save : update when dto.id exists, insert otherwise
-func (u *UserDao) Save(ctx context.Context, dto *user.UserDto) (*user.UserDto, public.BusinessException) {
-	if dto.Id != "" { //update
-		err := public.DB.Model(&User{Id: dto.Id}).Updates(&User{Name: dto.Name, LoginName: dto.LoginName}).Error
+func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, public.BusinessException) {
+	if userDto.Id != "" { //update
+		err := public.DB.Model(&User{Id: userDto.Id}).Updates(&User{Name: userDto.Name, LoginName: userDto.LoginName}).Error
 		if err != nil {
-			return &user.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	} else { //insert
 		//if login_name exists, throw error
-		us, _ := u.SelectByLoginName(ctx, dto.LoginName)
+		us, _ := u.SelectByLoginName(ctx, userDto.LoginName)
 		if us != nil {
-			return &user.UserDto{}, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
+			return &dto.UserDto{}, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
 		}
-		dto.Id = util.GetShortUuid()
-		dto.Password = fmt.Sprintf("%x", md5.Sum([]byte(dto.Password)))
+		userDto.Id = util.GetShortUuid()
+		userDto.Password = fmt.Sprintf("%x", md5.Sum([]byte(userDto.Password)))
 		err1 := public.DB.Create(&User{
-			Id:        dto.Id,
-			Name:      dto.Name,
-			LoginName: dto.LoginName,
-			Password:  dto.Password,
+			Id:        userDto.Id,
+			Name:      userDto.Name,
+			LoginName: userDto.LoginName,
+			Password:  userDto.Password,
 		}).Error
 		if err1 != nil {
-			return &user.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return dto, public.NoException("")
+	return userDto, public.NoException("")
 }
 
 // Delete 删除用户

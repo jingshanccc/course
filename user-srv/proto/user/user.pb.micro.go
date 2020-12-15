@@ -45,13 +45,13 @@ func NewUserServiceEndpoints() []*api.Endpoint {
 
 type UserService interface {
 	//----------- 用户接口 -------------
-	List(ctx context.Context, in *PageDto, opts ...client.CallOption) (*PageDto, error)
-	Save(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error)
+	List(ctx context.Context, in *dto.PageDto, opts ...client.CallOption) (*dto.PageDto, error)
+	Save(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.UserDto, error)
 	Delete(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
-	SavePassword(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error)
-	Login(ctx context.Context, in *UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
+	SavePassword(ctx context.Context, in *dto.UpdatePass, opts ...client.CallOption) (*basic.String, error)
+	Login(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
 	Logout(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
-	UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*UserDto, error)
+	UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.UserDto, error)
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
@@ -80,9 +80,9 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) List(ctx context.Context, in *PageDto, opts ...client.CallOption) (*PageDto, error) {
+func (c *userService) List(ctx context.Context, in *dto.PageDto, opts ...client.CallOption) (*dto.PageDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.List", in)
-	out := new(PageDto)
+	out := new(dto.PageDto)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,9 +90,9 @@ func (c *userService) List(ctx context.Context, in *PageDto, opts ...client.Call
 	return out, nil
 }
 
-func (c *userService) Save(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error) {
+func (c *userService) Save(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.UserDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.Save", in)
-	out := new(UserDto)
+	out := new(dto.UserDto)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -110,9 +110,9 @@ func (c *userService) Delete(ctx context.Context, in *basic.String, opts ...clie
 	return out, nil
 }
 
-func (c *userService) SavePassword(ctx context.Context, in *UserDto, opts ...client.CallOption) (*UserDto, error) {
+func (c *userService) SavePassword(ctx context.Context, in *dto.UpdatePass, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.SavePassword", in)
-	out := new(UserDto)
+	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -120,7 +120,7 @@ func (c *userService) SavePassword(ctx context.Context, in *UserDto, opts ...cli
 	return out, nil
 }
 
-func (c *userService) Login(ctx context.Context, in *UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error) {
+func (c *userService) Login(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.Login", in)
 	out := new(dto.LoginUserDto)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -140,9 +140,9 @@ func (c *userService) Logout(ctx context.Context, in *basic.String, opts ...clie
 	return out, nil
 }
 
-func (c *userService) UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*UserDto, error) {
+func (c *userService) UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.UserDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.UserInfo", in)
-	out := new(UserDto)
+	out := new(dto.UserDto)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -264,13 +264,13 @@ func (c *userService) ListRoleUser(ctx context.Context, in *basic.String, opts .
 
 type UserServiceHandler interface {
 	//----------- 用户接口 -------------
-	List(context.Context, *PageDto, *PageDto) error
-	Save(context.Context, *UserDto, *UserDto) error
+	List(context.Context, *dto.PageDto, *dto.PageDto) error
+	Save(context.Context, *dto.UserDto, *dto.UserDto) error
 	Delete(context.Context, *basic.String, *basic.String) error
-	SavePassword(context.Context, *UserDto, *UserDto) error
-	Login(context.Context, *UserDto, *dto.LoginUserDto) error
+	SavePassword(context.Context, *dto.UpdatePass, *basic.String) error
+	Login(context.Context, *dto.UserDto, *dto.LoginUserDto) error
 	Logout(context.Context, *basic.String, *basic.String) error
-	UserInfo(context.Context, *basic.String, *UserDto) error
+	UserInfo(context.Context, *basic.String, *dto.UserDto) error
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
@@ -289,13 +289,13 @@ type UserServiceHandler interface {
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		List(ctx context.Context, in *PageDto, out *PageDto) error
-		Save(ctx context.Context, in *UserDto, out *UserDto) error
+		List(ctx context.Context, in *dto.PageDto, out *dto.PageDto) error
+		Save(ctx context.Context, in *dto.UserDto, out *dto.UserDto) error
 		Delete(ctx context.Context, in *basic.String, out *basic.String) error
-		SavePassword(ctx context.Context, in *UserDto, out *UserDto) error
-		Login(ctx context.Context, in *UserDto, out *dto.LoginUserDto) error
+		SavePassword(ctx context.Context, in *dto.UpdatePass, out *basic.String) error
+		Login(ctx context.Context, in *dto.UserDto, out *dto.LoginUserDto) error
 		Logout(ctx context.Context, in *basic.String, out *basic.String) error
-		UserInfo(ctx context.Context, in *basic.String, out *UserDto) error
+		UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error
 		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
@@ -319,11 +319,11 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) List(ctx context.Context, in *PageDto, out *PageDto) error {
+func (h *userServiceHandler) List(ctx context.Context, in *dto.PageDto, out *dto.PageDto) error {
 	return h.UserServiceHandler.List(ctx, in, out)
 }
 
-func (h *userServiceHandler) Save(ctx context.Context, in *UserDto, out *UserDto) error {
+func (h *userServiceHandler) Save(ctx context.Context, in *dto.UserDto, out *dto.UserDto) error {
 	return h.UserServiceHandler.Save(ctx, in, out)
 }
 
@@ -331,11 +331,11 @@ func (h *userServiceHandler) Delete(ctx context.Context, in *basic.String, out *
 	return h.UserServiceHandler.Delete(ctx, in, out)
 }
 
-func (h *userServiceHandler) SavePassword(ctx context.Context, in *UserDto, out *UserDto) error {
+func (h *userServiceHandler) SavePassword(ctx context.Context, in *dto.UpdatePass, out *basic.String) error {
 	return h.UserServiceHandler.SavePassword(ctx, in, out)
 }
 
-func (h *userServiceHandler) Login(ctx context.Context, in *UserDto, out *dto.LoginUserDto) error {
+func (h *userServiceHandler) Login(ctx context.Context, in *dto.UserDto, out *dto.LoginUserDto) error {
 	return h.UserServiceHandler.Login(ctx, in, out)
 }
 
@@ -343,7 +343,7 @@ func (h *userServiceHandler) Logout(ctx context.Context, in *basic.String, out *
 	return h.UserServiceHandler.Logout(ctx, in, out)
 }
 
-func (h *userServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *UserDto) error {
+func (h *userServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error {
 	return h.UserServiceHandler.UserInfo(ctx, in, out)
 }
 

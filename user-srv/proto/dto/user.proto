@@ -1,14 +1,33 @@
 syntax = "proto3";
 
-import "course/user-srv/proto/dto/resource.proto";
-
 package user;
 
 option go_package = "course/user-srv/proto/dto";
+
+message UserDto{
+  string id = 1;
+  string name = 2;
+  string login_name = 3;
+  string password = 4;
+}
+
+message PageDto{
+  int64 pageSize = 1;
+  int64 pageNum = 2;
+  string sortBy = 3;
+  bool asc = 4;
+  repeated UserDto users = 5;
+}
 
 message LoginUserDto{
   string id = 1;
   string login_name = 2;
   string name = 3;
   string token = 4;
+}
+
+message UpdatePass {
+  string oldPass = 1;
+  string newPass = 2;
+  string userId = 3;
 }

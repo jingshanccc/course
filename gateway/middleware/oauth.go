@@ -5,6 +5,7 @@ import (
 	"course/config"
 	"course/middleware/redis"
 	"course/public"
+	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
@@ -76,19 +77,20 @@ func SaveServices(service []interface{}) gin.HandlerFunc {
 }
 
 //GetCurrentUser: 获取当前请求登陆的用户
-func GetCurrentUser(ctx *gin.Context) (string, error) {
+func GetCurrentUser(ctx *gin.Context) string {
 	token := strings.Split(ctx.Request.Header.Get("Authorization"), " ")[1]
 	info, err := AuthServer.Manager.LoadAccessToken(context.Background(), token)
 	if err != nil {
-		return "", err
+		ctx.AbortWithError(http.StatusUnauthorized, err)
+		return ""
 	}
-	return info.GetUserID(), nil
+	return info.GetUserID()
 }
 
 //ValidPasswordHandler: 密码式授权-校验密码
 func ValidPasswordHandler(username, password string) (userID string, err error) {
 	userService := Services[config.UserServiceName].(user.UserService)
-	loginUserDto, err := userService.Login(context.Background(), &user.UserDto{
+	loginUserDto, err := userService.Login(context.Background(), &dto.UserDto{
 		LoginName: username,
 		Password:  password,
 	})
@@ -110,7 +112,7 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 		}
 	}()
 	// 获取参数
-	userDto := &user.UserDto{
+	userDto := &dto.UserDto{
 		Id:        r.FormValue("id"),
 		Name:      r.FormValue("name"),
 		LoginName: r.FormValue("login_name"),

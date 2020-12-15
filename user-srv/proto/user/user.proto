@@ -12,7 +12,7 @@ service UserService{
   rpc List(PageDto) returns (PageDto){}
   rpc Save(UserDto) returns (UserDto){}
   rpc Delete(basic.String) returns (basic.String){}
-  rpc SavePassword(UserDto) returns (UserDto){}
+  rpc SavePassword(UpdatePass) returns (basic.String){}
   rpc Login(UserDto) returns (LoginUserDto){}
   rpc Logout(basic.String) returns (basic.String){}
   rpc UserInfo(basic.String) returns (UserDto){}
@@ -31,19 +31,4 @@ service UserService{
   rpc ListRoleResource(basic.String) returns (basic.StringList);
   rpc SaveRoleUser(RoleDto) returns (RoleDto);
   rpc ListRoleUser(basic.String) returns (basic.StringList);
-}
-
-message UserDto{
-  string id = 1;
-  string name = 2;
-  string login_name = 3;
-  string password = 4;
-}
-
-message PageDto{
-  int64 pageSize = 1;
-  int64 pageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  repeated UserDto users = 5;
 }

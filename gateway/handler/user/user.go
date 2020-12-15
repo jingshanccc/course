@@ -6,14 +6,14 @@ import (
 	"course/gateway/middleware"
 	"course/proto/basic"
 	"course/public"
+	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strings"
 )
 
 func GetUserList(ctx *gin.Context) {
-	var req user.PageDto
+	var req dto.PageDto
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := userService.List(context.Background(), &req)
@@ -26,11 +26,7 @@ func GetUserList(ctx *gin.Context) {
 
 //UserInfo: 获取用户信息
 func UserInfo(ctx *gin.Context) {
-	currentUser, err := middleware.GetCurrentUser(ctx)
-	if err != nil {
-		ctx.AbortWithError(http.StatusUnauthorized, err)
-		return
-	}
+	currentUser := middleware.GetCurrentUser(ctx)
 	userService := ctx.Keys[config.UserServiceName].(user.UserService)
 	userDto, err := userService.UserInfo(context.Background(), &basic.String{Str: currentUser})
 	public.ResponseAny(ctx, err, userDto)
@@ -38,8 +34,9 @@ func UserInfo(ctx *gin.Context) {
 
 //SavePassword : reset password
 func SavePassword(ctx *gin.Context) {
-	var req user.UserDto
+	var req dto.UpdatePass
 	if err := ctx.Bind(&req); err == nil {
+		req.UserId = middleware.GetCurrentUser(ctx)
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.SavePassword(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
@@ -50,7 +47,7 @@ func SavePassword(ctx *gin.Context) {
 
 //Save : insert or update user
 func Save(ctx *gin.Context) {
-	var req user.UserDto
+	var req dto.UserDto
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.Save(context.Background(), &req)
