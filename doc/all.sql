@@ -278,35 +278,55 @@ alter table `file`
 drop table if exists `user`;
 create table `user`
 (
-    `id`         char(8)     not null default '' comment 'id',
-    `login_name` varchar(50) not null comment '登陆名',
-    `name`       varchar(50) comment '昵称',
-    `password`   char(32)    not null comment '密码',
+    `id`          char(8)     not null default '' comment 'id',
+    `login_name`  varchar(50) not null comment '登陆名',
+    `name`        varchar(50) comment '昵称',
+    `password`    char(32)    not null comment '密码',
+    `gender`      varchar(2)           DEFAULT NULL COMMENT '性别',
+    `phone`       varchar(255)         DEFAULT NULL COMMENT '手机号码',
+    `email`       varchar(255)         DEFAULT NULL COMMENT '邮箱',
+    `avatar_name` varchar(255)         DEFAULT NULL COMMENT '头像地址',
+    `avatar_path` varchar(255)         DEFAULT NULL COMMENT '头像真实路径',
     primary key (`id`),
     unique key `login_name_unique` (`login_name`)
 ) engine = innodb
   default charset = utf8mb4 comment ='用户';
 
-# 初始test/test
-insert into `user` (id, login_name, name, password)
-values ('10000000', 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
+insert into `user`
+values ('10000000', 'admin', '超级管理员', 'e70e2222a9d67c4f2eae107533359aa4', '男', '13514573862', 'admin@micah.vip', null,
+        null);
+
+-- 邮箱配置
+DROP TABLE IF EXISTS `email`;
+CREATE TABLE `email`
+(
+    `id` int(20) NOT NULL COMMENT 'ID',
+    `host`      varchar(255) DEFAULT NULL COMMENT '邮件服务器SMTP地址',
+    `pass`      varchar(255) DEFAULT NULL COMMENT '密码',
+    `port`      varchar(255) DEFAULT NULL COMMENT '端口',
+    `user`      varchar(255) DEFAULT NULL COMMENT '发件者用户名',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  ROW_FORMAT = COMPACT COMMENT ='邮箱配置';
+
 
 -- 资源
 DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu`
 (
-    `id`     bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-    `parent`         bigint(20)   DEFAULT NULL COMMENT '上级菜单ID',
+    `id`          bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `parent`      bigint(20)   DEFAULT NULL COMMENT '上级菜单ID',
     `type`        int(11)      DEFAULT NULL COMMENT '菜单类型',
     `title`       varchar(255) DEFAULT NULL COMMENT '菜单标题',
     `name`        varchar(255) DEFAULT NULL COMMENT '组件名称',
     `component`   varchar(255) DEFAULT NULL COMMENT '组件',
-    `sort`   int(5)       DEFAULT NULL COMMENT '排序',
+    `sort`        int(5)       DEFAULT NULL COMMENT '排序',
     `icon`        varchar(255) DEFAULT NULL COMMENT '图标',
     `path`        varchar(255) DEFAULT NULL COMMENT '链接地址',
-    `i_frame`     bool      DEFAULT NULL COMMENT '是否外链',
-    `cache`       bool       DEFAULT false COMMENT '缓存',
-    `hidden`      bool       DEFAULT false COMMENT '隐藏',
+    `i_frame`     bool         DEFAULT NULL COMMENT '是否外链',
+    `cache`       bool         DEFAULT false COMMENT '缓存',
+    `hidden`      bool         DEFAULT false COMMENT '隐藏',
     `permission`  varchar(255) DEFAULT NULL COMMENT '权限',
     `create_by`   varchar(255) DEFAULT NULL COMMENT '创建者',
     `update_by`   varchar(255) DEFAULT NULL COMMENT '更新者',
@@ -323,33 +343,39 @@ INSERT INTO `menu`
 VALUES (1, NULL, 0, '系统管理', NULL, NULL, 1, 'system', 'system', false, false, false, NULL, 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (2, 1, 1, '用户管理', 'User', 'system/user/index', 2, 'peoples', 'user', false, false, false, 'user:list',  'admin', 'admin',
+VALUES (2, 1, 1, '用户管理', 'User', 'system/user/index', 2, 'peoples', 'user', false, false, false, 'user:list', 'admin',
+        'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (3, 1, 1, '角色管理', 'Role', 'system/role/index', 3, 'role', 'role', false, false, false, 'roles:list',  'admin', 'admin',
+VALUES (3, 1, 1, '角色管理', 'Role', 'system/role/index', 3, 'role', 'role', false, false, false, 'roles:list', 'admin',
+        'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (4, 1, 1, '权限管理', 'Menu', 'system/menu/index', 4, 'menu', 'menu', false, false, false, 'menu:list',  'admin', 'admin',
+VALUES (4, 1, 1, '权限管理', 'Menu', 'system/menu/index', 4, 'menu', 'menu', false, false, false, 'menu:list', 'admin',
+        'admin',
         now(), now());
 
 INSERT INTO `menu`
-VALUES (5, NULL, 0, '业务管理', NULL, NULL, 5, 'app', 'business', false, false, false, NULL,  'admin', 'admin',
+VALUES (5, NULL, 0, '业务管理', NULL, NULL, 5, 'app', 'business', false, false, false, NULL, 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (6, 5, 1, '分类管理', 'Category', 'business/category/index', 6, 'category', 'category', false, false, false, NULL,  'admin', 'admin',
+VALUES (6, 5, 1, '分类管理', 'Category', 'business/category/index', 6, 'category', 'category', false, false, false, NULL,
+        'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (7, 5, 1, '课程管理', 'Course', 'business/course/index', 7, 'course', 'course', false, false, false, NULL,  'admin', 'admin',
+VALUES (7, 5, 1, '课程管理', 'Course', 'business/course/index', 7, 'course', 'course', false, false, false, NULL, 'admin',
+        'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (8, 5, 1, '讲师管理', 'Teacher', 'business/teacher/index', 8, 'teacher', 'teacher', false, false, false, NULL,  'admin', 'admin',
+VALUES (8, 5, 1, '讲师管理', 'Teacher', 'business/teacher/index', 8, 'teacher', 'teacher', false, false, false, NULL,
+        'admin', 'admin',
         now(), now());
 
 INSERT INTO `menu`
 VALUES (9, 2, 2, '用户新增', NULL, '', 2, '', '', false, false, false, 'user:add', 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (10, 2, 2, '用户编辑', NULL, '', 3, '', '', false, false, false, 'user:edit','admin', 'admin',
+VALUES (10, 2, 2, '用户编辑', NULL, '', 3, '', '', false, false, false, 'user:edit', 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
 VALUES (11, 2, 2, '用户删除', NULL, '', 4, '', '', false, false, false, 'user:del', 'admin', 'admin',
@@ -377,7 +403,7 @@ INSERT INTO `menu`
 VALUES (18, 6, 2, '分类新增', NULL, '', 2, '', '', false, false, false, 'category:add', 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
-VALUES (19, 6, 2, '分类编辑', NULL, '', 3, '', '', false, false, false, 'category:edit','admin', 'admin',
+VALUES (19, 6, 2, '分类编辑', NULL, '', 3, '', '', false, false, false, 'category:edit', 'admin', 'admin',
         now(), now());
 INSERT INTO `menu`
 VALUES (20, 6, 2, '分类删除', NULL, '', 4, '', '', false, false, false, 'category:del', 'admin', 'admin',

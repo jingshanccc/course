@@ -44,25 +44,28 @@ func init() {
 	base64Captcha.SetCustomStore(&redisStore{})
 }
 
-func GetCaptcha(id, typ string) (string, string) {
-	var config interface{}
+//GetCaptchaBase64: 获取图片验证码 以base64字符串返回
+func GetCaptchaBase64(id, typ string) (string, string) {
+	idKey, value, captcha := GetCaptcha(id, typ)
+	base64String := base64Captcha.CaptchaWriteToBase64Encoding(captcha)
+	log.Println("id: ", idKey)
+	log.Println("value: ", value)
+	return idKey, base64String
+}
+
+func GetCaptcha(id, typ string) (idKey string, value string, instance base64Captcha.CaptchaInterface) {
 	switch typ {
 	case "Audio":
-		config = captchaAudio()
-		break
+		idKey, instance = base64Captcha.GenerateCaptcha(id, captchaAudio())
+		value = instance.(*base64Captcha.Audio).VerifyValue
 	case "Digit":
-		config = captchaDigit()
-		break
+		idKey, instance = base64Captcha.GenerateCaptcha(id, captchaDigit())
+		value = instance.(*base64Captcha.CaptchaImageDigit).VerifyValue
 	default:
-		config = captchaCharacter()
-		break
+		idKey, instance = base64Captcha.GenerateCaptcha(id, captchaCharacter())
+		value = instance.(*base64Captcha.CaptchaImageChar).VerifyValue
 	}
-	idKey, captcha := base64Captcha.GenerateCaptcha(id, config)
-	base64String := base64Captcha.CaptchaWriteToBase64Encoding(captcha)
-
-	log.Println("id: ", idKey)
-	log.Println("value: ", redis.RedisClient.Get(context.Background(), idKey))
-	return idKey, base64String
+	return idKey, value, instance
 }
 
 //VerifyCaptcha : 校验验证码
@@ -70,10 +73,10 @@ func VerifyCaptcha(id, value string) BusinessException {
 	// 根据验证码token去获取缓存中的验证码，和用户输入的验证码是否一致
 	imageCode, _ := redis.RedisClient.Get(context.Background(), id).Result()
 	if imageCode == "" {
-		return NewBusinessException(IMAGE_CODE_EXPIRED)
+		return NewBusinessException(VERIFY_CODE_EXPIRED)
 	}
 	if strings.ToLower(imageCode) != strings.ToLower(value) {
-		return NewBusinessException(IMAGE_CODE_ERROR)
+		return NewBusinessException(VERIFY_CODE_ERROR)
 	} else {
 		redis.RedisClient.Del(context.Background(), id)
 		return NoException("")

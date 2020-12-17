@@ -9,13 +9,12 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-acme/lego/v3 v3.4.0
 	github.com/go-oauth2/oauth2/v4 v4.1.2
 	github.com/go-oauth2/redis/v4 v4.1.1
-	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.1
+	github.com/jordan-wright/email v0.0.0-20200917010138-e1c00e156980
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/consul/v2 v2.9.1
 	github.com/mojocn/base64Captcha v1.2.2

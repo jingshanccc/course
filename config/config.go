@@ -12,3 +12,7 @@ const (
 	CourseServiceName = "com.chan.course.course"
 	CourseCliName     = "com.chan.course.course-cli"
 )
+
+const (
+	Email_Reset_Email_Code = "email_reset_email_code_"
+)

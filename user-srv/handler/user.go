@@ -43,7 +43,7 @@ func (u *UserServiceHandler) Delete(ctx context.Context, in *basic.String, out *
 //UserInfo: 获取用户信息
 func (u *UserServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error {
 	userDto, exception := userDao.SelectById(ctx, in.Str)
-
+	userDto.Password = ""
 	if userDto == nil || exception.Code() != int32(public.OK) {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
@@ -72,5 +72,14 @@ func (u *UserServiceHandler) Login(ctx context.Context, in *dto.UserDto, out *dt
 func (u *UserServiceHandler) Logout(ctx context.Context, in *basic.String, out *basic.String) error {
 	redis.RedisClient.Del(ctx, in.Str)
 	log.Println("从redis中删除token: ", in.Str)
+	return nil
+}
+
+//SaveEmail: 用户修改邮箱
+func (u *UserServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error {
+	err := userDao.UpdateEmail(ctx, in)
+	if err.Code() != int32(public.OK) {
+		return errors.New(config.UserServiceName, err.Error(), err.Code())
+	}
 	return nil
 }

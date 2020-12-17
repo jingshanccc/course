@@ -1,11 +1,12 @@
 package util
 
 import (
-	"errors"
+	"fmt"
 	"github.com/google/uuid"
-	"log"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var chars = [64]string{"a", "b", "c", "d", "e", "f",
@@ -32,21 +33,9 @@ func GetShortUuid() string {
 	return strBuilder.String()
 }
 
-//PrintIfErr : print err
-func PrintIfErr(err error, service string) bool {
-	if err != nil {
-		err = errors.New(service + "--" + err.Error())
-		log.Println(err)
-		return true
-	}
-	return false
-}
-
-//PanicIfErr : throw err, usually use in response/controller
-func PanicIfErr(err error, service string) {
-	if err != nil {
-		err = errors.New(service + "--" + err.Error())
-		log.Println(err)
-		panic(err)
-	}
+//GetVerifyCode: 生成6位验证码
+func GetVerifyCode() string {
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	code := fmt.Sprintf("%06v", rnd.Int31n(1000000))
+	return code
 }

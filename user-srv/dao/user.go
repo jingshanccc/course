@@ -2,6 +2,8 @@ package dao
 
 import (
 	"context"
+	"course/config"
+	"course/middleware/redis"
 	"course/public"
 	"course/public/util"
 	"course/user-srv/proto/dto"
@@ -147,6 +149,37 @@ func (u *UserDao) Delete(ctx context.Context, id string) public.BusinessExceptio
 	err := public.DB.Delete(&User{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return public.NoException("")
+}
+
+//UpdateEmail: 更新邮箱
+func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.BusinessException {
+	//校验验证码
+	code, _ := redis.RedisClient.Get(ctx, config.Email_Reset_Email_Code+in.Email).Result()
+	if code == "" {
+		return public.NewBusinessException(public.VERIFY_CODE_EXPIRED)
+	}
+	if code != in.Code {
+		return public.NewBusinessException(public.VERIFY_CODE_ERROR)
+	}
+	//校验密码
+	newBytes, _ := base64.StdEncoding.DecodeString(in.Pass)
+	pas, err := util.RsaDecrypt(newBytes)
+	if err != nil {
+		return public.NewBusinessException(public.VALID_PARM_ERROR)
+	}
+	in.Pass = fmt.Sprintf("%x", md5.Sum([]byte(pas)))
+	byId, exception := u.SelectById(ctx, in.UserId)
+	if exception.Code() != int32(public.OK) {
+		return exception
+	}
+	if byId.Password != in.Pass {
+		return public.NewBusinessException(public.ERROR_PASSWORD)
+	}
+	err = public.DB.Model(&User{}).Where("id=?", in.UserId).Update("email", in.Email).Error
+	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return public.NoException("")

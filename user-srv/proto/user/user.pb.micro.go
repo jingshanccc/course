@@ -52,6 +52,7 @@ type UserService interface {
 	Login(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
 	Logout(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 	UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.UserDto, error)
+	SaveEmail(ctx context.Context, in *dto.UpdateEmail, opts ...client.CallOption) (*basic.String, error)
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
@@ -143,6 +144,16 @@ func (c *userService) Logout(ctx context.Context, in *basic.String, opts ...clie
 func (c *userService) UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.UserDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.UserInfo", in)
 	out := new(dto.UserDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) SaveEmail(ctx context.Context, in *dto.UpdateEmail, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.SaveEmail", in)
+	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -271,6 +282,7 @@ type UserServiceHandler interface {
 	Login(context.Context, *dto.UserDto, *dto.LoginUserDto) error
 	Logout(context.Context, *basic.String, *basic.String) error
 	UserInfo(context.Context, *basic.String, *dto.UserDto) error
+	SaveEmail(context.Context, *dto.UpdateEmail, *basic.String) error
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
@@ -296,6 +308,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		Login(ctx context.Context, in *dto.UserDto, out *dto.LoginUserDto) error
 		Logout(ctx context.Context, in *basic.String, out *basic.String) error
 		UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error
+		SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error
 		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
@@ -345,6 +358,10 @@ func (h *userServiceHandler) Logout(ctx context.Context, in *basic.String, out *
 
 func (h *userServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error {
 	return h.UserServiceHandler.UserInfo(ctx, in, out)
+}
+
+func (h *userServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error {
+	return h.UserServiceHandler.SaveEmail(ctx, in, out)
 }
 
 func (h *userServiceHandler) LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {

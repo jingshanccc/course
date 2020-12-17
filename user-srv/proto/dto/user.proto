@@ -9,6 +9,10 @@ message UserDto{
   string name = 2;
   string login_name = 3;
   string password = 4;
+  string phone = 5;
+  string email = 6;
+  string avatar_name = 7;
+  string avatar_path = 8;
 }
 
 message PageDto{
@@ -30,4 +34,11 @@ message UpdatePass {
   string oldPass = 1;
   string newPass = 2;
   string userId = 3;
+}
+
+message UpdateEmail {
+  string pass = 1;
+  string email = 2;
+  string code = 3;
+  string userId = 4;
 }

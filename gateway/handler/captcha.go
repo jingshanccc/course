@@ -12,11 +12,11 @@ type Captcha struct {
 	Base64String string
 }
 
-//GetCaptcha : 图形验证码
-func GetCaptcha(ctx *gin.Context) {
+//LoginCaptcha : 图形验证码
+func LoginCaptcha(ctx *gin.Context) {
 	var req Captcha
 	if err := ctx.Bind(&req); err == nil {
-		id, base64 := public.GetCaptcha(req.Id, req.Type)
+		id, base64 := public.GetCaptchaBase64(req.Id, req.Type)
 		req.Id = id
 		req.Base64String = base64
 		public.ResponseSuccess(ctx, req)

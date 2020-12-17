@@ -14,7 +14,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	v1 := ginRouter.Group("/api/v1")
 	auth := v1.Group("/oauth")
 	{
-		auth.GET("/captcha/image-code", handler.GetCaptcha)
+		auth.GET("/captcha/image-code", handler.LoginCaptcha)
 		auth.GET("/authorize", handler.Authorize)
 		auth.GET("/redirect", handler.Redirect)
 		auth.POST("/token", handler.Token)
@@ -30,8 +30,10 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			userGroup.POST("/save", user.Save)
 			userGroup.POST("/delete", user.DeleteUser)
 			userGroup.GET("/logout", user.Logout)
+			userGroup.POST("/email-code", user.SendEmailCode)
+			userGroup.POST("/update-email", user.UpdateEmail)
 		}
-		//admin.GET("/captcha/image-code", handler.GetCaptcha)
+		//admin.GET("/captcha/image-code", handler.LoginCaptcha)
 		resource := admin.Group("/resource")
 		{
 			resource.GET("/load-menus", user.LoadMenus)

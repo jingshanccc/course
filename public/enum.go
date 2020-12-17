@@ -10,16 +10,17 @@ const (
 	ROW_SCAN_ERROR          ExceptionEnum = 10003
 	BEGIN_TRANSACTION_ERROR ExceptionEnum = 10004
 
-	OK                      ExceptionEnum = 20000
-	MEMBER_NOT_EXIST        ExceptionEnum = 20001
-	USER_LOGIN_NAME_EXIST   ExceptionEnum = 20002
-	LOGIN_USER_ERROR        ExceptionEnum = 20003
-	LOGIN_MEMBER_ERROR      ExceptionEnum = 20004
-	IMAGE_CODE_TOO_FREQUENT ExceptionEnum = 20005
-	IMAGE_CODE_ERROR        ExceptionEnum = 20006
-	IMAGE_CODE_EXPIRED      ExceptionEnum = 20007
-	ERROR_PASSWORD          ExceptionEnum = 20008
-	SAME_PASSWORD           ExceptionEnum = 20009
+	OK                       ExceptionEnum = 20000
+	MEMBER_NOT_EXIST         ExceptionEnum = 20001
+	USER_LOGIN_NAME_EXIST    ExceptionEnum = 20002
+	LOGIN_USER_ERROR         ExceptionEnum = 20003
+	LOGIN_MEMBER_ERROR       ExceptionEnum = 20004
+	VERIFY_CODE_TOO_FREQUENT ExceptionEnum = 20005
+	VERIFY_CODE_ERROR        ExceptionEnum = 20006
+	VERIFY_CODE_EXPIRED      ExceptionEnum = 20007
+	ERROR_PASSWORD           ExceptionEnum = 20008
+	SAME_PASSWORD            ExceptionEnum = 20009
+	SEND_EMAIL_CODE_ERROR    ExceptionEnum = 20010
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -48,16 +49,18 @@ func (code ExceptionEnum) getDesc() string {
 		return "用户名不存在"
 	case LOGIN_MEMBER_ERROR:
 		return "手机号不存在"
-	case IMAGE_CODE_TOO_FREQUENT:
+	case VERIFY_CODE_TOO_FREQUENT:
 		return "获取验证码过于频繁"
-	case IMAGE_CODE_ERROR:
+	case VERIFY_CODE_ERROR:
 		return "验证码不正确"
-	case IMAGE_CODE_EXPIRED:
+	case VERIFY_CODE_EXPIRED:
 		return "验证码不存在或已过期，请重新发送"
 	case ERROR_PASSWORD:
 		return "密码错误"
 	case SAME_PASSWORD:
 		return "新密码不能与旧密码相同"
+	case SEND_EMAIL_CODE_ERROR:
+		return "发送邮箱验证码失败，请检查邮箱或联系管理员！"
 	default:
 		return "未知错误"
 	}

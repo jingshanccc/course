@@ -4,12 +4,15 @@ import (
 	"context"
 	"course/config"
 	"course/gateway/middleware"
+	"course/middleware/redis"
 	"course/proto/basic"
 	"course/public"
+	"course/public/util"
 	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
 	"strings"
+	"time"
 )
 
 func GetUserList(ctx *gin.Context) {
@@ -82,4 +85,29 @@ func Logout(ctx *gin.Context) {
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
+}
+
+//UpdateEmail: 更新邮箱
+func UpdateEmail(ctx *gin.Context) {
+	var req dto.UpdateEmail
+	if err := ctx.Bind(&req); err == nil {
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		result, err := userService.SaveEmail(context.Background(), &req)
+		public.ResponseAny(ctx, err, result)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//SendEmailCode: 发送邮箱验证码
+func SendEmailCode(ctx *gin.Context) {
+	email := ctx.PostForm("email")
+	code := util.GetVerifyCode()
+	err := public.SendHTMLEmail(email, "./email.html", code)
+	if err != nil {
+		public.ResponseError(ctx, public.NewBusinessException(public.SEND_EMAIL_CODE_ERROR))
+		return
+	}
+	redis.RedisClient.Set(context.Background(), config.Email_Reset_Email_Code+email, code, 5*time.Minute)
+	public.ResponseSuccess(ctx, nil)
 }

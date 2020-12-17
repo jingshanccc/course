@@ -16,6 +16,7 @@ service UserService{
   rpc Login(UserDto) returns (LoginUserDto){}
   rpc Logout(basic.String) returns (basic.String){}
   rpc UserInfo(basic.String) returns (UserDto){}
+  rpc SaveEmail(UpdateEmail) returns (basic.String) {}
 
   //---------- 权限管理 ---------------
   //resource
