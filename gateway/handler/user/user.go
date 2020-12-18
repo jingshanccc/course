@@ -91,6 +91,7 @@ func Logout(ctx *gin.Context) {
 func UpdateEmail(ctx *gin.Context) {
 	var req dto.UpdateEmail
 	if err := ctx.Bind(&req); err == nil {
+		req.UserId = middleware.GetCurrentUser(ctx)
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.SaveEmail(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
@@ -101,13 +102,19 @@ func UpdateEmail(ctx *gin.Context) {
 
 //SendEmailCode: 发送邮箱验证码
 func SendEmailCode(ctx *gin.Context) {
-	email := ctx.PostForm("email")
-	code := util.GetVerifyCode()
-	err := public.SendHTMLEmail(email, "./email.html", code)
+	email := ctx.Query("email")
+	redisKey := config.EmailResetEmailCode + email
+	var code string
+	if c, err := redis.RedisClient.Get(context.Background(), redisKey).Result(); err == nil {
+		code = c
+	} else {
+		code = util.GetVerifyCode()
+		redis.RedisClient.Set(context.Background(), redisKey, code, 5*time.Minute)
+	}
+	err := public.SendHTMLEmail(email, config.TemplatePath+"/email.html", code)
 	if err != nil {
 		public.ResponseError(ctx, public.NewBusinessException(public.SEND_EMAIL_CODE_ERROR))
 		return
 	}
-	redis.RedisClient.Set(context.Background(), config.Email_Reset_Email_Code+email, code, 5*time.Minute)
 	public.ResponseSuccess(ctx, nil)
 }

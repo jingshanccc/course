@@ -293,7 +293,7 @@ create table `user`
   default charset = utf8mb4 comment ='用户';
 
 insert into `user`
-values ('10000000', 'admin', '超级管理员', 'e70e2222a9d67c4f2eae107533359aa4', '男', '13514573862', 'admin@micah.vip', null,
+values ('10000000', 'admin', '超级管理员', '098f6bcd4621d373cade4e832627b4f6', '男', '13514573862', 'admin@micah.vip', null,
         null);
 
 -- 邮箱配置

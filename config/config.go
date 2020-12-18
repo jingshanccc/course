@@ -14,5 +14,9 @@ const (
 )
 
 const (
-	Email_Reset_Email_Code = "email_reset_email_code_"
+	EmailResetEmailCode = "email_reset_email_code_"
+)
+
+const (
+	TemplatePath = "F:/GoWorkspace/course/public/template"
 )

@@ -13,7 +13,7 @@ const (
 	OK                       ExceptionEnum = 20000
 	MEMBER_NOT_EXIST         ExceptionEnum = 20001
 	USER_LOGIN_NAME_EXIST    ExceptionEnum = 20002
-	LOGIN_USER_ERROR         ExceptionEnum = 20003
+	USER_NOT_EXIST           ExceptionEnum = 20003
 	LOGIN_MEMBER_ERROR       ExceptionEnum = 20004
 	VERIFY_CODE_TOO_FREQUENT ExceptionEnum = 20005
 	VERIFY_CODE_ERROR        ExceptionEnum = 20006
@@ -21,6 +21,8 @@ const (
 	ERROR_PASSWORD           ExceptionEnum = 20008
 	SAME_PASSWORD            ExceptionEnum = 20009
 	SEND_EMAIL_CODE_ERROR    ExceptionEnum = 20010
+	USER_EMAIL_EXIST         ExceptionEnum = 20011
+	USER_PHONE_EXIST         ExceptionEnum = 20012
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -45,8 +47,8 @@ func (code ExceptionEnum) getDesc() string {
 		return "会员不存在"
 	case USER_LOGIN_NAME_EXIST:
 		return "登录名已存在"
-	case LOGIN_USER_ERROR:
-		return "用户名不存在"
+	case USER_NOT_EXIST:
+		return "用户不存在"
 	case LOGIN_MEMBER_ERROR:
 		return "手机号不存在"
 	case VERIFY_CODE_TOO_FREQUENT:
@@ -60,7 +62,11 @@ func (code ExceptionEnum) getDesc() string {
 	case SAME_PASSWORD:
 		return "新密码不能与旧密码相同"
 	case SEND_EMAIL_CODE_ERROR:
-		return "发送邮箱验证码失败，请检查邮箱或联系管理员！"
+		return "发送邮件验证码失败，请检查邮箱有效性或联系管理员！"
+	case USER_EMAIL_EXIST:
+		return "用户邮箱已存在"
+	case USER_PHONE_EXIST:
+		return "用户手机号码已存在"
 	default:
 		return "未知错误"
 	}

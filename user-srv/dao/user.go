@@ -16,10 +16,15 @@ import (
 type UserDao struct {
 }
 type User struct {
-	Id        string
-	Name      string
-	LoginName string
-	Password  string
+	Id         string
+	Name       string
+	LoginName  string
+	Password   string
+	Gender     string
+	Phone      string
+	Email      string
+	AvatarName string
+	AvatarPath string
 }
 
 func (User) TableName() string {
@@ -41,31 +46,11 @@ func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, pu
 	return res, public.NewBusinessException(public.OK)
 }
 
-//SelectByLoginName : get user by login name
-func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) (*dto.UserDto, public.BusinessException) {
-	us := &dto.UserDto{}
-	err := public.DB.Model(&User{}).Where("login_name = ?", loginName).First(&us).Error
-	if err != nil {
-		return nil, public.NoException("")
-	}
-	return us, public.NoException("")
-}
-
-//SelectById : get user by id
-func (u *UserDao) SelectById(ctx context.Context, id string) (*dto.UserDto, public.BusinessException) {
-	us := &dto.UserDto{}
-	err := public.DB.Model(&User{}).Where("id = ?", id).First(&us).Error
-	if err != nil || us == nil {
-		return nil, public.NewBusinessException(public.LOGIN_USER_ERROR)
-	}
-	return us, public.NoException("")
-}
-
 //Login : login
 func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserDto, public.BusinessException) {
-	usr, err := u.SelectByLoginName(ctx, user.LoginName)
+	usr := u.SelectByLoginName(ctx, user.LoginName)
 	if usr == nil {
-		err = public.NewBusinessException(public.LOGIN_USER_ERROR)
+		err := public.NewBusinessException(public.USER_NOT_EXIST)
 		log.Println(err.Error() + user.LoginName)
 		return nil, err
 	} else {
@@ -80,7 +65,7 @@ func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserD
 			}
 			return res, public.NoException("")
 		} else {
-			err = public.NewBusinessException(public.ERROR_PASSWORD)
+			err := public.NewBusinessException(public.ERROR_PASSWORD)
 			log.Println(err.Error() + user.LoginName)
 			return nil, err
 		}
@@ -89,9 +74,9 @@ func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserD
 
 //SavePassword : reset password
 func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) public.BusinessException {
-	byId, exception := u.SelectById(ctx, updatePass.UserId)
-	if exception.Code() != int32(public.OK) {
-		return exception
+	byId := u.SelectById(ctx, updatePass.UserId)
+	if byId.Id == "" {
+		return public.NewBusinessException(public.USER_NOT_EXIST)
 	}
 	oldBytes, _ := base64.StdEncoding.DecodeString(updatePass.OldPass)
 	newBytes, _ := base64.StdEncoding.DecodeString(updatePass.NewPass)
@@ -105,7 +90,7 @@ func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) 
 	if byId.Password != updatePass.OldPass {
 		return public.NewBusinessException(public.ERROR_PASSWORD)
 	}
-	if byId.Password != updatePass.NewPass {
+	if byId.Password == updatePass.NewPass {
 		return public.NewBusinessException(public.SAME_PASSWORD)
 	}
 	err = public.DB.Model(&User{}).Where("id=?", updatePass.UserId).Update("password", updatePass.NewPass).Error
@@ -118,25 +103,32 @@ func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) 
 
 //Save : update when dto.id exists, insert otherwise
 func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, public.BusinessException) {
+	var usr User
+	_ = util.CopyProperties(&usr, userDto)
 	if userDto.Id != "" { //update
-		err := public.DB.Model(&User{Id: userDto.Id}).Updates(&User{Name: userDto.Name, LoginName: userDto.LoginName}).Error
+		usr.Id = ""
+		usr.Password = ""
+		err := public.DB.Model(&User{Id: userDto.Id}).Updates(usr).Error
 		if err != nil {
 			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	} else { //insert
-		//if login_name exists, throw error
-		us, _ := u.SelectByLoginName(ctx, userDto.LoginName)
+		// loginName phone email exists
+		us := u.SelectByLoginName(ctx, userDto.LoginName)
 		if us != nil {
-			return &dto.UserDto{}, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
+			return nil, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
 		}
-		userDto.Id = util.GetShortUuid()
-		userDto.Password = fmt.Sprintf("%x", md5.Sum([]byte(userDto.Password)))
-		err1 := public.DB.Create(&User{
-			Id:        userDto.Id,
-			Name:      userDto.Name,
-			LoginName: userDto.LoginName,
-			Password:  userDto.Password,
-		}).Error
+		us = u.SelectByEmail(ctx, userDto.Email)
+		if us != nil {
+			return nil, public.NewBusinessException(public.USER_EMAIL_EXIST)
+		}
+		us = u.SelectByPhone(ctx, userDto.Phone)
+		if us != nil {
+			return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
+		}
+		usr.Id = util.GetShortUuid()
+		usr.Password = fmt.Sprintf("%x", md5.Sum([]byte(userDto.Password)))
+		err1 := public.DB.Create(usr).Error
 		if err1 != nil {
 			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
@@ -157,7 +149,7 @@ func (u *UserDao) Delete(ctx context.Context, id string) public.BusinessExceptio
 //UpdateEmail: 更新邮箱
 func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.BusinessException {
 	//校验验证码
-	code, _ := redis.RedisClient.Get(ctx, config.Email_Reset_Email_Code+in.Email).Result()
+	code, _ := redis.RedisClient.Get(ctx, config.EmailResetEmailCode+in.Email).Result()
 	if code == "" {
 		return public.NewBusinessException(public.VERIFY_CODE_EXPIRED)
 	}
@@ -171,9 +163,9 @@ func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.B
 		return public.NewBusinessException(public.VALID_PARM_ERROR)
 	}
 	in.Pass = fmt.Sprintf("%x", md5.Sum([]byte(pas)))
-	byId, exception := u.SelectById(ctx, in.UserId)
-	if exception.Code() != int32(public.OK) {
-		return exception
+	byId := u.SelectById(ctx, in.UserId)
+	if byId.Id == "" {
+		return public.NewBusinessException(public.USER_NOT_EXIST)
 	}
 	if byId.Password != in.Pass {
 		return public.NewBusinessException(public.ERROR_PASSWORD)
@@ -183,4 +175,30 @@ func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.B
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return public.NoException("")
+}
+
+//SelectByLoginName : get user by login name
+func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) *dto.UserDto {
+	us := &dto.UserDto{}
+	public.DB.Model(&User{}).Where("login_name = ?", loginName).First(&us)
+	return us
+}
+
+//SelectById : get user by id
+func (u *UserDao) SelectById(ctx context.Context, id string) *dto.UserDto {
+	us := &dto.UserDto{}
+	public.DB.Model(&User{}).Where("id = ?", id).First(&us)
+	return us
+}
+
+func (u *UserDao) SelectByEmail(ctx context.Context, email string) *dto.UserDto {
+	us := &dto.UserDto{}
+	public.DB.Model(&User{}).Where("email = ?", email).First(&us)
+	return us
+}
+
+func (u *UserDao) SelectByPhone(ctx context.Context, phone string) *dto.UserDto {
+	us := &dto.UserDto{}
+	public.DB.Model(&User{}).Where("phone = ?", phone).First(&us)
+	return us
 }

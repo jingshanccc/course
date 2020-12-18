@@ -30,7 +30,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			userGroup.POST("/save", user.Save)
 			userGroup.POST("/delete", user.DeleteUser)
 			userGroup.GET("/logout", user.Logout)
-			userGroup.POST("/email-code", user.SendEmailCode)
+			userGroup.GET("/email-code", user.SendEmailCode)
 			userGroup.POST("/update-email", user.UpdateEmail)
 		}
 		//admin.GET("/captcha/image-code", handler.LoginCaptcha)

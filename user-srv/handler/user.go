@@ -42,9 +42,10 @@ func (u *UserServiceHandler) Delete(ctx context.Context, in *basic.String, out *
 
 //UserInfo: 获取用户信息
 func (u *UserServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error {
-	userDto, exception := userDao.SelectById(ctx, in.Str)
+	userDto := userDao.SelectById(ctx, in.Str)
 	userDto.Password = ""
-	if userDto == nil || exception.Code() != int32(public.OK) {
+	if userDto.Id == "" {
+		exception := public.NewBusinessException(public.USER_NOT_EXIST)
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, userDto)
