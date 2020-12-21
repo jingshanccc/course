@@ -13,7 +13,7 @@ import (
 //RoleList : 获取所有角色
 func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
 	list, exception := roleDao.List(ctx, in)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
@@ -34,7 +34,7 @@ func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out 
 //DeleteRole: 删除一种角色
 func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := roleDao.Delete(ctx, in.Str)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	return nil
@@ -43,7 +43,7 @@ func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.String, o
 //SaveRoleResource: 保存角色权限
 func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	exception := roleDao.SaveRoleResource(ctx, in)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	return nil
@@ -52,7 +52,7 @@ func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleD
 //ListRoleResource: 获取角色权限
 func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	resources, exception := roleDao.ListRoleResource(ctx, in.Str)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	out.Rows = resources
@@ -62,7 +62,7 @@ func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.Str
 //SaveRoleUser: 保存某个角色的所有用户
 func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	exception := roleDao.SaveRoleUser(ctx, in)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	return nil
@@ -71,7 +71,7 @@ func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, 
 //ListRoleUser: 获取某个角色的所有用户
 func (u *UserServiceHandler) ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	users, exception := roleDao.ListRoleUser(ctx, in.Str)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	out.Rows = users

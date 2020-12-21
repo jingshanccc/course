@@ -20,7 +20,7 @@ func (Chapter) TableName() string {
 }
 
 //List : get Chapter page
-func (c *ChapterDao) List(cd *dto.ChapterPageDto) ([]*dto.ChapterDto, public.BusinessException) {
+func (c *ChapterDao) List(cd *dto.ChapterPageDto) ([]*dto.ChapterDto, *public.BusinessException) {
 	orderby := "desc"
 	if cd.Asc {
 		orderby = "asc"
@@ -36,7 +36,7 @@ func (c *ChapterDao) List(cd *dto.ChapterPageDto) ([]*dto.ChapterDto, public.Bus
 }
 
 //Save: 保存/更新大章
-func (c *ChapterDao) Save(cd *dto.ChapterDto) (*dto.ChapterDto, public.BusinessException) {
+func (c *ChapterDao) Save(cd *dto.ChapterDto) (*dto.ChapterDto, *public.BusinessException) {
 	if cd.Id != "" { //update
 		err := public.DB.Model(&Chapter{Id: cd.Id}).Updates(&Chapter{Name: cd.Name, CourseId: cd.CourseId}).Error
 		if err != nil {
@@ -53,15 +53,15 @@ func (c *ChapterDao) Save(cd *dto.ChapterDto) (*dto.ChapterDto, public.BusinessE
 			return &dto.ChapterDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return cd, public.NoException("")
+	return cd, nil
 }
 
 // Delete 删除大章
-func (c *ChapterDao) Delete(id string) public.BusinessException {
+func (c *ChapterDao) Delete(id string) *public.BusinessException {
 	err := public.DB.Delete(&Chapter{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }

@@ -27,7 +27,7 @@ var (
 )
 
 //List: 获取角色列表
-func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleDto, public.BusinessException) {
+func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleDto, *public.BusinessException) {
 	orderby := "desc"
 	if page.Asc {
 		orderby = "asc"
@@ -44,11 +44,11 @@ func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleD
 		_ = util.CopyProperties(a, role)
 		res[i] = a
 	}
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //Save : update when rr.id exists, insert otherwise
-func (r *RoleDao) Save(ctx context.Context, rr *dto.RoleDto) (*dto.RoleDto, public.BusinessException) {
+func (r *RoleDao) Save(ctx context.Context, rr *dto.RoleDto) (*dto.RoleDto, *public.BusinessException) {
 	if rr.Id != "" { //update
 		err := public.DB.Model(&Role{Id: rr.Id}).Updates(&Role{Name: rr.Name, Desc: rr.Desc}).Error
 		if err != nil {
@@ -65,21 +65,21 @@ func (r *RoleDao) Save(ctx context.Context, rr *dto.RoleDto) (*dto.RoleDto, publ
 			return &dto.RoleDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return rr, public.NoException("")
+	return rr, nil
 }
 
 // Delete 删除角色
-func (r *RoleDao) Delete(ctx context.Context, id string) public.BusinessException {
+func (r *RoleDao) Delete(ctx context.Context, id string) *public.BusinessException {
 	err := public.DB.Delete(&Role{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 // SaveRoleResource: 保存角色资源关联记录
-func (r *RoleDao) SaveRoleResource(ctx context.Context, rt *dto.RoleDto) public.BusinessException {
+func (r *RoleDao) SaveRoleResource(ctx context.Context, rt *dto.RoleDto) *public.BusinessException {
 	exception := roleResourceDao.DeleteByRoleId(ctx, rt.Id)
 	for _, resourceId := range rt.ResourceIds {
 		exception = roleResourceDao.Save(ctx, RoleResource{
@@ -92,12 +92,12 @@ func (r *RoleDao) SaveRoleResource(ctx context.Context, rt *dto.RoleDto) public.
 }
 
 //ListRoleResource: 获取角色所有权限
-func (r *RoleDao) ListRoleResource(ctx context.Context, roleId string) ([]string, public.BusinessException) {
+func (r *RoleDao) ListRoleResource(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
 	return roleResourceDao.SelectByRoleId(ctx, roleId)
 }
 
 //SaveRoleUser: 保存角色的所有用户
-func (r *RoleDao) SaveRoleUser(ctx context.Context, rt *dto.RoleDto) public.BusinessException {
+func (r *RoleDao) SaveRoleUser(ctx context.Context, rt *dto.RoleDto) *public.BusinessException {
 	exception := roleUserDao.DeleteByRoleId(ctx, rt.Id)
 	for _, userId := range rt.UserIds {
 		exception = roleUserDao.Save(ctx, RoleUser{
@@ -110,6 +110,6 @@ func (r *RoleDao) SaveRoleUser(ctx context.Context, rt *dto.RoleDto) public.Busi
 }
 
 //ListRoleResource: 获取角色所有权限
-func (r *RoleDao) ListRoleUser(ctx context.Context, roleId string) ([]string, public.BusinessException) {
+func (r *RoleDao) ListRoleUser(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
 	return roleUserDao.SelectByRoleId(ctx, roleId)
 }

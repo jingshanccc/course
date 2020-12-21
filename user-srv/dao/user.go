@@ -32,7 +32,7 @@ func (User) TableName() string {
 }
 
 //List : get user page
-func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, public.BusinessException) {
+func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, *public.BusinessException) {
 	orderby := "desc"
 	if in.Asc {
 		orderby = "asc"
@@ -47,7 +47,7 @@ func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, pu
 }
 
 //Login : login
-func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserDto, public.BusinessException) {
+func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserDto, *public.BusinessException) {
 	usr := u.SelectByLoginName(ctx, user.LoginName)
 	if usr == nil {
 		err := public.NewBusinessException(public.USER_NOT_EXIST)
@@ -63,7 +63,7 @@ func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserD
 				LoginName: usr.LoginName,
 				Name:      usr.Name,
 			}
-			return res, public.NoException("")
+			return res, nil
 		} else {
 			err := public.NewBusinessException(public.ERROR_PASSWORD)
 			log.Println(err.Error() + user.LoginName)
@@ -73,7 +73,7 @@ func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserD
 }
 
 //SavePassword : reset password
-func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) public.BusinessException {
+func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) *public.BusinessException {
 	byId := u.SelectById(ctx, updatePass.UserId)
 	if byId.Id == "" {
 		return public.NewBusinessException(public.USER_NOT_EXIST)
@@ -98,11 +98,11 @@ func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) 
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //Save : update when dto.id exists, insert otherwise
-func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, public.BusinessException) {
+func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, *public.BusinessException) {
 	var usr User
 	_ = util.CopyProperties(&usr, userDto)
 	if userDto.Id != "" { //update
@@ -133,21 +133,21 @@ func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto,
 			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return userDto, public.NoException("")
+	return userDto, nil
 }
 
 // Delete 删除用户
-func (u *UserDao) Delete(ctx context.Context, id string) public.BusinessException {
+func (u *UserDao) Delete(ctx context.Context, id string) *public.BusinessException {
 	err := public.DB.Delete(&User{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //UpdateEmail: 更新邮箱
-func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.BusinessException {
+func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.BusinessException {
 	//校验验证码
 	code, _ := redis.RedisClient.Get(ctx, config.EmailResetEmailCode+in.Email).Result()
 	if code == "" {
@@ -174,7 +174,7 @@ func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) public.B
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //SelectByLoginName : get user by login name

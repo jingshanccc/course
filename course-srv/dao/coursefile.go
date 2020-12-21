@@ -23,7 +23,7 @@ func (CourseFile) TableName() string {
 }
 
 //List : get CourseFile list
-func (c *CourseFileDao) List(courseId string) ([]*dto.CourseFileDto, public.BusinessException) {
+func (c *CourseFileDao) List(courseId string) ([]*dto.CourseFileDto, *public.BusinessException) {
 	var res []*dto.CourseFileDto
 	err := public.DB.Model(&CourseFile{}).Where(&CourseFile{CourseId: courseId}).Find(&res).Error
 	if err != nil {
@@ -31,11 +31,11 @@ func (c *CourseFileDao) List(courseId string) ([]*dto.CourseFileDto, public.Busi
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //Save: 保存/更新小节
-func (c *CourseFileDao) Save(cd *dto.CourseFileDto) (*dto.CourseFileDto, public.BusinessException) {
+func (c *CourseFileDao) Save(cd *dto.CourseFileDto) (*dto.CourseFileDto, *public.BusinessException) {
 	courseFileEntity := &CourseFile{}
 	_ = util.CopyProperties(courseFileEntity, cd)
 	if cd.Id != "" { //update
@@ -52,15 +52,15 @@ func (c *CourseFileDao) Save(cd *dto.CourseFileDto) (*dto.CourseFileDto, public.
 			return &dto.CourseFileDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return cd, public.NoException("")
+	return cd, nil
 }
 
 // Delete 删除小节
-func (c *CourseFileDao) Delete(id string) public.BusinessException {
+func (c *CourseFileDao) Delete(id string) *public.BusinessException {
 	err := public.DB.Delete(&CourseFile{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }

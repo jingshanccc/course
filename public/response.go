@@ -14,7 +14,7 @@ type Response struct {
 	Content interface{} `json:"content"`
 }
 
-func ResponseError(c *gin.Context, err BusinessException) {
+func ResponseError(c *gin.Context, err *BusinessException) {
 	resp := &Response{Success: false, Code: err.Code(), Message: err.Error(), Content: ""}
 	c.JSON(200, resp)
 	response, _ := util.ToJsonString(resp)

@@ -38,18 +38,18 @@ func (Resource) TableName() string {
 }
 
 // Delete : 删除权限
-func (r *ResourceDao) Delete(ctx context.Context, id int32) public.BusinessException {
+func (r *ResourceDao) Delete(ctx context.Context, id int32) *public.BusinessException {
 	public.DB.Delete(&Resource{Id: id})
-	return public.NoException("")
+	return nil
 }
 
 //SaveJson : 保存权限树
-func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.BusinessException {
+func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) *public.BusinessException {
 	// rollback 逻辑
-	var exception public.BusinessException
+	var exception *public.BusinessException
 	var tx *gorm.DB
 	defer func() {
-		if exception.Code() != int32(public.OK) {
+		if exception != nil {
 			tx.Rollback()
 		}
 	}()
@@ -82,7 +82,7 @@ func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) public.Busin
 		log.Println("transaction commit error, need roll back")
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //add: 将树中的resource都取出来放到list
@@ -97,7 +97,7 @@ func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
 }
 
 // LoadTree : 按约定将列表转成树, ID要正序排列
-func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.BusinessException) {
+func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, *public.BusinessException) {
 	var resources []*Resource
 	err := public.DB.Raw("select * from menu r order by id").Find(&resources).Error
 	if err != nil {
@@ -110,11 +110,11 @@ func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, public.
 		res[i] = &r
 	}
 	buildTree(res)
-	return res, public.NoException("")
+	return res, nil
 }
 
 // FindUserResources 获取用户的权限
-func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, public.BusinessException) {
+func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, *public.BusinessException) {
 	var resources []*Resource
 	err := public.DB.Raw("select r.* from role_user ru, role_menu rr, menu r where ru.user_id = ? and type != ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.sort asc", userId, 2).Find(&resources).Error
 	if err != nil {
@@ -128,7 +128,7 @@ func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*
 		res[i] = &r
 	}
 	res = buildTree(res)
-	return buildMenus(res), public.NoException("")
+	return buildMenus(res), nil
 }
 
 // 将权限转化为前端侧边栏要求的格式

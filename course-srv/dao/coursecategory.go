@@ -21,17 +21,17 @@ func (CourseCategory) TableName() string {
 }
 
 //SelectByCourseId: 查询课程关联的所有分类记录
-func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]*dto.CourseCategoryDto, public.BusinessException) {
+func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]*dto.CourseCategoryDto, *public.BusinessException) {
 	var res []*dto.CourseCategoryDto
 	err := public.DB.Model(&CourseCategory{}).Where("course_id = ?", courseId).Find(&res).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return res, public.NoException("")
+	return res, nil
 }
 
 //BatchInsert: 批量插入
-func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.CategoryDto) public.BusinessException {
+func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.CategoryDto) *public.BusinessException {
 	var err error
 	var tx *gorm.DB
 	res := public.NoException("")

@@ -35,7 +35,7 @@ func (Course) TableName() string {
 }
 
 //List : get course page
-func (c *CourseDao) List(cd *dto.CoursePageDto) ([]*dto.CourseDto, public.BusinessException) {
+func (c *CourseDao) List(cd *dto.CoursePageDto) ([]*dto.CourseDto, *public.BusinessException) {
 	orderby := "desc"
 	if cd.Asc {
 		orderby = "asc"
@@ -53,11 +53,11 @@ func (c *CourseDao) List(cd *dto.CoursePageDto) ([]*dto.CourseDto, public.Busine
 		_ = util.CopyProperties(&r, val)
 		res[index] = &r
 	}
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //Save: 保存/更新
-func (c *CourseDao) Save(cd *dto.CourseDto) (*dto.CourseDto, public.BusinessException) {
+func (c *CourseDao) Save(cd *dto.CourseDto) (*dto.CourseDto, *public.BusinessException) {
 	courseEntity := &Course{}
 	_ = util.CopyProperties(courseEntity, cd)
 	courseEntity.UpdatedAt = time.Time{}
@@ -82,51 +82,51 @@ func (c *CourseDao) Save(cd *dto.CourseDto) (*dto.CourseDto, public.BusinessExce
 }
 
 // Delete 删除课程
-func (c *CourseDao) Delete(id string) public.BusinessException {
+func (c *CourseDao) Delete(id string) *public.BusinessException {
 	err := public.DB.Delete(&Course{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //UpdateSort: 更新课程排序
-func (c *CourseDao) UpdateSort(tx *gorm.DB, sortDto *dto.SortDto) public.BusinessException {
+func (c *CourseDao) UpdateSort(tx *gorm.DB, sortDto *dto.SortDto) *public.BusinessException {
 	err := tx.Model(&Course{}).Where("id = ? ", sortDto.Id).Update("sort", sortDto.NewSort).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //MoveSortsForward: 将顺序在oldSort~newSort之间的记录往前一个位置
-func (c *CourseDao) MoveSortsForward(tx *gorm.DB, sortDto *dto.SortDto) public.BusinessException {
+func (c *CourseDao) MoveSortsForward(tx *gorm.DB, sortDto *dto.SortDto) *public.BusinessException {
 	err := tx.Exec("update course set `sort`= (`sort`-1) where `sort` <= ? and `sort` >= ? and id != ?", sortDto.NewSort, sortDto.OldSort, sortDto.Id).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //MoveSortsForward: 将顺序在oldSort之前newSort之后的记录往后一个位置
-func (c *CourseDao) MoveSortsBackward(tx *gorm.DB, sortDto *dto.SortDto) public.BusinessException {
+func (c *CourseDao) MoveSortsBackward(tx *gorm.DB, sortDto *dto.SortDto) *public.BusinessException {
 	err := tx.Exec("update course set `sort`= (`sort`+1) where `sort` >= ? and `sort` <= ? and id != ?", sortDto.NewSort, sortDto.OldSort, sortDto.Id).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }
 
 //FindContent: 获取课程内容
-func (c *CourseDao) FindContent(id string) (*dto.CourseContentDto, public.BusinessException) {
+func (c *CourseDao) FindContent(id string) (*dto.CourseContentDto, *public.BusinessException) {
 	return (&CourseContentDao{}).SelectById(id)
 }
 
 //SaveContent: 保存课程内容
-func (c *CourseDao) SaveContent(ccd *dto.CourseContentDto) public.BusinessException {
+func (c *CourseDao) SaveContent(ccd *dto.CourseContentDto) *public.BusinessException {
 	return (&CourseContentDao{}).SaveContent(ccd)
 }

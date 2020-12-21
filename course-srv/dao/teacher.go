@@ -24,18 +24,18 @@ func (Teacher) TableName() string {
 }
 
 //All: 获取全部讲师
-func (c *TeacherDao) All() ([]*dto.TeacherDto, public.BusinessException) {
+func (c *TeacherDao) All() ([]*dto.TeacherDto, *public.BusinessException) {
 	var res []*dto.TeacherDto
 	err := public.DB.Model(&Teacher{}).Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //List : get Teacher page
-func (c *TeacherDao) List(cd *dto.TeacherPageDto) ([]*dto.TeacherDto, public.BusinessException) {
+func (c *TeacherDao) List(cd *dto.TeacherPageDto) ([]*dto.TeacherDto, *public.BusinessException) {
 	orderby := "desc"
 	if cd.Asc {
 		orderby = "asc"
@@ -47,11 +47,11 @@ func (c *TeacherDao) List(cd *dto.TeacherPageDto) ([]*dto.TeacherDto, public.Bus
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //Save: 保存/更新讲师
-func (c *TeacherDao) Save(cd *dto.TeacherDto) (*dto.TeacherDto, public.BusinessException) {
+func (c *TeacherDao) Save(cd *dto.TeacherDto) (*dto.TeacherDto, *public.BusinessException) {
 	TeacherEntity := &Teacher{}
 	_ = util.CopyProperties(TeacherEntity, cd)
 	if cd.Id != "" { //update
@@ -68,15 +68,15 @@ func (c *TeacherDao) Save(cd *dto.TeacherDto) (*dto.TeacherDto, public.BusinessE
 			return &dto.TeacherDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return cd, public.NoException("")
+	return cd, nil
 }
 
 // Delete: 删除讲师
-func (c *TeacherDao) Delete(id string) public.BusinessException {
+func (c *TeacherDao) Delete(id string) *public.BusinessException {
 	err := public.DB.Delete(&Teacher{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }

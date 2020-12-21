@@ -38,7 +38,7 @@ func (Section) TableName() string {
 }
 
 //List : get Section page
-func (c *SectionDao) List(cd *dto.SectionPageDto) ([]*dto.SectionDto, public.BusinessException) {
+func (c *SectionDao) List(cd *dto.SectionPageDto) ([]*dto.SectionDto, *public.BusinessException) {
 	orderby := "desc"
 	if cd.Asc {
 		orderby = "asc"
@@ -50,11 +50,11 @@ func (c *SectionDao) List(cd *dto.SectionPageDto) ([]*dto.SectionDto, public.Bus
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 
-	return res, public.NewBusinessException(public.OK)
+	return res, nil
 }
 
 //Save: 保存/更新小节
-func (c *SectionDao) Save(cd *dto.SectionDto) (*dto.SectionDto, public.BusinessException) {
+func (c *SectionDao) Save(cd *dto.SectionDto) (*dto.SectionDto, *public.BusinessException) {
 	sectionEntity := &Section{}
 	_ = util.CopyProperties(sectionEntity, cd)
 	sectionEntity.UpdatedAt = time.Time{}
@@ -73,15 +73,15 @@ func (c *SectionDao) Save(cd *dto.SectionDto) (*dto.SectionDto, public.BusinessE
 			return &dto.SectionDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
-	return cd, public.NoException("")
+	return cd, nil
 }
 
 // Delete 删除小节
-func (c *SectionDao) Delete(id string) public.BusinessException {
+func (c *SectionDao) Delete(id string) *public.BusinessException {
 	err := public.DB.Delete(&Section{Id: id}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return public.NoException("")
+	return nil
 }

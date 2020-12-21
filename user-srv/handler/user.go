@@ -34,7 +34,7 @@ func (u *UserServiceHandler) Save(ctx context.Context, in *dto.UserDto, out *dto
 
 func (u *UserServiceHandler) Delete(ctx context.Context, in *basic.String, out *basic.String) error {
 	exception := userDao.Delete(ctx, in.Str)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	return nil
@@ -79,7 +79,7 @@ func (u *UserServiceHandler) Logout(ctx context.Context, in *basic.String, out *
 //SaveEmail: 用户修改邮箱
 func (u *UserServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error {
 	err := userDao.UpdateEmail(ctx, in)
-	if err.Code() != int32(public.OK) {
+	if err != nil {
 		return errors.New(config.UserServiceName, err.Error(), err.Code())
 	}
 	return nil
