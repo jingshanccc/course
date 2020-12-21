@@ -69,7 +69,7 @@ func GetCaptcha(id, typ string) (idKey string, value string, instance base64Capt
 }
 
 //VerifyCaptcha : 校验验证码
-func VerifyCaptcha(id, value string) BusinessException {
+func VerifyCaptcha(id, value string) *BusinessException {
 	// 根据验证码token去获取缓存中的验证码，和用户输入的验证码是否一致
 	imageCode, _ := redis.RedisClient.Get(context.Background(), id).Result()
 	if imageCode == "" {
@@ -79,7 +79,7 @@ func VerifyCaptcha(id, value string) BusinessException {
 		return NewBusinessException(VERIFY_CODE_ERROR)
 	} else {
 		redis.RedisClient.Del(context.Background(), id)
-		return NoException("")
+		return nil
 	}
 }
 
