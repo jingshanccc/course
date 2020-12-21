@@ -119,7 +119,7 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 		Password:  r.FormValue("password"),
 	}
 	exception := public.VerifyCaptcha(userDto.Id, userDto.Name)
-	if exception.Code() != int32(public.OK) {
+	if exception != nil {
 		err = errors.New(config.UserServiceName, exception.Error(), exception.Code()).(*errors.Error)
 		return "", err
 	}
