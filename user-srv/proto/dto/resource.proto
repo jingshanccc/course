@@ -28,11 +28,16 @@ message ResourceDtoList{
 }
 
 message RoleDto{
-  string Id = 1;
-  string Name = 2;
-  string Desc = 3;
-  repeated int32 resourceIds = 4;
-  repeated string userIds = 5;
+  string id = 1;
+  string name = 2;
+  string desc = 3;
+  int32 level = 4;
+  repeated int32 resourceIds = 5;
+  repeated string userIds = 6;
+}
+
+message RoleDtoList {
+  repeated RoleDto rows = 1;
 }
 
 message RolePageDto{

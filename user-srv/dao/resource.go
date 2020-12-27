@@ -37,6 +37,16 @@ func (Resource) TableName() string {
 	return "menu"
 }
 
+// SelectPermissionByUserId: 获取permission字段
+func (r *ResourceDao) SelectPermissionByUserId(ctx context.Context, userId string) ([]string, *public.BusinessException) {
+	var res []string
+	err := public.DB.Raw("select distinct r.permission from role_user ru, role_menu rr, menu r where ru.user_id = ? and type != ? and ru.role_id = rr.role_id and rr.resource_id = r.id and r.permission IS NOT NULL order by r.sort asc", userId, 2).Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}
+
 // Delete : 删除权限
 func (r *ResourceDao) Delete(ctx context.Context, id int32) *public.BusinessException {
 	public.DB.Delete(&Resource{Id: id})

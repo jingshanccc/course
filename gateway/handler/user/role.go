@@ -3,10 +3,13 @@ package user
 import (
 	"context"
 	"course/config"
+	"course/gateway/middleware"
 	"course/proto/basic"
 	"course/public"
+	"course/user-srv/dao"
 	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +25,19 @@ func SaveRole(ctx *gin.Context) {
 	}
 }
 
-//RoleList: gateway handler 获取所有角色
+//AllRole: gateway handler 获取所有角色
+func AllRole(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		list, err := roleService.AllRole(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//RoleList: gateway handler 获取角色列表
 func RoleList(ctx *gin.Context) {
 	var req dto.RolePageDto
 	if err := ctx.Bind(&req); err == nil {
@@ -32,6 +47,21 @@ func RoleList(ctx *gin.Context) {
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
+}
+
+//RoleLevel: gateway handler 获取用户角色级别
+func RoleLevel(ctx *gin.Context) {
+	userId, curUser := middleware.GetCurrentUser(ctx)
+	roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+	if curUser == nil {
+		level, err := roleService.RoleLevel(ctx, &basic.String{Str: userId})
+		public.ResponseAny(ctx, err, level)
+	} else {
+		var roles []dao.Role
+		_ = json.Unmarshal([]byte(curUser.Roles), &roles)
+		public.ResponseSuccess(ctx, roles[0].Level)
+	}
+
 }
 
 //DeleteRole: gateway handler 删除角色

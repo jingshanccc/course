@@ -10,6 +10,16 @@ import (
 	"github.com/micro/go-micro/v2/errors"
 )
 
+//AllRole : 获取所有角色
+func (u *UserServiceHandler) AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error {
+	list, exception := roleDao.All(ctx)
+	if exception != nil {
+		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
+	}
+	out.Rows = list
+	return nil
+}
+
 //RoleList : 获取所有角色
 func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
 	list, exception := roleDao.List(ctx, in)
@@ -18,6 +28,17 @@ func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, 
 	}
 	_ = util.CopyProperties(out, in)
 	out.Rows = list
+	return nil
+}
+
+//RoleLevel : 获取所有角色
+func (u *UserServiceHandler) RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error {
+	roles, exception := roleDao.SelectByUserId(in.Str)
+	if exception != nil {
+		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
+	}
+	_ = util.CopyProperties(out, in)
+	out.Id = roles[0].Level
 	return nil
 }
 

@@ -287,6 +287,11 @@ create table `user`
     `email`       varchar(255)         DEFAULT NULL COMMENT '邮箱',
     `avatar_name` varchar(255)         DEFAULT NULL COMMENT '头像地址',
     `avatar_path` varchar(255)         DEFAULT NULL COMMENT '头像真实路径',
+    `is_admin`    bool        not null default false comment '是否超级管理员',
+    `create_time` datetime     DEFAULT NULL COMMENT '创建日期',
+    `update_time` datetime     DEFAULT NULL COMMENT '更新时间',
+    `create_by`   varchar(255) DEFAULT NULL COMMENT '创建者',
+    `update_by`   varchar(255) DEFAULT NULL COMMENT '更新者',
     primary key (`id`),
     unique key `login_name_unique` (`login_name`)
 ) engine = innodb
@@ -294,22 +299,38 @@ create table `user`
 
 insert into `user`
 values ('10000000', 'admin', '超级管理员', '098f6bcd4621d373cade4e832627b4f6', '男', '13514573862', 'admin@micah.vip', null,
-        null);
+        null, true, now(), now(), 'admin', 'admin');
 
 -- 邮箱配置
 DROP TABLE IF EXISTS `email`;
 CREATE TABLE `email`
 (
-    `id` int(20) NOT NULL COMMENT 'ID',
-    `host`      varchar(255) DEFAULT NULL COMMENT '邮件服务器SMTP地址',
-    `pass`      varchar(255) DEFAULT NULL COMMENT '密码',
-    `port`      varchar(255) DEFAULT NULL COMMENT '端口',
-    `user`      varchar(255) DEFAULT NULL COMMENT '发件者用户名',
+    `id`   int(20) NOT NULL COMMENT 'ID',
+    `host` varchar(255) DEFAULT NULL COMMENT '邮件服务器SMTP地址',
+    `pass` varchar(255) DEFAULT NULL COMMENT '密码',
+    `port` varchar(255) DEFAULT NULL COMMENT '端口',
+    `user` varchar(255) DEFAULT NULL COMMENT '发件者用户名',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   ROW_FORMAT = COMPACT COMMENT ='邮箱配置';
+insert into `email`
+values (1, 'smtp.qq.com', 'scbvvvtiybdiigbe', ':25', 'jingshanccc@qq.com');
 
+-- OAUTH 2.0 认证应用程序
+DROP TABLE IF EXISTS `oauth_client`;
+CREATE TABLE `oauth_client`
+(
+    `id` char(8) not null comment '主键 client_id',
+    `secret` varchar(50) not null comment '密钥',
+    `domain` varchar(255) not null comment '域名/主机名',
+    `user_id` varchar(50) not null comment '用户ID',
+    primary key (`id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  ROW_FORMAT = COMPACT COMMENT ='OAUTH 已认证的应用程序';
+insert into oauth_client
+values ('lF9nAse1', '123456','http://dev.course.com:4000', '10000000');
 
 -- 资源
 DROP TABLE IF EXISTS `menu`;
@@ -433,26 +454,80 @@ create table `role`
     `id`   char(8)      not null default '' comment 'id',
     `name` varchar(50)  not null comment '角色',
     `desc` varchar(100) not null comment '描述',
+    `level` int(11) not null comment '角色级别',
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='角色';
 
 insert into `role`
-values ('00000000', '系统管理员', '管理用户、角色权限');
+values ('00000000', '系统管理员', '管理用户、角色权限', 1);
 insert into `role`
-values ('00000001', '开发', '维护资源');
+values ('00000001', '开发', '维护资源', 2);
 insert into `role`
-values ('00000002', '业务管理员', '负责业务管理');
+values ('00000002', '业务管理员', '负责业务管理', 3);
 
 drop table if exists `role_menu`;
 create table `role_menu`
 (
-    `id`          char(8) not null default '' comment 'id',
+    `id`          int(11) auto_increment not null comment 'id',
     `role_id`     char(8) not null comment '角色|id',
-    `resource_id` char(6) not null comment '资源|id',
+    `resource_id` bigint(20) not null comment '资源|id',
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='角色资源关联';
+
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 1);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 2);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 3);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 4);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 5);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 6);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 7);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 8);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 9);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 10);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 11);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 12);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 13);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 14);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 15);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 16);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 17);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 18);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 19);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 20);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 21);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 22);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 23);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 24);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 25);
+insert into `role_menu` (role_id, resource_id)
+VALUES ('00000000', 26);
 
 drop table if exists `role_user`;
 create table `role_user`
@@ -515,19 +590,3 @@ create table `member_course`
     unique key `member_course_unique` (`member_id`, `course_id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='会员课程报名';
-
-# ---------------------- 测试
-
-drop table if exists `test`;
-create table `test`
-(
-    `id`   char(8) not null default '' comment 'id',
-    `name` varchar(50) comment '名称',
-    primary key (`id`)
-) engine = innodb
-  default charset = utf8mb4 comment ='测试';
-
-insert into `test` (id, name)
-values (1, '测试');
-insert into `test` (id, name)
-values (2, '测试2');

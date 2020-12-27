@@ -18,18 +18,18 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		auth.GET("/authorize", handler.Authorize)
 		auth.GET("/redirect", handler.Redirect)
 		auth.POST("/token", handler.Token)
+		auth.GET("/logout", user.Logout)
 	}
 	admin := v1.Group("/admin")
 	admin.Use(middleware.JWT())
 	{
 		userGroup := admin.Group("/user")
 		{
-			userGroup.GET("/list", user.GetUserList)
+			userGroup.POST("/list", user.GetUserList)
 			userGroup.POST("/info", user.UserInfo)
 			userGroup.POST("/save-password", user.SavePassword)
 			userGroup.POST("/save", user.Save)
 			userGroup.POST("/delete", user.DeleteUser)
-			userGroup.GET("/logout", user.Logout)
 			userGroup.GET("/email-code", user.SendEmailCode)
 			userGroup.POST("/update-email", user.UpdateEmail)
 		}
@@ -43,6 +43,8 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		}
 		role := admin.Group("/role")
 		{
+			role.GET("/all", user.AllRole)
+			role.GET("/level", user.RoleLevel)
 			role.POST("/list", user.RoleList)
 			role.POST("/save", user.SaveRole)
 			role.DELETE("/delete", user.DeleteRole)

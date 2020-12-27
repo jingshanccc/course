@@ -8,20 +8,28 @@ message UserDto{
   string id = 1;
   string name = 2;
   string login_name = 3;
-  string password = 4;
-  string phone = 5;
-  string email = 6;
-  string avatar_name = 7;
-  string avatar_path = 8;
-  string gender = 9;
+  string phone = 4;
+  string email = 5;
+  string avatar_name = 6;
+  string avatar_path = 7;
+  string gender = 8;
+  bool is_admin = 9;
+  string create_by = 10;
+  string create_time = 11;
+  string update_by = 12;
+  string update_time = 13;
+  string roles = 14;
+  repeated string permissions = 15;
 }
 
 message PageDto{
-  int64 pageSize = 1;
-  int64 pageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  repeated UserDto users = 5;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  repeated string createTime = 5;
+  int64 total = 6;
+  repeated UserDto rows = 7;
 }
 
 message LoginUserDto{
@@ -29,6 +37,7 @@ message LoginUserDto{
   string login_name = 2;
   string name = 3;
   string token = 4;
+  string password = 5;
 }
 
 message UpdatePass {

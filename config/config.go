@@ -1,7 +1,7 @@
 package config
 
 const (
-	JwtKey = "micah"
+	DefaultPassword = "123456"
 	//192.168.10.130 127.0.0.1
 	MySQLUrl          = "root:123456@tcp(192.168.10.130:33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
 	RedisUrl          = "192.168.10.130:6379"
@@ -11,6 +11,12 @@ const (
 	GatewayName       = "com.chan.course.gateway"
 	CourseServiceName = "com.chan.course.course"
 	CourseCliName     = "com.chan.course.course-cli"
+)
+
+const (
+	JwtKey      = "micah"
+	TokenExpire = 48
+	UserInfoKey = "user_info_"
 )
 
 const (

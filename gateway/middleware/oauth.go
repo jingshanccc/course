@@ -19,6 +19,7 @@ import (
 	"github.com/micro/go-micro/v2/errors"
 	"net/http"
 	"strings"
+	"time"
 )
 
 var (
@@ -55,6 +56,7 @@ func init() {
 	manager.MapAccessGenerate(
 		generates.NewJWTAccessGenerate("", []byte(config.JwtKey), jwt.SigningMethodHS512))
 	AuthServer = server.NewDefaultServer(manager)
+	AuthServer.SetAccessTokenExpHandler(TokenExpHandler)
 	AuthServer.SetAllowGetAccessRequest(true)
 	AuthServer.SetClientInfoHandler(server.ClientFormHandler)
 	// 授权码式授权
@@ -77,20 +79,25 @@ func SaveServices(service []interface{}) gin.HandlerFunc {
 }
 
 //GetCurrentUser: 获取当前请求登陆的用户
-func GetCurrentUser(ctx *gin.Context) string {
+func GetCurrentUser(ctx *gin.Context) (string, *dto.UserDto) {
 	token := strings.Split(ctx.Request.Header.Get("Authorization"), " ")[1]
 	info, err := AuthServer.Manager.LoadAccessToken(context.Background(), token)
 	if err != nil {
 		ctx.AbortWithError(http.StatusUnauthorized, err)
-		return ""
+		return "", nil
+	} else if usrStr, e := redis.RedisClient.Get(context.Background(), config.UserInfoKey+info.GetUserID()).Result(); e == nil {
+		var usr dto.UserDto
+		_ = json.Unmarshal([]byte(usrStr), &usr)
+		return info.GetUserID(), &usr
+	} else {
+		return info.GetUserID(), nil
 	}
-	return info.GetUserID()
 }
 
 //ValidPasswordHandler: 密码式授权-校验密码
 func ValidPasswordHandler(username, password string) (userID string, err error) {
 	userService := Services[config.UserServiceName].(user.UserService)
-	loginUserDto, err := userService.Login(context.Background(), &dto.UserDto{
+	loginUserDto, err := userService.Login(context.Background(), &dto.LoginUserDto{
 		LoginName: username,
 		Password:  password,
 	})
@@ -112,7 +119,7 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 		}
 	}()
 	// 获取参数
-	userDto := &dto.UserDto{
+	userDto := &dto.LoginUserDto{
 		Id:        r.FormValue("id"),
 		Name:      r.FormValue("name"),
 		LoginName: r.FormValue("login_name"),
@@ -131,4 +138,9 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 	}
 	// 返回userID
 	return userID, err
+}
+
+//TokenExpHandler: 令牌过期时间 默认两天
+func TokenExpHandler(w http.ResponseWriter, r *http.Request) (exp time.Duration, err error) {
+	return config.TokenExpire * time.Hour, nil
 }

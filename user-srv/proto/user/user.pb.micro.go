@@ -47,9 +47,9 @@ type UserService interface {
 	//----------- 用户接口 -------------
 	List(ctx context.Context, in *dto.PageDto, opts ...client.CallOption) (*dto.PageDto, error)
 	Save(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.UserDto, error)
-	Delete(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	Delete(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	SavePassword(ctx context.Context, in *dto.UpdatePass, opts ...client.CallOption) (*basic.String, error)
-	Login(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
+	Login(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*dto.LoginUserDto, error)
 	Logout(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 	UserInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.UserDto, error)
 	SaveEmail(ctx context.Context, in *dto.UpdateEmail, opts ...client.CallOption) (*basic.String, error)
@@ -61,6 +61,8 @@ type UserService interface {
 	DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error)
 	//role
 	RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error)
+	AllRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDtoList, error)
+	RoleLevel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.Integer, error)
 	SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
 	DeleteRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 	SaveRoleResource(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
@@ -101,7 +103,7 @@ func (c *userService) Save(ctx context.Context, in *dto.UserDto, opts ...client.
 	return out, nil
 }
 
-func (c *userService) Delete(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *userService) Delete(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.Delete", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -121,7 +123,7 @@ func (c *userService) SavePassword(ctx context.Context, in *dto.UpdatePass, opts
 	return out, nil
 }
 
-func (c *userService) Login(ctx context.Context, in *dto.UserDto, opts ...client.CallOption) (*dto.LoginUserDto, error) {
+func (c *userService) Login(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*dto.LoginUserDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.Login", in)
 	out := new(dto.LoginUserDto)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -211,6 +213,26 @@ func (c *userService) RoleList(ctx context.Context, in *dto.RolePageDto, opts ..
 	return out, nil
 }
 
+func (c *userService) AllRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDtoList, error) {
+	req := c.c.NewRequest(c.name, "UserService.AllRole", in)
+	out := new(dto.RoleDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) RoleLevel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.Integer, error) {
+	req := c.c.NewRequest(c.name, "UserService.RoleLevel", in)
+	out := new(basic.Integer)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error) {
 	req := c.c.NewRequest(c.name, "UserService.SaveRole", in)
 	out := new(dto.RoleDto)
@@ -277,9 +299,9 @@ type UserServiceHandler interface {
 	//----------- 用户接口 -------------
 	List(context.Context, *dto.PageDto, *dto.PageDto) error
 	Save(context.Context, *dto.UserDto, *dto.UserDto) error
-	Delete(context.Context, *basic.String, *basic.String) error
+	Delete(context.Context, *basic.StringList, *basic.String) error
 	SavePassword(context.Context, *dto.UpdatePass, *basic.String) error
-	Login(context.Context, *dto.UserDto, *dto.LoginUserDto) error
+	Login(context.Context, *dto.LoginUserDto, *dto.LoginUserDto) error
 	Logout(context.Context, *basic.String, *basic.String) error
 	UserInfo(context.Context, *basic.String, *dto.UserDto) error
 	SaveEmail(context.Context, *dto.UpdateEmail, *basic.String) error
@@ -291,6 +313,8 @@ type UserServiceHandler interface {
 	DeleteResource(context.Context, *basic.Integer, *basic.String) error
 	//role
 	RoleList(context.Context, *dto.RolePageDto, *dto.RolePageDto) error
+	AllRole(context.Context, *basic.String, *dto.RoleDtoList) error
+	RoleLevel(context.Context, *basic.String, *basic.Integer) error
 	SaveRole(context.Context, *dto.RoleDto, *dto.RoleDto) error
 	DeleteRole(context.Context, *basic.String, *basic.String) error
 	SaveRoleResource(context.Context, *dto.RoleDto, *dto.RoleDto) error
@@ -303,9 +327,9 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 	type userService interface {
 		List(ctx context.Context, in *dto.PageDto, out *dto.PageDto) error
 		Save(ctx context.Context, in *dto.UserDto, out *dto.UserDto) error
-		Delete(ctx context.Context, in *basic.String, out *basic.String) error
+		Delete(ctx context.Context, in *basic.StringList, out *basic.String) error
 		SavePassword(ctx context.Context, in *dto.UpdatePass, out *basic.String) error
-		Login(ctx context.Context, in *dto.UserDto, out *dto.LoginUserDto) error
+		Login(ctx context.Context, in *dto.LoginUserDto, out *dto.LoginUserDto) error
 		Logout(ctx context.Context, in *basic.String, out *basic.String) error
 		UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error
 		SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error
@@ -314,6 +338,8 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
 		DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error
 		RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error
+		AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error
+		RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error
 		SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
 		DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error
 		SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
@@ -340,7 +366,7 @@ func (h *userServiceHandler) Save(ctx context.Context, in *dto.UserDto, out *dto
 	return h.UserServiceHandler.Save(ctx, in, out)
 }
 
-func (h *userServiceHandler) Delete(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *userServiceHandler) Delete(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.UserServiceHandler.Delete(ctx, in, out)
 }
 
@@ -348,7 +374,7 @@ func (h *userServiceHandler) SavePassword(ctx context.Context, in *dto.UpdatePas
 	return h.UserServiceHandler.SavePassword(ctx, in, out)
 }
 
-func (h *userServiceHandler) Login(ctx context.Context, in *dto.UserDto, out *dto.LoginUserDto) error {
+func (h *userServiceHandler) Login(ctx context.Context, in *dto.LoginUserDto, out *dto.LoginUserDto) error {
 	return h.UserServiceHandler.Login(ctx, in, out)
 }
 
@@ -382,6 +408,14 @@ func (h *userServiceHandler) DeleteResource(ctx context.Context, in *basic.Integ
 
 func (h *userServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
 	return h.UserServiceHandler.RoleList(ctx, in, out)
+}
+
+func (h *userServiceHandler) AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error {
+	return h.UserServiceHandler.AllRole(ctx, in, out)
+}
+
+func (h *userServiceHandler) RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error {
+	return h.UserServiceHandler.RoleLevel(ctx, in, out)
 }
 
 func (h *userServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {

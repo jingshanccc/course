@@ -35,6 +35,15 @@ func (r *RoleUserDao) Save(ctx context.Context, rt RoleUser) *public.BusinessExc
 	return nil
 }
 
+//BatchInsert: 创建角色-用户关联记录 批量
+func (r *RoleUserDao) BatchInsert(ctx context.Context, rts []RoleUser) *public.BusinessException {
+	err := public.DB.CreateInBatches(rts, len(rts)).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}
+
 //SelectByRoleId: 查询角色关联的所有记录
 func (r *RoleUserDao) SelectByRoleId(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
 	var res []string
@@ -43,4 +52,13 @@ func (r *RoleUserDao) SelectByRoleId(ctx context.Context, roleId string) ([]stri
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return res, nil
+}
+
+//DeleteByUserId: 删除用户角色记录
+func (r *RoleUserDao) DeleteByUserId(ctx context.Context, userId string) *public.BusinessException {
+	err := public.DB.Where("user_id= ?", userId).Delete(&RoleUser{}).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
 }

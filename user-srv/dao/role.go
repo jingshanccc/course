@@ -12,9 +12,10 @@ type RoleDao struct {
 }
 
 type Role struct {
-	Id   string
-	Name string
-	Desc string
+	Id    string
+	Name  string
+	Desc  string
+	Level int32
 }
 
 func (Role) TableName() string {
@@ -25,6 +26,16 @@ var (
 	roleResourceDao = &RoleResourceDao{}
 	roleUserDao     = &RoleUserDao{}
 )
+
+//All: 获取所有角色
+func (r *RoleDao) All(ctx context.Context) ([]*dto.RoleDto, *public.BusinessException) {
+	var res []*dto.RoleDto
+	err := public.DB.Model(&Role{}).Order("level").Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}
 
 //List: 获取角色列表
 func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleDto, *public.BusinessException) {
@@ -112,4 +123,15 @@ func (r *RoleDao) SaveRoleUser(ctx context.Context, rt *dto.RoleDto) *public.Bus
 //ListRoleResource: 获取角色所有权限
 func (r *RoleDao) ListRoleUser(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
 	return roleUserDao.SelectByRoleId(ctx, roleId)
+}
+
+//SelectByUserId: 获取用户角色
+func (r *RoleDao) SelectByUserId(userId string) ([]Role, *public.BusinessException) {
+	var roles []Role
+	err := public.DB.Raw("select r.* from role r, role_user ru where ru.role_id = r.id and ru.user_id = ? order by r.level", userId).Find(&roles).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return roles, nil
 }

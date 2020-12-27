@@ -12,7 +12,7 @@ import (
 
 //LoadMenus: 加载前端侧边栏菜单
 func LoadMenus(ctx *gin.Context) {
-	currentUser := middleware.GetCurrentUser(ctx)
+	currentUser, _ := middleware.GetCurrentUser(ctx)
 
 	resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
 	list, err := resourceService.LoadMenus(context.Background(), &basic.String{Str: currentUser})

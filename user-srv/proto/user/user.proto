@@ -11,9 +11,9 @@ service UserService{
   //----------- 用户接口 -------------
   rpc List(PageDto) returns (PageDto){}
   rpc Save(UserDto) returns (UserDto){}
-  rpc Delete(basic.String) returns (basic.String){}
+  rpc Delete(basic.StringList) returns (basic.String){}
   rpc SavePassword(UpdatePass) returns (basic.String){}
-  rpc Login(UserDto) returns (LoginUserDto){}
+  rpc Login(LoginUserDto) returns (LoginUserDto){}
   rpc Logout(basic.String) returns (basic.String){}
   rpc UserInfo(basic.String) returns (UserDto){}
   rpc SaveEmail(UpdateEmail) returns (basic.String) {}
@@ -26,6 +26,8 @@ service UserService{
   rpc DeleteResource(basic.Integer) returns (basic.String);
   //role
   rpc RoleList(RolePageDto) returns (RolePageDto);
+  rpc AllRole(basic.String) returns (RoleDtoList);
+  rpc RoleLevel(basic.String) returns (basic.Integer);
   rpc SaveRole(RoleDto) returns (RoleDto);
   rpc DeleteRole(basic.String) returns (basic.String);
   rpc SaveRoleResource(RoleDto) returns (RoleDto);

@@ -175,6 +175,11 @@ docker exec -it consul1 consul members
 ```
 docker run -itd -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql
 ```
+### 高版本关闭only_full_group_by
+```
+# 进入/etc/mysql/mysql.conf.d 在mysqld.cnf中添加
+sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+```
 
 ## MariaDB
 

@@ -29,9 +29,12 @@ func GetUserList(ctx *gin.Context) {
 
 //UserInfo: 获取用户信息
 func UserInfo(ctx *gin.Context) {
-	currentUser := middleware.GetCurrentUser(ctx)
-	userService := ctx.Keys[config.UserServiceName].(user.UserService)
-	userDto, err := userService.UserInfo(context.Background(), &basic.String{Str: currentUser})
+	var err error
+	userId, userDto := middleware.GetCurrentUser(ctx)
+	if userDto == nil {
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userDto, err = userService.UserInfo(context.Background(), &basic.String{Str: userId})
+	}
 	public.ResponseAny(ctx, err, userDto)
 }
 
@@ -39,7 +42,7 @@ func UserInfo(ctx *gin.Context) {
 func SavePassword(ctx *gin.Context) {
 	var req dto.UpdatePass
 	if err := ctx.Bind(&req); err == nil {
-		req.UserId = middleware.GetCurrentUser(ctx)
+		req.UserId, _ = middleware.GetCurrentUser(ctx)
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.SavePassword(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
@@ -52,6 +55,8 @@ func SavePassword(ctx *gin.Context) {
 func Save(ctx *gin.Context) {
 	var req dto.UserDto
 	if err := ctx.Bind(&req); err == nil {
+		_, usr := middleware.GetCurrentUser(ctx)
+		req.UpdateBy = usr.LoginName
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.Save(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
@@ -62,7 +67,7 @@ func Save(ctx *gin.Context) {
 
 //DeleteUser : 删除用户
 func DeleteUser(ctx *gin.Context) {
-	var req basic.String
+	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
@@ -91,7 +96,7 @@ func Logout(ctx *gin.Context) {
 func UpdateEmail(ctx *gin.Context) {
 	var req dto.UpdateEmail
 	if err := ctx.Bind(&req); err == nil {
-		req.UserId = middleware.GetCurrentUser(ctx)
+		req.UserId, _ = middleware.GetCurrentUser(ctx)
 		userService := ctx.Keys[config.UserServiceName].(user.UserService)
 		result, err := userService.SaveEmail(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)

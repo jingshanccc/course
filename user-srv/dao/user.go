@@ -11,6 +11,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"strings"
+	"time"
 )
 
 type UserDao struct {
@@ -25,6 +27,11 @@ type User struct {
 	Email      string
 	AvatarName string
 	AvatarPath string
+	IsAdmin    bool
+	CreateBy   string
+	CreateTime time.Time
+	UpdateBy   string
+	UpdateTime time.Time
 }
 
 func (User) TableName() string {
@@ -32,22 +39,52 @@ func (User) TableName() string {
 }
 
 //List : get user page
-func (u *UserDao) List(ctx context.Context, in *dto.PageDto) ([]*dto.UserDto, *public.BusinessException) {
-	orderby := "desc"
-	if in.Asc {
-		orderby = "asc"
+func (u *UserDao) List(ctx context.Context, in *dto.PageDto) (int64, []*dto.UserDto, *public.BusinessException) {
+	conditions := ""
+	join := "join role_user ru on ru.user_id = u.id join role r on r.id = ru.role_id "
+	// blurry 模糊搜索字段 sort 排序数组 ["id,desc","name,asc"]
+	and := true
+	if in.CreateTime != nil {
+		and = false
+		conditions += "where u.create_time between '" + in.CreateTime[0] + "' and '" + in.CreateTime[1] + "'"
 	}
+	if in.Blurry != "" {
+		if and {
+			conditions += "where "
+		} else {
+			conditions += " and "
+		}
+		conditions += "(u.name like '%" + in.Blurry + "%' or "
+		conditions += "u.login_name like '%" + in.Blurry + "%' or "
+		conditions += "u.email like '%" + in.Blurry + "%')"
+	}
+	var count int64
+	err := public.DB.Raw("select count(1) from user u " + conditions).Find(&count).Error
+	// 当使用 group_concat 若无 group by 只能选出一条记录
+	conditions += " group by u.id"
+	if in.Sort != nil {
+		conditions += " order by "
+		for i, s := range in.Sort {
+			sort := strings.Split(s, ",")
+			conditions += "u." + sort[0] + " " + sort[1]
+			if i != len(in.Sort)-1 {
+				conditions += ","
+			}
+		}
+	}
+
+	conditions += " limit ?,?"
 	var res []*dto.UserDto
-	err := public.DB.Model(&User{}).Order(in.SortBy + " " + orderby).Limit(int(in.PageSize)).Offset(int((in.PageNum - 1) * in.PageSize)).Find(&res).Error
+	err = public.DB.Raw("select u.*, concat('[', group_concat(json_object('id',r.id, 'name',r.name, 'desc',r.`desc`)),']') as 'roles' from user u "+join+conditions, (in.Page-1)*in.Size, in.Size).Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return res, public.NewBusinessException(public.OK)
+	return count, res, nil
 }
 
 //Login : login
-func (u *UserDao) Login(ctx context.Context, user *dto.UserDto) (*dto.LoginUserDto, *public.BusinessException) {
+func (u *UserDao) Login(ctx context.Context, user *dto.LoginUserDto) (*dto.LoginUserDto, *public.BusinessException) {
 	usr := u.SelectByLoginName(ctx, user.LoginName)
 	if usr == nil {
 		err := public.NewBusinessException(public.USER_NOT_EXIST)
@@ -101,44 +138,60 @@ func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) 
 	return nil
 }
 
-//Save : update when dto.id exists, insert otherwise
-func (u *UserDao) Save(ctx context.Context, userDto *dto.UserDto) (*dto.UserDto, *public.BusinessException) {
-	var usr User
-	_ = util.CopyProperties(&usr, userDto)
-	if userDto.Id != "" { //update
-		usr.Id = ""
-		usr.Password = ""
-		err := public.DB.Model(&User{Id: userDto.Id}).Updates(usr).Error
-		if err != nil {
-			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-		}
-	} else { //insert
-		// loginName phone email exists
-		us := u.SelectByLoginName(ctx, userDto.LoginName)
-		if us != nil {
-			return nil, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
-		}
-		us = u.SelectByEmail(ctx, userDto.Email)
-		if us != nil {
-			return nil, public.NewBusinessException(public.USER_EMAIL_EXIST)
-		}
-		us = u.SelectByPhone(ctx, userDto.Phone)
-		if us != nil {
-			return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
-		}
-		usr.Id = util.GetShortUuid()
-		usr.Password = fmt.Sprintf("%x", md5.Sum([]byte(userDto.Password)))
-		err1 := public.DB.Create(usr).Error
-		if err1 != nil {
-			return &dto.UserDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-		}
+//Create: 创建新用户
+func (u *UserDao) Create(ctx context.Context, userDto *User) (*User, *public.BusinessException) {
+	//insert
+	// loginName phone email exists
+	us := u.SelectByLoginName(ctx, userDto.LoginName)
+	if us.Id != "" {
+		return nil, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
+	}
+	usd := u.SelectByEmail(ctx, userDto.Email)
+	if usd.Id != "" {
+		return nil, public.NewBusinessException(public.USER_EMAIL_EXIST)
+	}
+	usd = u.SelectByPhone(ctx, userDto.Phone)
+	if usd.Id != "" {
+		return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
+	}
+	userDto.Password = fmt.Sprintf("%x", md5.Sum([]byte(config.DefaultPassword)))
+	userDto.CreateBy = userDto.UpdateBy
+	userDto.CreateTime = userDto.UpdateTime
+	err := public.DB.Create(userDto).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return userDto, nil
+}
+
+//Update : 更新用户
+func (u *UserDao) Update(ctx context.Context, userDto *User) (*User, *public.BusinessException) {
+	// loginName phone email exists
+	us := u.SelectByLoginName(ctx, userDto.LoginName)
+	if us.Id != "" && us.Id != userDto.Id {
+		return nil, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
+	}
+	usd := u.SelectByEmail(ctx, userDto.Email)
+	if usd.Id != "" && us.Id != userDto.Id {
+		return nil, public.NewBusinessException(public.USER_EMAIL_EXIST)
+	}
+	usd = u.SelectByPhone(ctx, userDto.Phone)
+	if usd.Id != "" && us.Id != userDto.Id {
+		return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
+	}
+
+	userDto.Id = ""
+	userDto.Password = ""
+	err := public.DB.Model(&User{Id: userDto.Id}).Updates(userDto).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return userDto, nil
 }
 
 // Delete 删除用户
-func (u *UserDao) Delete(ctx context.Context, id string) *public.BusinessException {
-	err := public.DB.Delete(&User{Id: id}).Error
+func (u *UserDao) Delete(ctx context.Context, ids []string) *public.BusinessException {
+	err := public.DB.Where("id in ?", ids).Delete(&User{}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -178,27 +231,27 @@ func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.
 }
 
 //SelectByLoginName : get user by login name
-func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) *dto.UserDto {
-	us := &dto.UserDto{}
+func (u *UserDao) SelectByLoginName(ctx context.Context, loginName string) *User {
+	var us User
 	public.DB.Model(&User{}).Where("login_name = ?", loginName).First(&us)
-	return us
+	return &us
 }
 
 //SelectById : get user by id
-func (u *UserDao) SelectById(ctx context.Context, id string) *dto.UserDto {
-	us := &dto.UserDto{}
+func (u *UserDao) SelectById(ctx context.Context, id string) *User {
+	var us User
 	public.DB.Model(&User{}).Where("id = ?", id).First(&us)
-	return us
+	return &us
 }
 
 func (u *UserDao) SelectByEmail(ctx context.Context, email string) *dto.UserDto {
-	us := &dto.UserDto{}
+	var us dto.UserDto
 	public.DB.Model(&User{}).Where("email = ?", email).First(&us)
-	return us
+	return &us
 }
 
 func (u *UserDao) SelectByPhone(ctx context.Context, phone string) *dto.UserDto {
-	us := &dto.UserDto{}
+	var us dto.UserDto
 	public.DB.Model(&User{}).Where("phone = ?", phone).First(&us)
-	return us
+	return &us
 }
