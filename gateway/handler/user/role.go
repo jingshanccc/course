@@ -37,6 +37,18 @@ func AllRole(ctx *gin.Context) {
 	}
 }
 
+//GetRole: gateway handler 获取传入 ID 角色
+func GetRole(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		res, err := roleService.GetRole(context.Background(), &req)
+		public.ResponseAny(ctx, err, res)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //RoleList: gateway handler 获取角色列表
 func RoleList(ctx *gin.Context) {
 	var req dto.RolePageDto
@@ -66,7 +78,7 @@ func RoleLevel(ctx *gin.Context) {
 
 //DeleteRole: gateway handler 删除角色
 func DeleteRole(ctx *gin.Context) {
-	var req basic.String
+	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
 		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := roleService.DeleteRole(context.Background(), &req)

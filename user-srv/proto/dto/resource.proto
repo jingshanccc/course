@@ -32,8 +32,9 @@ message RoleDto{
   string name = 2;
   string desc = 3;
   int32 level = 4;
-  repeated int32 resourceIds = 5;
-  repeated string userIds = 6;
+  string create_time = 5;
+  repeated int32 resourceIds = 6;
+  repeated string userIds = 7;
 }
 
 message RoleDtoList {
@@ -41,11 +42,13 @@ message RoleDtoList {
 }
 
 message RolePageDto{
-  int64 pageSize = 1;
-  int64 pageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  repeated RoleDto rows = 5;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  repeated string createTime = 5;
+  int64 total = 6;
+  repeated RoleDto rows = 7;
 }
 
 message RoleUserDto {

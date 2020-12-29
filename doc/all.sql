@@ -288,10 +288,10 @@ create table `user`
     `avatar_name` varchar(255)         DEFAULT NULL COMMENT '头像地址',
     `avatar_path` varchar(255)         DEFAULT NULL COMMENT '头像真实路径',
     `is_admin`    bool        not null default false comment '是否超级管理员',
-    `create_time` datetime     DEFAULT NULL COMMENT '创建日期',
-    `update_time` datetime     DEFAULT NULL COMMENT '更新时间',
-    `create_by`   varchar(255) DEFAULT NULL COMMENT '创建者',
-    `update_by`   varchar(255) DEFAULT NULL COMMENT '更新者',
+    `create_time` datetime             DEFAULT NULL COMMENT '创建日期',
+    `update_time` datetime             DEFAULT NULL COMMENT '更新时间',
+    `create_by`   varchar(255)         DEFAULT NULL COMMENT '创建者',
+    `update_by`   varchar(255)         DEFAULT NULL COMMENT '更新者',
     primary key (`id`),
     unique key `login_name_unique` (`login_name`)
 ) engine = innodb
@@ -321,16 +321,16 @@ values (1, 'smtp.qq.com', 'scbvvvtiybdiigbe', ':25', 'jingshanccc@qq.com');
 DROP TABLE IF EXISTS `oauth_client`;
 CREATE TABLE `oauth_client`
 (
-    `id` char(8) not null comment '主键 client_id',
-    `secret` varchar(50) not null comment '密钥',
-    `domain` varchar(255) not null comment '域名/主机名',
-    `user_id` varchar(50) not null comment '用户ID',
+    `id`      char(8)      not null comment '主键 client_id',
+    `secret`  varchar(50)  not null comment '密钥',
+    `domain`  varchar(255) not null comment '域名/主机名',
+    `user_id` varchar(50)  not null comment '用户ID',
     primary key (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   ROW_FORMAT = COMPACT COMMENT ='OAUTH 已认证的应用程序';
 insert into oauth_client
-values ('lF9nAse1', '123456','http://dev.course.com:4000', '10000000');
+values ('lF9nAse1', '123456', 'http://dev.course.com:4000', '10000000');
 
 -- 资源
 DROP TABLE IF EXISTS `menu`;
@@ -451,27 +451,28 @@ VALUES (26, 8, 2, '讲师删除', NULL, '', 4, '', '', false, false, false, 'tea
 drop table if exists `role`;
 create table `role`
 (
-    `id`   char(8)      not null default '' comment 'id',
-    `name` varchar(50)  not null comment '角色',
-    `desc` varchar(100) not null comment '描述',
-    `level` int(11) not null comment '角色级别',
+    `id`          char(8)      not null default '' comment 'id',
+    `name`        varchar(50)  not null comment '角色',
+    `desc`        varchar(100) not null comment '描述',
+    `level`       int(11)      not null comment '角色级别',
+    `create_time` datetime              DEFAULT NULL COMMENT '创建日期',
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='角色';
 
 insert into `role`
-values ('00000000', '系统管理员', '管理用户、角色权限', 1);
+values ('00000000', '系统管理员', '管理用户、角色权限', 1, now());
 insert into `role`
-values ('00000001', '开发', '维护资源', 2);
+values ('00000001', '开发', '维护资源', 2, now());
 insert into `role`
-values ('00000002', '业务管理员', '负责业务管理', 3);
+values ('00000002', '业务管理员', '负责业务管理', 3, now());
 
 drop table if exists `role_menu`;
 create table `role_menu`
 (
     `id`          int(11) auto_increment not null comment 'id',
-    `role_id`     char(8) not null comment '角色|id',
-    `resource_id` bigint(20) not null comment '资源|id',
+    `role_id`     char(8)                not null comment '角色|id',
+    `resource_id` bigint(20)             not null comment '资源|id',
     primary key (`id`)
 ) engine = innodb
   default charset = utf8mb4 comment ='角色资源关联';

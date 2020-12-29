@@ -37,6 +37,16 @@ func (Resource) TableName() string {
 	return "menu"
 }
 
+//SelectById: 通过 ID 获取权限
+func (r *ResourceDao) SelectById(ctx context.Context, id int32) (*dto.ResourceDto, *public.BusinessException) {
+	var res dto.ResourceDto
+	err := public.DB.Model(&Resource{}).Where("id = ?", id).Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return &res, nil
+}
+
 // SelectPermissionByUserId: 获取permission字段
 func (r *ResourceDao) SelectPermissionByUserId(ctx context.Context, userId string) ([]string, *public.BusinessException) {
 	var res []string
@@ -106,21 +116,20 @@ func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
 	}
 }
 
-// LoadTree : 按约定将列表转成树, ID要正序排列
-func (r *ResourceDao) LoadTree(ctx context.Context) ([]*dto.ResourceDto, *public.BusinessException) {
-	var resources []*Resource
-	err := public.DB.Raw("select * from menu r order by id").Find(&resources).Error
+// GetByParent : 通过父ID parent查询权限
+func (r *ResourceDao) GetByParent(ctx context.Context, pid int32) ([]*dto.ResourceDto, *public.BusinessException) {
+	var resources []*dto.ResourceDto
+	db := public.DB.Model(&Resource{})
+	if pid != 0 {
+		db = db.Where("parent = ?", pid)
+	} else {
+		db = db.Where("parent is null")
+	}
+	err := db.Order("id").Find(&resources).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	res := make([]*dto.ResourceDto, len(resources))
-	for i, resource := range resources {
-		r := dto.ResourceDto{}
-		_ = util.CopyProperties(&r, resource)
-		res[i] = &r
-	}
-	buildTree(res)
-	return res, nil
+	return resources, nil
 }
 
 // FindUserResources 获取用户的权限
@@ -139,6 +148,17 @@ func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*
 	}
 	res = buildTree(res)
 	return buildMenus(res), nil
+}
+
+//GetChildTree: 获取传入父 ID 的所有子权限
+func (r *ResourceDao) GetChildTree(ctx context.Context, resourceList []*dto.ResourceDto, resourceSet *public.HashSet) {
+	for _, resource := range resourceList {
+		resourceSet.Add(resource)
+		resourceDtos, _ := r.GetByParent(ctx, resource.Id)
+		if resourceDtos != nil && len(resourceDtos) > 0 {
+			r.GetChildTree(ctx, resourceDtos, resourceSet)
+		}
+	}
 }
 
 // 将权限转化为前端侧边栏要求的格式

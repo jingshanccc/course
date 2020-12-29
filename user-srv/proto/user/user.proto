@@ -21,17 +21,19 @@ service UserService{
   //---------- 权限管理 ---------------
   //resource
   rpc LoadMenus(basic.String) returns (ResourceDtoList);
-  rpc LoadTree(basic.String) returns (ResourceDtoList);
+  rpc LoadTree(basic.Integer) returns (ResourceDtoList);
+  rpc MenuChild(basic.Integer) returns (basic.IntegerList);
   rpc SaveJson(basic.String) returns (basic.String);
   rpc DeleteResource(basic.Integer) returns (basic.String);
   //role
   rpc RoleList(RolePageDto) returns (RolePageDto);
   rpc AllRole(basic.String) returns (RoleDtoList);
+  rpc GetRole(basic.String) returns (RoleDto);
   rpc RoleLevel(basic.String) returns (basic.Integer);
   rpc SaveRole(RoleDto) returns (RoleDto);
-  rpc DeleteRole(basic.String) returns (basic.String);
+  rpc DeleteRole(basic.StringList) returns (basic.String);
   rpc SaveRoleResource(RoleDto) returns (RoleDto);
-  rpc ListRoleResource(basic.String) returns (basic.StringList);
+  rpc ListRoleResource(basic.String) returns (basic.IntegerList);
   rpc SaveRoleUser(RoleDto) returns (RoleDto);
   rpc ListRoleUser(basic.String) returns (basic.StringList);
 }

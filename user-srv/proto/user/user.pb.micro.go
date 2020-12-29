@@ -56,17 +56,19 @@ type UserService interface {
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
-	LoadTree(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
+	LoadTree(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*dto.ResourceDtoList, error)
+	MenuChild(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.IntegerList, error)
 	SaveJson(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 	DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error)
 	//role
 	RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error)
 	AllRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDtoList, error)
+	GetRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDto, error)
 	RoleLevel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.Integer, error)
 	SaveRole(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
-	DeleteRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteRole(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	SaveRoleResource(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
-	ListRoleResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.StringList, error)
+	ListRoleResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.IntegerList, error)
 	SaveRoleUser(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
 	ListRoleUser(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.StringList, error)
 }
@@ -173,9 +175,19 @@ func (c *userService) LoadMenus(ctx context.Context, in *basic.String, opts ...c
 	return out, nil
 }
 
-func (c *userService) LoadTree(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error) {
+func (c *userService) LoadTree(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*dto.ResourceDtoList, error) {
 	req := c.c.NewRequest(c.name, "UserService.LoadTree", in)
 	out := new(dto.ResourceDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) MenuChild(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.IntegerList, error) {
+	req := c.c.NewRequest(c.name, "UserService.MenuChild", in)
+	out := new(basic.IntegerList)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -223,6 +235,16 @@ func (c *userService) AllRole(ctx context.Context, in *basic.String, opts ...cli
 	return out, nil
 }
 
+func (c *userService) GetRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.GetRole", in)
+	out := new(dto.RoleDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userService) RoleLevel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.Integer, error) {
 	req := c.c.NewRequest(c.name, "UserService.RoleLevel", in)
 	out := new(basic.Integer)
@@ -243,7 +265,7 @@ func (c *userService) SaveRole(ctx context.Context, in *dto.RoleDto, opts ...cli
 	return out, nil
 }
 
-func (c *userService) DeleteRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *userService) DeleteRole(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.DeleteRole", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -263,9 +285,9 @@ func (c *userService) SaveRoleResource(ctx context.Context, in *dto.RoleDto, opt
 	return out, nil
 }
 
-func (c *userService) ListRoleResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.StringList, error) {
+func (c *userService) ListRoleResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.IntegerList, error) {
 	req := c.c.NewRequest(c.name, "UserService.ListRoleResource", in)
-	out := new(basic.StringList)
+	out := new(basic.IntegerList)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -308,17 +330,19 @@ type UserServiceHandler interface {
 	//---------- 权限管理 ---------------
 	//resource
 	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
-	LoadTree(context.Context, *basic.String, *dto.ResourceDtoList) error
+	LoadTree(context.Context, *basic.Integer, *dto.ResourceDtoList) error
+	MenuChild(context.Context, *basic.Integer, *basic.IntegerList) error
 	SaveJson(context.Context, *basic.String, *basic.String) error
 	DeleteResource(context.Context, *basic.Integer, *basic.String) error
 	//role
 	RoleList(context.Context, *dto.RolePageDto, *dto.RolePageDto) error
 	AllRole(context.Context, *basic.String, *dto.RoleDtoList) error
+	GetRole(context.Context, *basic.String, *dto.RoleDto) error
 	RoleLevel(context.Context, *basic.String, *basic.Integer) error
 	SaveRole(context.Context, *dto.RoleDto, *dto.RoleDto) error
-	DeleteRole(context.Context, *basic.String, *basic.String) error
+	DeleteRole(context.Context, *basic.StringList, *basic.String) error
 	SaveRoleResource(context.Context, *dto.RoleDto, *dto.RoleDto) error
-	ListRoleResource(context.Context, *basic.String, *basic.StringList) error
+	ListRoleResource(context.Context, *basic.String, *basic.IntegerList) error
 	SaveRoleUser(context.Context, *dto.RoleDto, *dto.RoleDto) error
 	ListRoleUser(context.Context, *basic.String, *basic.StringList) error
 }
@@ -334,16 +358,18 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error
 		SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error
 		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
-		LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
+		LoadTree(ctx context.Context, in *basic.Integer, out *dto.ResourceDtoList) error
+		MenuChild(ctx context.Context, in *basic.Integer, out *basic.IntegerList) error
 		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
 		DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error
 		RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error
 		AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error
+		GetRole(ctx context.Context, in *basic.String, out *dto.RoleDto) error
 		RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error
 		SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
-		DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteRole(ctx context.Context, in *basic.StringList, out *basic.String) error
 		SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
-		ListRoleResource(ctx context.Context, in *basic.String, out *basic.StringList) error
+		ListRoleResource(ctx context.Context, in *basic.String, out *basic.IntegerList) error
 		SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
 		ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error
 	}
@@ -394,8 +420,12 @@ func (h *userServiceHandler) LoadMenus(ctx context.Context, in *basic.String, ou
 	return h.UserServiceHandler.LoadMenus(ctx, in, out)
 }
 
-func (h *userServiceHandler) LoadTree(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {
+func (h *userServiceHandler) LoadTree(ctx context.Context, in *basic.Integer, out *dto.ResourceDtoList) error {
 	return h.UserServiceHandler.LoadTree(ctx, in, out)
+}
+
+func (h *userServiceHandler) MenuChild(ctx context.Context, in *basic.Integer, out *basic.IntegerList) error {
+	return h.UserServiceHandler.MenuChild(ctx, in, out)
 }
 
 func (h *userServiceHandler) SaveJson(ctx context.Context, in *basic.String, out *basic.String) error {
@@ -414,6 +444,10 @@ func (h *userServiceHandler) AllRole(ctx context.Context, in *basic.String, out 
 	return h.UserServiceHandler.AllRole(ctx, in, out)
 }
 
+func (h *userServiceHandler) GetRole(ctx context.Context, in *basic.String, out *dto.RoleDto) error {
+	return h.UserServiceHandler.GetRole(ctx, in, out)
+}
+
 func (h *userServiceHandler) RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error {
 	return h.UserServiceHandler.RoleLevel(ctx, in, out)
 }
@@ -422,7 +456,7 @@ func (h *userServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out 
 	return h.UserServiceHandler.SaveRole(ctx, in, out)
 }
 
-func (h *userServiceHandler) DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *userServiceHandler) DeleteRole(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.UserServiceHandler.DeleteRole(ctx, in, out)
 }
 
@@ -430,7 +464,7 @@ func (h *userServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleD
 	return h.UserServiceHandler.SaveRoleResource(ctx, in, out)
 }
 
-func (h *userServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.StringList) error {
+func (h *userServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.IntegerList) error {
 	return h.UserServiceHandler.ListRoleResource(ctx, in, out)
 }
 

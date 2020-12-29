@@ -8,18 +8,18 @@ import (
 type RoleResourceDao struct {
 }
 type RoleResource struct {
-	Id         string
+	Id         int32
 	RoleId     string
 	ResourceId int32
 }
 
 func (RoleResource) TableName() string {
-	return "role_resource"
+	return "role_menu"
 }
 
 //DeleteByRoleId: 删除角色关联的所有记录
-func (r *RoleResourceDao) DeleteByRoleId(ctx context.Context, roleId string) *public.BusinessException {
-	err := public.DB.Where("role_id= ?", roleId).Delete(&RoleResource{}).Error
+func (r *RoleResourceDao) DeleteByRoleId(ctx context.Context, roleIds []string) *public.BusinessException {
+	err := public.DB.Where("role_id in ?", roleIds).Delete(&RoleResource{}).Error
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -36,8 +36,8 @@ func (r *RoleResourceDao) Save(ctx context.Context, rt RoleResource) *public.Bus
 }
 
 //SelectByRoleId: 查询角色关联的所有记录
-func (r *RoleResourceDao) SelectByRoleId(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
-	var res []string
+func (r *RoleResourceDao) SelectByRoleId(ctx context.Context, roleId string) ([]int32, *public.BusinessException) {
+	var res []int32
 	err := public.DB.Model(&RoleResource{}).Select("resource_id").Where("role_id = ?", roleId).Find(&res).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)

@@ -72,6 +72,53 @@ func (x *Integer) GetId() int32 {
 	return 0
 }
 
+type IntegerList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Ids []int32 `protobuf:"varint,1,rep,packed,name=ids,proto3" json:"ids,omitempty"`
+}
+
+func (x *IntegerList) Reset() {
+	*x = IntegerList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_proto_basic_basic_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IntegerList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IntegerList) ProtoMessage() {}
+
+func (x *IntegerList) ProtoReflect() protoreflect.Message {
+	mi := &file_course_proto_basic_basic_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IntegerList.ProtoReflect.Descriptor instead.
+func (*IntegerList) Descriptor() ([]byte, []int) {
+	return file_course_proto_basic_basic_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *IntegerList) GetIds() []int32 {
+	if x != nil {
+		return x.Ids
+	}
+	return nil
+}
+
 type String struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -83,7 +130,7 @@ type String struct {
 func (x *String) Reset() {
 	*x = String{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_course_proto_basic_basic_proto_msgTypes[1]
+		mi := &file_course_proto_basic_basic_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -96,7 +143,7 @@ func (x *String) String() string {
 func (*String) ProtoMessage() {}
 
 func (x *String) ProtoReflect() protoreflect.Message {
-	mi := &file_course_proto_basic_basic_proto_msgTypes[1]
+	mi := &file_course_proto_basic_basic_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -109,7 +156,7 @@ func (x *String) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use String.ProtoReflect.Descriptor instead.
 func (*String) Descriptor() ([]byte, []int) {
-	return file_course_proto_basic_basic_proto_rawDescGZIP(), []int{1}
+	return file_course_proto_basic_basic_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *String) GetStr() string {
@@ -130,7 +177,7 @@ type StringList struct {
 func (x *StringList) Reset() {
 	*x = StringList{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_course_proto_basic_basic_proto_msgTypes[2]
+		mi := &file_course_proto_basic_basic_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -143,7 +190,7 @@ func (x *StringList) String() string {
 func (*StringList) ProtoMessage() {}
 
 func (x *StringList) ProtoReflect() protoreflect.Message {
-	mi := &file_course_proto_basic_basic_proto_msgTypes[2]
+	mi := &file_course_proto_basic_basic_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -156,7 +203,7 @@ func (x *StringList) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StringList.ProtoReflect.Descriptor instead.
 func (*StringList) Descriptor() ([]byte, []int) {
-	return file_course_proto_basic_basic_proto_rawDescGZIP(), []int{2}
+	return file_course_proto_basic_basic_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StringList) GetRows() []string {
@@ -173,12 +220,14 @@ var file_course_proto_basic_basic_proto_rawDesc = []byte{
 	0x61, 0x73, 0x69, 0x63, 0x2f, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x05, 0x62, 0x61, 0x73, 0x69, 0x63, 0x22, 0x19, 0x0a, 0x07, 0x49, 0x6e, 0x74, 0x65, 0x67,
 	0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02,
-	0x69, 0x64, 0x22, 0x1a, 0x0a, 0x06, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x12, 0x10, 0x0a, 0x03,
-	0x73, 0x74, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x74, 0x72, 0x22, 0x20,
-	0x0a, 0x0a, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04,
-	0x72, 0x6f, 0x77, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x77, 0x73,
-	0x42, 0x14, 0x5a, 0x12, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x2f, 0x62, 0x61, 0x73, 0x69, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x64, 0x22, 0x1f, 0x0a, 0x0b, 0x49, 0x6e, 0x74, 0x65, 0x67, 0x65, 0x72, 0x4c, 0x69, 0x73,
+	0x74, 0x12, 0x10, 0x0a, 0x03, 0x69, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x05, 0x52, 0x03,
+	0x69, 0x64, 0x73, 0x22, 0x1a, 0x0a, 0x06, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x12, 0x10, 0x0a,
+	0x03, 0x73, 0x74, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x74, 0x72, 0x22,
+	0x20, 0x0a, 0x0a, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x12, 0x0a,
+	0x04, 0x72, 0x6f, 0x77, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x77,
+	0x73, 0x42, 0x14, 0x5a, 0x12, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2f, 0x62, 0x61, 0x73, 0x69, 0x63, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -193,11 +242,12 @@ func file_course_proto_basic_basic_proto_rawDescGZIP() []byte {
 	return file_course_proto_basic_basic_proto_rawDescData
 }
 
-var file_course_proto_basic_basic_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_course_proto_basic_basic_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_course_proto_basic_basic_proto_goTypes = []interface{}{
-	(*Integer)(nil),    // 0: basic.Integer
-	(*String)(nil),     // 1: basic.String
-	(*StringList)(nil), // 2: basic.StringList
+	(*Integer)(nil),     // 0: basic.Integer
+	(*IntegerList)(nil), // 1: basic.IntegerList
+	(*String)(nil),      // 2: basic.String
+	(*StringList)(nil),  // 3: basic.StringList
 }
 var file_course_proto_basic_basic_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -226,7 +276,7 @@ func file_course_proto_basic_basic_proto_init() {
 			}
 		}
 		file_course_proto_basic_basic_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*String); i {
+			switch v := v.(*IntegerList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -238,6 +288,18 @@ func file_course_proto_basic_basic_proto_init() {
 			}
 		}
 		file_course_proto_basic_basic_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*String); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_proto_basic_basic_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StringList); i {
 			case 0:
 				return &v.state
@@ -256,7 +318,7 @@ func file_course_proto_basic_basic_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_course_proto_basic_basic_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

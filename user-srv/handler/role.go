@@ -20,13 +20,24 @@ func (u *UserServiceHandler) AllRole(ctx context.Context, in *basic.String, out 
 	return nil
 }
 
+//GetRole : 获取传入 ID 角色
+func (u *UserServiceHandler) GetRole(ctx context.Context, in *basic.String, out *dto.RoleDto) error {
+	r, exception := roleDao.SelectById(ctx, in.Str)
+	if exception != nil {
+		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
+	}
+	_ = util.CopyProperties(out, r)
+	return nil
+}
+
 //RoleList : 获取所有角色
 func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
-	list, exception := roleDao.List(ctx, in)
+	total, list, exception := roleDao.List(ctx, in)
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
+	out.Total = total
 	out.Rows = list
 	return nil
 }
@@ -45,7 +56,7 @@ func (u *UserServiceHandler) RoleLevel(ctx context.Context, in *basic.String, ou
 //SaveRole: 保存一种角色
 func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	roleDto, err := roleDao.Save(ctx, in)
-	if err.Code() != int32(public.OK) {
+	if err != nil {
 		return errors.New(config.UserServiceName, err.Error(), err.Code())
 	}
 	_ = util.CopyProperties(out, roleDto)
@@ -53,8 +64,13 @@ func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out 
 }
 
 //DeleteRole: 删除一种角色
-func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.String, out *basic.String) error {
-	exception := roleDao.Delete(ctx, in.Str)
+func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	var exception *public.BusinessException
+	if count := userDao.CountByRoles(ctx, in.Rows); count > 0 {
+		exception = public.NewBusinessException(public.ROLE_USER_EXIST)
+	} else {
+		exception = roleDao.Delete(ctx, in.Rows)
+	}
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
@@ -71,12 +87,12 @@ func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleD
 }
 
 //ListRoleResource: 获取角色权限
-func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.StringList) error {
+func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.IntegerList) error {
 	resources, exception := roleDao.ListRoleResource(ctx, in.Str)
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
-	out.Rows = resources
+	out.Ids = resources
 	return nil
 }
 

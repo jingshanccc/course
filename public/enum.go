@@ -23,6 +23,7 @@ const (
 	SEND_EMAIL_CODE_ERROR    ExceptionEnum = 20010
 	USER_EMAIL_EXIST         ExceptionEnum = 20011
 	USER_PHONE_EXIST         ExceptionEnum = 20012
+	ROLE_USER_EXIST          ExceptionEnum = 20013
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -67,6 +68,8 @@ func (code ExceptionEnum) getDesc() string {
 		return "用户邮箱已存在"
 	case USER_PHONE_EXIST:
 		return "用户手机号码已存在"
+	case ROLE_USER_EXIST:
+		return "所选角色存在用户关联，请解除关联再试！"
 	default:
 		return "未知错误"
 	}

@@ -11,7 +11,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
-	"strings"
 	"time"
 )
 
@@ -40,42 +39,13 @@ func (User) TableName() string {
 
 //List : get user page
 func (u *UserDao) List(ctx context.Context, in *dto.PageDto) (int64, []*dto.UserDto, *public.BusinessException) {
-	conditions := ""
-	join := "join role_user ru on ru.user_id = u.id join role r on r.id = ru.role_id "
-	// blurry 模糊搜索字段 sort 排序数组 ["id,desc","name,asc"]
-	and := true
-	if in.CreateTime != nil {
-		and = false
-		conditions += "where u.create_time between '" + in.CreateTime[0] + "' and '" + in.CreateTime[1] + "'"
-	}
-	if in.Blurry != "" {
-		if and {
-			conditions += "where "
-		} else {
-			conditions += " and "
-		}
-		conditions += "(u.name like '%" + in.Blurry + "%' or "
-		conditions += "u.login_name like '%" + in.Blurry + "%' or "
-		conditions += "u.email like '%" + in.Blurry + "%')"
-	}
-	var count int64
-	err := public.DB.Raw("select count(1) from user u " + conditions).Find(&count).Error
+	join := "join role_user ru on ru.user_id = x.id join role r on r.id = ru.role_id "
 	// 当使用 group_concat 若无 group by 只能选出一条记录
-	conditions += " group by u.id"
-	if in.Sort != nil {
-		conditions += " order by "
-		for i, s := range in.Sort {
-			sort := strings.Split(s, ",")
-			conditions += "u." + sort[0] + " " + sort[1]
-			if i != len(in.Sort)-1 {
-				conditions += ","
-			}
-		}
-	}
-
-	conditions += " limit ?,?"
+	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"login_name", "name", "email"}, " group by x.id")
+	var count int64
+	err := public.DB.Raw("select count(1) from user x " + forCount).Find(&count).Error
 	var res []*dto.UserDto
-	err = public.DB.Raw("select u.*, concat('[', group_concat(json_object('id',r.id, 'name',r.name, 'desc',r.`desc`)),']') as 'roles' from user u "+join+conditions, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+	err = public.DB.Raw("select x.*, concat('[', group_concat(json_object('id',r.id, 'name',r.name, 'desc',r.`desc`)),']') as 'roles' from user x "+join+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -254,4 +224,11 @@ func (u *UserDao) SelectByPhone(ctx context.Context, phone string) *dto.UserDto 
 	var us dto.UserDto
 	public.DB.Model(&User{}).Where("phone = ?", phone).First(&us)
 	return &us
+}
+
+//CountByRoles: 查询角色是否关联了用户
+func (u *UserDao) CountByRoles(ctx context.Context, roles []string) int64 {
+	var count int64
+	public.DB.Raw("SELECT count(1) FROM user u, role_user r WHERE u.id = r.user_id AND r.role_id in ?", roles).Find(&count)
+	return count
 }

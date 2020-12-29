@@ -6,16 +6,18 @@ import (
 	"course/public/util"
 	"course/user-srv/proto/dto"
 	"log"
+	"time"
 )
 
 type RoleDao struct {
 }
 
 type Role struct {
-	Id    string
-	Name  string
-	Desc  string
-	Level int32
+	Id         string
+	Name       string
+	Desc       string
+	Level      int32
+	CreateTime time.Time
 }
 
 func (Role) TableName() string {
@@ -38,41 +40,43 @@ func (r *RoleDao) All(ctx context.Context) ([]*dto.RoleDto, *public.BusinessExce
 }
 
 //List: 获取角色列表
-func (r *RoleDao) List(ctx context.Context, page *dto.RolePageDto) ([]*dto.RoleDto, *public.BusinessException) {
-	orderby := "desc"
-	if page.Asc {
-		orderby = "asc"
-	}
-	var roles []*Role
-	err := public.DB.Model(&Role{}).Order(page.SortBy + " " + orderby).Limit(int(page.PageSize)).Offset(int((page.PageNum - 1) * page.PageSize)).Find(&roles).Error
+func (r *RoleDao) List(ctx context.Context, in *dto.RolePageDto) (int64, []*dto.RoleDto, *public.BusinessException) {
+	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"name", "description"}, "")
+	var count int64
+	err := public.DB.Raw("select count(1) from role x " + forCount).Find(&count).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	res := make([]*dto.RoleDto, len(roles))
-	for i, role := range roles {
-		a := &dto.RoleDto{}
-		_ = util.CopyProperties(a, role)
-		res[i] = a
+	var res []*dto.RoleDto
+	err = public.DB.Raw("select x.* from role x "+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	return res, nil
+	for _, role := range res {
+		role.ResourceIds, _ = roleResourceDao.SelectByRoleId(ctx, role.Id)
+	}
+	return count, res, nil
 }
 
 //Save : update when rr.id exists, insert otherwise
 func (r *RoleDao) Save(ctx context.Context, rr *dto.RoleDto) (*dto.RoleDto, *public.BusinessException) {
 	if rr.Id != "" { //update
-		err := public.DB.Model(&Role{Id: rr.Id}).Updates(&Role{Name: rr.Name, Desc: rr.Desc}).Error
+		err := public.DB.Model(&Role{Id: rr.Id}).Updates(&Role{Name: rr.Name, Desc: rr.Desc, Level: rr.Level}).Error
 		if err != nil {
 			return &dto.RoleDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	} else { //insert
 		rr.Id = util.GetShortUuid()
-		err1 := public.DB.Create(&Role{
-			Id:   rr.Id,
-			Name: rr.Name,
-			Desc: rr.Desc,
+		err := public.DB.Create(&Role{
+			Id:         rr.Id,
+			Name:       rr.Name,
+			Desc:       rr.Desc,
+			Level:      rr.Level,
+			CreateTime: time.Now(),
 		}).Error
-		if err1 != nil {
+		if err != nil {
 			return &dto.RoleDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
 	}
@@ -80,10 +84,15 @@ func (r *RoleDao) Save(ctx context.Context, rr *dto.RoleDto) (*dto.RoleDto, *pub
 }
 
 // Delete 删除角色
-func (r *RoleDao) Delete(ctx context.Context, id string) *public.BusinessException {
-	err := public.DB.Delete(&Role{Id: id}).Error
+func (r *RoleDao) Delete(ctx context.Context, ids []string) *public.BusinessException {
+	err := public.DB.Where("id in ?", ids).Delete(&Role{}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	exception := roleResourceDao.DeleteByRoleId(ctx, ids)
+	if exception != nil {
+		log.Println("exec sql failed, err is " + exception.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return nil
@@ -91,10 +100,9 @@ func (r *RoleDao) Delete(ctx context.Context, id string) *public.BusinessExcepti
 
 // SaveRoleResource: 保存角色资源关联记录
 func (r *RoleDao) SaveRoleResource(ctx context.Context, rt *dto.RoleDto) *public.BusinessException {
-	exception := roleResourceDao.DeleteByRoleId(ctx, rt.Id)
+	exception := roleResourceDao.DeleteByRoleId(ctx, []string{rt.Id})
 	for _, resourceId := range rt.ResourceIds {
 		exception = roleResourceDao.Save(ctx, RoleResource{
-			Id:         util.GetShortUuid(),
 			RoleId:     rt.Id,
 			ResourceId: resourceId,
 		})
@@ -103,7 +111,7 @@ func (r *RoleDao) SaveRoleResource(ctx context.Context, rt *dto.RoleDto) *public
 }
 
 //ListRoleResource: 获取角色所有权限
-func (r *RoleDao) ListRoleResource(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
+func (r *RoleDao) ListRoleResource(ctx context.Context, roleId string) ([]int32, *public.BusinessException) {
 	return roleResourceDao.SelectByRoleId(ctx, roleId)
 }
 
@@ -120,7 +128,7 @@ func (r *RoleDao) SaveRoleUser(ctx context.Context, rt *dto.RoleDto) *public.Bus
 	return exception
 }
 
-//ListRoleResource: 获取角色所有权限
+//ListRoleUser: 获取角色所有用户
 func (r *RoleDao) ListRoleUser(ctx context.Context, roleId string) ([]string, *public.BusinessException) {
 	return roleUserDao.SelectByRoleId(ctx, roleId)
 }
@@ -134,4 +142,16 @@ func (r *RoleDao) SelectByUserId(userId string) ([]Role, *public.BusinessExcepti
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return roles, nil
+}
+
+//SelectById: 获取传入 ID 角色
+func (r *RoleDao) SelectById(ctx context.Context, id string) (*dto.RoleDto, *public.BusinessException) {
+	var res dto.RoleDto
+	err := public.DB.Raw("select * from role where id = ?", id).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	res.ResourceIds, _ = roleResourceDao.SelectByRoleId(ctx, res.Id)
+	return &res, nil
 }

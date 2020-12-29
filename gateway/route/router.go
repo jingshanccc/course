@@ -38,12 +38,14 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		{
 			resource.GET("/load-menus", user.LoadMenus)
 			resource.GET("/load-tree", user.LoadTree)
+			resource.GET("/child", user.MenuChild)
 			resource.POST("/save", user.SaveJson)
 			resource.DELETE("/delete", user.Delete)
 		}
 		role := admin.Group("/role")
 		{
 			role.GET("/all", user.AllRole)
+			role.GET("/find", user.GetRole)
 			role.GET("/level", user.RoleLevel)
 			role.POST("/list", user.RoleList)
 			role.POST("/save", user.SaveRole)
