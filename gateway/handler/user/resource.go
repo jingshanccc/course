@@ -6,6 +6,7 @@ import (
 	"course/gateway/middleware"
 	"course/proto/basic"
 	"course/public"
+	"course/user-srv/proto/dto"
 	"course/user-srv/proto/user"
 	"github.com/gin-gonic/gin"
 )
@@ -37,6 +38,30 @@ func MenuChild(ctx *gin.Context) {
 	if err := ctx.Bind(&req); err == nil {
 		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
 		list, err := resourceService.MenuChild(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//MenuList: 权限管理 权限表格数据
+func MenuList(ctx *gin.Context) {
+	var req dto.ResourcePageDto
+	if err := ctx.Bind(&req); err == nil {
+		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		list, err := resourceService.MenuList(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//MenuParent: 获取传入权限的所有父权限和同级权限
+func MenuParent(ctx *gin.Context) {
+	var req basic.IntegerList
+	if err := ctx.Bind(&req); err == nil {
+		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		list, err := resourceService.MenuParent(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))

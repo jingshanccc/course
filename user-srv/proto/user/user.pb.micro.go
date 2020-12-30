@@ -55,6 +55,8 @@ type UserService interface {
 	SaveEmail(ctx context.Context, in *dto.UpdateEmail, opts ...client.CallOption) (*basic.String, error)
 	//---------- 权限管理 ---------------
 	//resource
+	MenuList(ctx context.Context, in *dto.ResourcePageDto, opts ...client.CallOption) (*dto.ResourcePageDto, error)
+	MenuParent(ctx context.Context, in *basic.IntegerList, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	LoadTree(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	MenuChild(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.IntegerList, error)
@@ -158,6 +160,26 @@ func (c *userService) UserInfo(ctx context.Context, in *basic.String, opts ...cl
 func (c *userService) SaveEmail(ctx context.Context, in *dto.UpdateEmail, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.SaveEmail", in)
 	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) MenuList(ctx context.Context, in *dto.ResourcePageDto, opts ...client.CallOption) (*dto.ResourcePageDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.MenuList", in)
+	out := new(dto.ResourcePageDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) MenuParent(ctx context.Context, in *basic.IntegerList, opts ...client.CallOption) (*dto.ResourceDtoList, error) {
+	req := c.c.NewRequest(c.name, "UserService.MenuParent", in)
+	out := new(dto.ResourceDtoList)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -329,6 +351,8 @@ type UserServiceHandler interface {
 	SaveEmail(context.Context, *dto.UpdateEmail, *basic.String) error
 	//---------- 权限管理 ---------------
 	//resource
+	MenuList(context.Context, *dto.ResourcePageDto, *dto.ResourcePageDto) error
+	MenuParent(context.Context, *basic.IntegerList, *dto.ResourceDtoList) error
 	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
 	LoadTree(context.Context, *basic.Integer, *dto.ResourceDtoList) error
 	MenuChild(context.Context, *basic.Integer, *basic.IntegerList) error
@@ -357,6 +381,8 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		Logout(ctx context.Context, in *basic.String, out *basic.String) error
 		UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error
 		SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error
+		MenuList(ctx context.Context, in *dto.ResourcePageDto, out *dto.ResourcePageDto) error
+		MenuParent(ctx context.Context, in *basic.IntegerList, out *dto.ResourceDtoList) error
 		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		LoadTree(ctx context.Context, in *basic.Integer, out *dto.ResourceDtoList) error
 		MenuChild(ctx context.Context, in *basic.Integer, out *basic.IntegerList) error
@@ -414,6 +440,14 @@ func (h *userServiceHandler) UserInfo(ctx context.Context, in *basic.String, out
 
 func (h *userServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error {
 	return h.UserServiceHandler.SaveEmail(ctx, in, out)
+}
+
+func (h *userServiceHandler) MenuList(ctx context.Context, in *dto.ResourcePageDto, out *dto.ResourcePageDto) error {
+	return h.UserServiceHandler.MenuList(ctx, in, out)
+}
+
+func (h *userServiceHandler) MenuParent(ctx context.Context, in *basic.IntegerList, out *dto.ResourceDtoList) error {
+	return h.UserServiceHandler.MenuParent(ctx, in, out)
 }
 
 func (h *userServiceHandler) LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {

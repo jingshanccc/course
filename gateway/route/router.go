@@ -36,9 +36,11 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		//admin.GET("/captcha/image-code", handler.LoginCaptcha)
 		resource := admin.Group("/resource")
 		{
+			resource.POST("/list", user.MenuList)
 			resource.GET("/load-menus", user.LoadMenus)
 			resource.GET("/load-tree", user.LoadTree)
 			resource.GET("/child", user.MenuChild)
+			resource.POST("/parents", user.MenuParent)
 			resource.POST("/save", user.SaveJson)
 			resource.DELETE("/delete", user.Delete)
 		}

@@ -20,6 +20,8 @@ service UserService{
 
   //---------- 权限管理 ---------------
   //resource
+  rpc MenuList(ResourcePageDto) returns (ResourcePageDto);
+  rpc MenuParent(basic.IntegerList) returns (ResourceDtoList);
   rpc LoadMenus(basic.String) returns (ResourceDtoList);
   rpc LoadTree(basic.Integer) returns (ResourceDtoList);
   rpc MenuChild(basic.Integer) returns (basic.IntegerList);

@@ -18,11 +18,13 @@ type Resource struct {
 	Parent     int32
 	Type       int32
 	Title      string
+	Label      string
 	Name       string
 	Component  string
 	Sort       int32
 	Icon       string
 	Path       string
+	SubCount   int32
 	IFrame     bool
 	Cache      bool
 	Hidden     bool
@@ -39,11 +41,13 @@ func (Resource) TableName() string {
 
 //SelectById: 通过 ID 获取权限
 func (r *ResourceDao) SelectById(ctx context.Context, id int32) (*dto.ResourceDto, *public.BusinessException) {
-	var res dto.ResourceDto
-	err := public.DB.Model(&Resource{}).Where("id = ?", id).Find(&res).Error
+	var resource Resource
+	err := public.DB.Model(&Resource{}).Where("id = ?", id).Find(&resource).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
+	var res dto.ResourceDto
+	_ = util.CopyProperties(&res, resource)
 	return &res, nil
 }
 
@@ -125,7 +129,7 @@ func (r *ResourceDao) GetByParent(ctx context.Context, pid int32) ([]*dto.Resour
 	} else {
 		db = db.Where("parent is null")
 	}
-	err := db.Order("id").Find(&resources).Error
+	err := db.Order("sort").Find(&resources).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -158,6 +162,53 @@ func (r *ResourceDao) GetChildTree(ctx context.Context, resourceList []*dto.Reso
 		if resourceDtos != nil && len(resourceDtos) > 0 {
 			r.GetChildTree(ctx, resourceDtos, resourceSet)
 		}
+	}
+}
+
+//List: 分页数据
+func (r *ResourceDao) List(ctx context.Context, in *dto.ResourcePageDto) (int64, []*dto.ResourceDto, *public.BusinessException) {
+	db := public.DB.Model(&Resource{})
+	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"title", "component", "permission"}, "")
+	var count int64
+	err := db.Raw("select count(1) from menu x " + forCount).Find(&count).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	var res []*dto.ResourceDto
+	err = db.Raw("select x.* from menu x "+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return count, res, nil
+}
+
+//GetSuperior: 获取同级和父级的权限
+func (r *ResourceDao) GetSuperior(ctx context.Context, ids []int32) ([]*dto.ResourceDto, *public.BusinessException) {
+	var res []*dto.ResourceDto
+	for _, id := range ids {
+		resource, _ := r.SelectById(ctx, id)
+		var list []*dto.ResourceDto
+		res = append(res, r._getSuperior(ctx, resource, list)...)
+	}
+	reverseChild(res)
+	res = buildTree(res)
+	reverseChild(res)
+	return res, nil
+}
+
+func (r *ResourceDao) _getSuperior(ctx context.Context, resourceDto *dto.ResourceDto, list []*dto.ResourceDto) []*dto.ResourceDto {
+	l, _ := r.GetByParent(ctx, resourceDto.Parent)
+	if l != nil {
+		list = append(list, l...)
+	}
+	if resourceDto.Parent == 0 {
+		return list
+	} else {
+		rr, _ := r.SelectById(ctx, resourceDto.Parent)
+		return r._getSuperior(ctx, rr, list)
 	}
 }
 
@@ -218,7 +269,7 @@ func buildMenus(resources []*dto.ResourceDto) []*dto.ResourceDto {
 	return res
 }
 
-// buildTree: 将资源转换为树结构
+// buildTree: 将资源转换为树结构 此时 res 结构需按照 sort 升序排列
 func buildTree(res []*dto.ResourceDto) []*dto.ResourceDto {
 	var resp []*dto.ResourceDto
 	for i := len(res) - 1; i >= 0; i-- {
