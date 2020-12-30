@@ -18,7 +18,7 @@ func GeneratePageSql(createTime []string, blurry string, sort []string, blurryPr
 			forCount += " and "
 		}
 		for i, property := range blurryProperties {
-			forCount += "( x." + property + " like '%" + blurry + "%'"
+			forCount += "x." + property + " like '%" + blurry + "%'"
 			if i != len(blurryProperties)-1 {
 				forCount += " or "
 			}

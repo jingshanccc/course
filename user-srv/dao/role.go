@@ -41,7 +41,7 @@ func (r *RoleDao) All(ctx context.Context) ([]*dto.RoleDto, *public.BusinessExce
 
 //List: 获取角色列表
 func (r *RoleDao) List(ctx context.Context, in *dto.RolePageDto) (int64, []*dto.RoleDto, *public.BusinessException) {
-	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"name", "description"}, "")
+	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"name", "desc"}, "")
 	var count int64
 	err := public.DB.Raw("select count(1) from role x " + forCount).Find(&count).Error
 	if err != nil {
