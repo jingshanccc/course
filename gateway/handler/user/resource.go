@@ -68,11 +68,15 @@ func MenuParent(ctx *gin.Context) {
 	}
 }
 
-func SaveJson(ctx *gin.Context) {
-	var req basic.String
+//SaveResource: 新增/更新资源
+func SaveResource(ctx *gin.Context) {
+	var req dto.ResourceDto
 	if err := ctx.Bind(&req); err == nil {
+		req.Label = req.Title
+		_, u := middleware.GetCurrentUser(ctx)
+		req.UpdateBy = u.LoginName
 		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
-		str, err := resourceService.SaveJson(context.Background(), &req)
+		str, err := resourceService.SaveResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, str)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
@@ -80,7 +84,7 @@ func SaveJson(ctx *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
-	var req basic.Integer
+	var req basic.IntegerList
 	if err := ctx.Bind(&req); err == nil {
 		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
 		str, err := resourceService.DeleteResource(context.Background(), &req)

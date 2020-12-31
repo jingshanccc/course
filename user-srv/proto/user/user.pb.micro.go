@@ -60,8 +60,8 @@ type UserService interface {
 	LoadMenus(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	LoadTree(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*dto.ResourceDtoList, error)
 	MenuChild(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.IntegerList, error)
-	SaveJson(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
-	DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error)
+	SaveResource(ctx context.Context, in *dto.ResourceDto, opts ...client.CallOption) (*basic.String, error)
+	DeleteResource(ctx context.Context, in *basic.IntegerList, opts ...client.CallOption) (*basic.String, error)
 	//role
 	RoleList(ctx context.Context, in *dto.RolePageDto, opts ...client.CallOption) (*dto.RolePageDto, error)
 	AllRole(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.RoleDtoList, error)
@@ -217,8 +217,8 @@ func (c *userService) MenuChild(ctx context.Context, in *basic.Integer, opts ...
 	return out, nil
 }
 
-func (c *userService) SaveJson(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
-	req := c.c.NewRequest(c.name, "UserService.SaveJson", in)
+func (c *userService) SaveResource(ctx context.Context, in *dto.ResourceDto, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.SaveResource", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -227,7 +227,7 @@ func (c *userService) SaveJson(ctx context.Context, in *basic.String, opts ...cl
 	return out, nil
 }
 
-func (c *userService) DeleteResource(ctx context.Context, in *basic.Integer, opts ...client.CallOption) (*basic.String, error) {
+func (c *userService) DeleteResource(ctx context.Context, in *basic.IntegerList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "UserService.DeleteResource", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -356,8 +356,8 @@ type UserServiceHandler interface {
 	LoadMenus(context.Context, *basic.String, *dto.ResourceDtoList) error
 	LoadTree(context.Context, *basic.Integer, *dto.ResourceDtoList) error
 	MenuChild(context.Context, *basic.Integer, *basic.IntegerList) error
-	SaveJson(context.Context, *basic.String, *basic.String) error
-	DeleteResource(context.Context, *basic.Integer, *basic.String) error
+	SaveResource(context.Context, *dto.ResourceDto, *basic.String) error
+	DeleteResource(context.Context, *basic.IntegerList, *basic.String) error
 	//role
 	RoleList(context.Context, *dto.RolePageDto, *dto.RolePageDto) error
 	AllRole(context.Context, *basic.String, *dto.RoleDtoList) error
@@ -386,8 +386,8 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error
 		LoadTree(ctx context.Context, in *basic.Integer, out *dto.ResourceDtoList) error
 		MenuChild(ctx context.Context, in *basic.Integer, out *basic.IntegerList) error
-		SaveJson(ctx context.Context, in *basic.String, out *basic.String) error
-		DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error
+		SaveResource(ctx context.Context, in *dto.ResourceDto, out *basic.String) error
+		DeleteResource(ctx context.Context, in *basic.IntegerList, out *basic.String) error
 		RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error
 		AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error
 		GetRole(ctx context.Context, in *basic.String, out *dto.RoleDto) error
@@ -462,11 +462,11 @@ func (h *userServiceHandler) MenuChild(ctx context.Context, in *basic.Integer, o
 	return h.UserServiceHandler.MenuChild(ctx, in, out)
 }
 
-func (h *userServiceHandler) SaveJson(ctx context.Context, in *basic.String, out *basic.String) error {
-	return h.UserServiceHandler.SaveJson(ctx, in, out)
+func (h *userServiceHandler) SaveResource(ctx context.Context, in *dto.ResourceDto, out *basic.String) error {
+	return h.UserServiceHandler.SaveResource(ctx, in, out)
 }
 
-func (h *userServiceHandler) DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error {
+func (h *userServiceHandler) DeleteResource(ctx context.Context, in *basic.IntegerList, out *basic.String) error {
 	return h.UserServiceHandler.DeleteResource(ctx, in, out)
 }
 

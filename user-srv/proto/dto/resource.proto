@@ -24,7 +24,10 @@ message ResourceDto{
   int32 subCount = 17;
   string createTime = 18;
   string label = 19;
-  repeated ResourceDto children = 20;
+  string createBy = 20;
+  string updateBy = 21;
+  string updateTime = 22;
+  repeated ResourceDto children = 23;
 }
 
 message ResourceDtoList{

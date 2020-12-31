@@ -41,8 +41,9 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			resource.GET("/load-tree", user.LoadTree)
 			resource.GET("/child", user.MenuChild)
 			resource.POST("/parents", user.MenuParent)
-			resource.POST("/save", user.SaveJson)
-			resource.DELETE("/delete", user.Delete)
+			resource.POST("", user.SaveResource)
+			resource.PUT("", user.SaveResource)
+			resource.DELETE("", user.Delete)
 		}
 		role := admin.Group("/role")
 		{

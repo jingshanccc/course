@@ -5,9 +5,8 @@ import (
 	"course/public"
 	"course/public/util"
 	"course/user-srv/proto/dto"
-	"encoding/json"
-	"gorm.io/gorm"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -35,14 +34,16 @@ type Resource struct {
 	UpdateTime time.Time
 }
 
+const EntityName = "权限"
+
 func (Resource) TableName() string {
 	return "menu"
 }
 
-//SelectById: 通过 ID 获取权限
-func (r *ResourceDao) SelectById(ctx context.Context, id int32) (*dto.ResourceDto, *public.BusinessException) {
+//SelectByProperty: 通过 一个属性 获取权限
+func (r *ResourceDao) SelectByProperty(ctx context.Context, property string, value interface{}) (*dto.ResourceDto, *public.BusinessException) {
 	var resource Resource
-	err := public.DB.Model(&Resource{}).Where("id = ?", id).Find(&resource).Error
+	err := public.DB.Model(&Resource{}).Where(property+" = ?", value).Find(&resource).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -62,74 +63,90 @@ func (r *ResourceDao) SelectPermissionByUserId(ctx context.Context, userId strin
 }
 
 // Delete : 删除权限
-func (r *ResourceDao) Delete(ctx context.Context, id int32) *public.BusinessException {
-	public.DB.Delete(&Resource{Id: id})
+func (r *ResourceDao) Delete(ctx context.Context, ids []int32) *public.BusinessException {
+	// 获取传入 id 的权限及所有子权限
+	resourceSet := public.NewHashSet()
+	exception := r.GetChildMenus(ctx, ids, resourceSet)
+	if exception != nil {
+		return exception
+	}
+	var resourceIds []int32
+	var parents []int32
+	for _, res := range resourceSet.Values() {
+		re := res.(*dto.ResourceDto)
+		resourceIds = append(resourceIds, re.Id)
+		parents = append(parents, re.Parent)
+	}
+	// 解绑角色-权限
+	exception = roleResourceDao.DeleteByResources(ctx, resourceIds)
+	if exception != nil {
+		return exception
+	}
+	// 删除权限
+	public.DB.Delete(Resource{}, "id in ?", resourceIds)
+	// 更新子权限数
+	for _, id := range parents {
+		r.updateSubCnt(id)
+	}
 	return nil
 }
 
-//SaveJson : 保存权限树
-func (r *ResourceDao) SaveJson(ctx context.Context, jsonStr string) *public.BusinessException {
-	// rollback 逻辑
-	var exception *public.BusinessException
-	var tx *gorm.DB
-	defer func() {
-		if exception != nil {
-			tx.Rollback()
-		}
-	}()
-	// 从传入的json串中获取资源列表
-	var inputList []*dto.ResourceDto
-	err := json.Unmarshal([]byte(jsonStr), &inputList)
-	var list []*dto.ResourceDto
-	if err == nil && len(inputList) > 0 {
-		for _, resourceDto := range inputList {
-			//resourceDto.Parent = ""
-			add(&list, resourceDto)
+//Save: 保存/更新资源
+func (r *ResourceDao) Save(ctx context.Context, in *dto.ResourceDto) *public.BusinessException {
+	if in.IFrame {
+		lower := strings.ToLower(in.Path)
+		if !(strings.HasPrefix(lower, "http://") || strings.HasPrefix(lower, "https://")) {
+			return public.BadRequestException("外链必须以http://或者https://开头")
 		}
 	}
-	//删除数据库中的所有resource, 然后保存新的resource
-	tx = public.DB.Begin()
-	if err = tx.Error; err != nil {
-		return public.NewBusinessException(public.BEGIN_TRANSACTION_ERROR)
+	byTitle, _ := r.SelectByProperty(ctx, "title", in.Title)
+	if byTitle != nil && byTitle.Id != 0 && byTitle.Id != in.Id {
+		return public.EntityExistException(EntityName, "名称", in.Title)
 	}
-	if err = tx.Exec("delete from resource").Error; err != nil {
-		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	if in.Component != "" {
+		byComponent, _ := r.SelectByProperty(ctx, "component", in.Component)
+		if byComponent != nil && byComponent.Id != 0 && byComponent.Id != in.Id {
+			return public.EntityExistException(EntityName, "组件名称", in.Component)
+		}
 	}
-	for _, resourceDto := range list {
-		err = tx.Exec("insert into resource (id, name, page, request, parent) VALUES (?, ?, ?, ?, ?)", resourceDto.Id, resourceDto.Name, resourceDto.Path, resourceDto.Parent, resourceDto.Parent).Error
+	var resource Resource
+	_ = util.CopyProperties(&resource, in)
+	db := public.DB.Model(&Resource{})
+	if in.Id == 0 { // create
+		resource.CreateTime = time.Now()
+		resource.UpdateTime = time.Now()
+		resource.CreateBy = resource.UpdateBy
+		err := db.Create(&resource).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 		}
-	}
-
-	if err = tx.Commit().Error; err != nil {
-		log.Println("transaction commit error, need roll back")
-		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-	}
-	return nil
-}
-
-//add: 将树中的resource都取出来放到list
-func add(list *[]*dto.ResourceDto, resourceDto *dto.ResourceDto) {
-	*list = append(*list, resourceDto)
-	if resourceDto.Children != nil && len(resourceDto.Children) > 0 {
-		for _, child := range resourceDto.Children {
-			child.Parent = resourceDto.Id
-			add(list, child)
+		r.updateSubCnt(resource.Parent)
+	} else { // update
+		if in.Id == in.Parent {
+			return public.BadRequestException("父级权限不能为自己！")
+		}
+		byId, _ := r.SelectByProperty(ctx, "id", in.Id)
+		if byId == nil || byId.Id == 0 {
+			return public.BadRequestException("不存在当前记录！")
+		}
+		resource.Id = 0
+		resource.UpdateTime = time.Now()
+		err := db.Where("id = ?", in.Id).Updates(&resource).Error
+		if err != nil {
+			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		}
+		if in.Parent != byId.Parent {
+			r.updateSubCnt(in.Parent)
+			r.updateSubCnt(byId.Parent)
 		}
 	}
+	return nil
 }
 
 // GetByParent : 通过父ID parent查询权限
 func (r *ResourceDao) GetByParent(ctx context.Context, pid int32) ([]*dto.ResourceDto, *public.BusinessException) {
 	var resources []*dto.ResourceDto
-	db := public.DB.Model(&Resource{})
-	if pid != 0 {
-		db = db.Where("parent = ?", pid)
-	} else {
-		db = db.Where("parent is null")
-	}
-	err := db.Order("sort").Find(&resources).Error
+	err := public.DB.Model(&Resource{}).Where("parent = ?", pid).Order("sort").Find(&resources).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -154,13 +171,27 @@ func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*
 	return buildMenus(res), nil
 }
 
-//GetChildTree: 获取传入父 ID 的所有子权限
-func (r *ResourceDao) GetChildTree(ctx context.Context, resourceList []*dto.ResourceDto, resourceSet *public.HashSet) {
+//GetChildMenus: 获取传入父 ID 的所有子权限
+func (r *ResourceDao) GetChildMenus(ctx context.Context, ids []int32, resourceSet *public.HashSet) *public.BusinessException {
+	for _, id := range ids {
+		parent, _ := r.SelectByProperty(ctx, "id", id)
+		resourceSet.Add(parent)
+		resourceDtos, exception := r.GetByParent(ctx, parent.Id)
+		if exception != nil {
+			return exception
+		}
+		r.getChildTree(ctx, resourceDtos, resourceSet)
+	}
+	return nil
+}
+
+//getChildTree: 获取传入父 ID 的所有子权限
+func (r *ResourceDao) getChildTree(ctx context.Context, resourceList []*dto.ResourceDto, resourceSet *public.HashSet) {
 	for _, resource := range resourceList {
 		resourceSet.Add(resource)
 		resourceDtos, _ := r.GetByParent(ctx, resource.Id)
 		if resourceDtos != nil && len(resourceDtos) > 0 {
-			r.GetChildTree(ctx, resourceDtos, resourceSet)
+			r.getChildTree(ctx, resourceDtos, resourceSet)
 		}
 	}
 }
@@ -189,7 +220,7 @@ func (r *ResourceDao) List(ctx context.Context, in *dto.ResourcePageDto) (int64,
 func (r *ResourceDao) GetSuperior(ctx context.Context, ids []int32) ([]*dto.ResourceDto, *public.BusinessException) {
 	var res []*dto.ResourceDto
 	for _, id := range ids {
-		resource, _ := r.SelectById(ctx, id)
+		resource, _ := r.SelectByProperty(ctx, "id", id)
 		var list []*dto.ResourceDto
 		res = append(res, r._getSuperior(ctx, resource, list)...)
 	}
@@ -199,6 +230,7 @@ func (r *ResourceDao) GetSuperior(ctx context.Context, ids []int32) ([]*dto.Reso
 	return res, nil
 }
 
+//_getSuperior: 获取同级和父级权限 递归过程
 func (r *ResourceDao) _getSuperior(ctx context.Context, resourceDto *dto.ResourceDto, list []*dto.ResourceDto) []*dto.ResourceDto {
 	l, _ := r.GetByParent(ctx, resourceDto.Parent)
 	if l != nil {
@@ -207,8 +239,17 @@ func (r *ResourceDao) _getSuperior(ctx context.Context, resourceDto *dto.Resourc
 	if resourceDto.Parent == 0 {
 		return list
 	} else {
-		rr, _ := r.SelectById(ctx, resourceDto.Parent)
+		rr, _ := r.SelectByProperty(ctx, "id", resourceDto.Parent)
 		return r._getSuperior(ctx, rr, list)
+	}
+}
+
+//updateSubCnt: 更新传入 id 的子菜单数
+func (r *ResourceDao) updateSubCnt(parent int32) {
+	if parent != 0 {
+		var count int64
+		public.DB.Model(&Resource{}).Where("parent = ?", parent).Count(&count)
+		public.DB.Model(&Resource{}).Where("id = ?", parent).Update("sub_count", count)
 	}
 }
 

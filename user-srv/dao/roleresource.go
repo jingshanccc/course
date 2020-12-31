@@ -44,3 +44,12 @@ func (r *RoleResourceDao) SelectByRoleId(ctx context.Context, roleId string) ([]
 	}
 	return res, nil
 }
+
+//DeleteByResources: 通过权限 id 删除记录
+func (r *RoleResourceDao) DeleteByResources(ctx context.Context, ids []int32) *public.BusinessException {
+	err := public.DB.Delete(RoleResource{}, "resource_id in ?", ids).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}

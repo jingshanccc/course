@@ -25,8 +25,8 @@ service UserService{
   rpc LoadMenus(basic.String) returns (ResourceDtoList);
   rpc LoadTree(basic.Integer) returns (ResourceDtoList);
   rpc MenuChild(basic.Integer) returns (basic.IntegerList);
-  rpc SaveJson(basic.String) returns (basic.String);
-  rpc DeleteResource(basic.Integer) returns (basic.String);
+  rpc SaveResource(ResourceDto) returns (basic.String);
+  rpc DeleteResource(basic.IntegerList) returns (basic.String);
   //role
   rpc RoleList(RolePageDto) returns (RolePageDto);
   rpc AllRole(basic.String) returns (RoleDtoList);

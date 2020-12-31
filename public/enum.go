@@ -24,6 +24,8 @@ const (
 	USER_EMAIL_EXIST         ExceptionEnum = 20011
 	USER_PHONE_EXIST         ExceptionEnum = 20012
 	ROLE_USER_EXIST          ExceptionEnum = 20013
+
+	BAD_REQUEST ExceptionEnum = 40000
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -70,6 +72,8 @@ func (code ExceptionEnum) getDesc() string {
 		return "用户手机号码已存在"
 	case ROLE_USER_EXIST:
 		return "所选角色存在用户关联，请解除关联再试！"
+	case BAD_REQUEST:
+		return "错误的客户端请求"
 	default:
 		return "未知错误"
 	}

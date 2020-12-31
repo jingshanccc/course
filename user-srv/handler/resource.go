@@ -32,16 +32,11 @@ func (u *UserServiceHandler) LoadTree(ctx context.Context, in *basic.Integer, ou
 //MenuChild: 获取传入权限的子权限 id
 func (u *UserServiceHandler) MenuChild(ctx context.Context, in *basic.Integer, out *basic.IntegerList) error {
 	// 通过一个父 id 获取其所有的子权限
-	resource, exception := resourceDao.SelectById(ctx, in.Id)
+	resourceSet := public.NewHashSet()
+	exception := resourceDao.GetChildMenus(ctx, []int32{in.Id}, resourceSet)
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
-	resourceSet := public.NewHashSet(resource)
-	resourceDtos, exception := resourceDao.GetByParent(ctx, in.Id)
-	if exception != nil {
-		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
-	}
-	resourceDao.GetChildTree(ctx, resourceDtos, resourceSet)
 	var res []int32
 	for _, r := range resourceSet.Values() {
 		re := r.(*dto.ResourceDto)
@@ -56,7 +51,7 @@ func (u *UserServiceHandler) MenuList(ctx context.Context, in *dto.ResourcePageD
 	var list []*dto.ResourceDto
 	var exception *public.BusinessException
 	var count int64
-	if in.Blurry == "" {
+	if in.Blurry == "" && in.CreateTime == nil {
 		list, exception = resourceDao.GetByParent(ctx, in.Parent)
 	} else {
 		count, list, exception = resourceDao.List(ctx, in)
@@ -91,8 +86,8 @@ func (u *UserServiceHandler) MenuParent(ctx context.Context, in *basic.IntegerLi
 }
 
 // SaveJson : 保存权限树
-func (u *UserServiceHandler) SaveJson(ctx context.Context, in *basic.String, out *basic.String) error {
-	exception := resourceDao.SaveJson(ctx, in.Str)
+func (u *UserServiceHandler) SaveResource(ctx context.Context, in *dto.ResourceDto, out *basic.String) error {
+	exception := resourceDao.Save(ctx, in)
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
@@ -100,8 +95,8 @@ func (u *UserServiceHandler) SaveJson(ctx context.Context, in *basic.String, out
 }
 
 // DeleteResource: 删除权限
-func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *basic.Integer, out *basic.String) error {
-	exception := resourceDao.Delete(ctx, in.Id)
+func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *basic.IntegerList, out *basic.String) error {
+	exception := resourceDao.Delete(ctx, in.Ids)
 	if exception != nil {
 		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
 	}
