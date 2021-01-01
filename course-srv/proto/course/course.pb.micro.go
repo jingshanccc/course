@@ -53,9 +53,10 @@ type CourseService interface {
 	FindCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseContentDto, error)
 	SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, opts ...client.CallOption) (*basic.String, error)
 	//Category
+	ListCategory(ctx context.Context, in *dto.CategoryPageDto, opts ...client.CallOption) (*dto.CategoryPageDto, error)
 	AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error)
 	SaveCategory(ctx context.Context, in *dto.CategoryDto, opts ...client.CallOption) (*dto.CategoryDto, error)
-	DeleteCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteCategory(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	//Chapter
 	ListChapter(ctx context.Context, in *dto.ChapterPageDto, opts ...client.CallOption) (*dto.ChapterPageDto, error)
 	SaveChapter(ctx context.Context, in *dto.ChapterDto, opts ...client.CallOption) (*dto.ChapterDto, error)
@@ -157,6 +158,16 @@ func (c *courseService) SaveCourseContent(ctx context.Context, in *dto.CourseCon
 	return out, nil
 }
 
+func (c *courseService) ListCategory(ctx context.Context, in *dto.CategoryPageDto, opts ...client.CallOption) (*dto.CategoryPageDto, error) {
+	req := c.c.NewRequest(c.name, "CourseService.ListCategory", in)
+	out := new(dto.CategoryPageDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *courseService) AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error) {
 	req := c.c.NewRequest(c.name, "CourseService.AllCategory", in)
 	out := new(dto.CategoryDtoList)
@@ -177,7 +188,7 @@ func (c *courseService) SaveCategory(ctx context.Context, in *dto.CategoryDto, o
 	return out, nil
 }
 
-func (c *courseService) DeleteCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *courseService) DeleteCategory(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteCategory", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -329,9 +340,10 @@ type CourseServiceHandler interface {
 	FindCourseContent(context.Context, *basic.String, *dto.CourseContentDto) error
 	SaveCourseContent(context.Context, *dto.CourseContentDto, *basic.String) error
 	//Category
+	ListCategory(context.Context, *dto.CategoryPageDto, *dto.CategoryPageDto) error
 	AllCategory(context.Context, *basic.String, *dto.CategoryDtoList) error
 	SaveCategory(context.Context, *dto.CategoryDto, *dto.CategoryDto) error
-	DeleteCategory(context.Context, *basic.String, *basic.String) error
+	DeleteCategory(context.Context, *basic.StringList, *basic.String) error
 	//Chapter
 	ListChapter(context.Context, *dto.ChapterPageDto, *dto.ChapterPageDto) error
 	SaveChapter(context.Context, *dto.ChapterDto, *dto.ChapterDto) error
@@ -360,9 +372,10 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		SortCourse(ctx context.Context, in *dto.SortDto, out *basic.String) error
 		FindCourseContent(ctx context.Context, in *basic.String, out *dto.CourseContentDto) error
 		SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, out *basic.String) error
+		ListCategory(ctx context.Context, in *dto.CategoryPageDto, out *dto.CategoryPageDto) error
 		AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error
 		SaveCategory(ctx context.Context, in *dto.CategoryDto, out *dto.CategoryDto) error
-		DeleteCategory(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteCategory(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListChapter(ctx context.Context, in *dto.ChapterPageDto, out *dto.ChapterPageDto) error
 		SaveChapter(ctx context.Context, in *dto.ChapterDto, out *dto.ChapterDto) error
 		DeleteChapter(ctx context.Context, in *basic.String, out *basic.String) error
@@ -416,6 +429,10 @@ func (h *courseServiceHandler) SaveCourseContent(ctx context.Context, in *dto.Co
 	return h.CourseServiceHandler.SaveCourseContent(ctx, in, out)
 }
 
+func (h *courseServiceHandler) ListCategory(ctx context.Context, in *dto.CategoryPageDto, out *dto.CategoryPageDto) error {
+	return h.CourseServiceHandler.ListCategory(ctx, in, out)
+}
+
 func (h *courseServiceHandler) AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
 	return h.CourseServiceHandler.AllCategory(ctx, in, out)
 }
@@ -424,7 +441,7 @@ func (h *courseServiceHandler) SaveCategory(ctx context.Context, in *dto.Categor
 	return h.CourseServiceHandler.SaveCategory(ctx, in, out)
 }
 
-func (h *courseServiceHandler) DeleteCategory(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *courseServiceHandler) DeleteCategory(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteCategory(ctx, in, out)
 }
 

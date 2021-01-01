@@ -14,9 +14,10 @@ service CourseService {
   rpc SaveCourseContent(CourseContentDto) returns (basic.String);
 
   //Category
+  rpc ListCategory(CategoryPageDto) returns (CategoryPageDto);
   rpc AllCategory(basic.String) returns (CategoryDtoList);
   rpc SaveCategory(CategoryDto) returns (CategoryDto);
-  rpc DeleteCategory(basic.String) returns (basic.String);
+  rpc DeleteCategory(basic.StringList) returns (basic.String);
 
   //Chapter
   rpc ListChapter(ChapterPageDto) returns (ChapterPageDto);

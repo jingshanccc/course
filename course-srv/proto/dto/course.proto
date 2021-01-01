@@ -114,10 +114,20 @@ message CourseCategoryDtoList{
 //Category Dto
 
 message CategoryDto{
-  string Id = 1;
-  string Name = 2;
-  string Parent = 3;
+  string id = 1;
+  string name = 2;
+  string parent = 3;
   int32 sort = 4;
+}
+
+message CategoryPageDto {
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  int64 total = 5;
+  string parent = 6;
+  repeated CategoryDto rows = 7;
 }
 
 message CategoryDtoList{

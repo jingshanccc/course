@@ -54,3 +54,10 @@ func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.Cat
 	err = tx.Commit().Error
 	return res
 }
+
+//CountByCategories: 分类是否被课程关联
+func (r *CourseCategoryDao) CountByCategories(categories []string) int64 {
+	var count int64
+	public.DB.Model(&CourseCategory{}).Where("category_id in ?", categories).Count(&count)
+	return count
+}
