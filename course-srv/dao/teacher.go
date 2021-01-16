@@ -35,19 +35,17 @@ func (c *TeacherDao) All() ([]*dto.TeacherDto, *public.BusinessException) {
 }
 
 //List : get Teacher page
-func (c *TeacherDao) List(cd *dto.TeacherPageDto) ([]*dto.TeacherDto, *public.BusinessException) {
-	orderby := "desc"
-	if cd.Asc {
-		orderby = "asc"
-	}
-	var res []*dto.TeacherDto
-	err := public.DB.Model(&Teacher{}).Order(cd.SortBy + " " + orderby).Limit(int(cd.PageSize)).Offset(int((cd.PageNum - 1) * cd.PageSize)).Find(&res).Error
+func (c *TeacherDao) List(in *dto.TeacherPageDto) (int64, []*dto.TeacherDto, *public.BusinessException) {
+	forCount, forPage := util.GeneratePageSql(nil, in.Blurry, in.Sort, []string{"name", "nickname"}, "")
+	var count int64
+	err := public.DB.Model(&Course{}).Raw("select count(1) from teacher x " + forCount).Find(&count).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-
-	return res, nil
+	var res []*dto.TeacherDto
+	err = public.DB.Model(&Teacher{}).Raw("select x.* from teacher x "+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+	return count, res, nil
 }
 
 //Save: 保存/更新讲师

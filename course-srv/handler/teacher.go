@@ -21,12 +21,13 @@ func (c *CourseServiceHandler) AllTeacher(ctx context.Context, in *basic.String,
 
 //ListTeacher: get Teacher page
 func (c *CourseServiceHandler) ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error {
-	list, exception := teacherDao.List(in)
+	count, list, exception := teacherDao.List(in)
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Rows = list
+	out.Total = count
 	return nil
 }
 

@@ -9,91 +9,92 @@ message CourseDto{
   /*
    * id
    */
-  string Id = 1;
+  string id = 1;
 
   /*
    * 名称
    */
-  string Name = 2;
+  string name = 2;
 
   /*
    * 概述
    */
-  string Summary = 3;
+  string summary = 3;
 
   /*
    * 时长|单位秒
    */
-  int32 Time = 4;
+  int32 time = 4;
 
   /*
    * 价格（元）
    */
-  double Price = 5;
+  double price = 5;
 
   /*
    * 封面
    */
-  string Image = 6;
+  string image = 6;
 
   /*
    * 级别|枚举[CourseLevelEnum]：ONE("1", "初级"),TWO("2", "中级"),THREE("3", "高级")
    */
-  string Level = 7;
+  string level = 7;
 
   /*
    * 收费|枚举[CourseChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
    */
-  string Charge = 8;
+  string charge = 8;
 
   /*
    * 状态|枚举[CourseStatusEnum]：PUBLISH("P", "发布"),DRAFT("D", "草稿")
    */
-  string Status = 9;
+  string status = 9;
 
   /*
    * 报名数
    */
-  int32 Enroll = 10;
+  int32 enroll = 10;
 
   /*
    * 顺序
    */
-  int32 Sort = 11;
+  int32 sort = 11;
 
   /*
    * 创建时间
    */
-  string CreatedAt = 12;
+  string createdAt = 12;
 
   /*
    * 修改时间
    */
-  string UpdatedAt = 13;
+  string updatedAt = 13;
 
-  repeated CategoryDto Categories = 14;
+  repeated CategoryDto categories = 14;
 
-  repeated ChapterDto Chapters = 15;
+  repeated ChapterDto chapters = 15;
 
-  repeated SectionDto Sections = 16;
+  repeated SectionDto sections = 16;
 
-  string Content = 17;
+  string content = 17;
 
-  TeacherDto Teacher = 18;
+  TeacherDto teacher = 18;
 
   /*
    * 讲师|teacher.id
    */
-  string TeacherId = 19;
+  string teacherId = 19;
 }
 
 message CoursePageDto {
-
-  int32 PageSize = 1;
-  int32 PageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  repeated CourseDto rows = 5;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  int64 total = 5;
+  repeated string createTime = 6;
+  repeated CourseDto rows = 7;
 }
 
 message CourseContentDto {
@@ -218,45 +219,46 @@ message TeacherDto {
   /*
    * id
    */
-  string Id = 1;
+  string id = 1;
 
   /*
    * 姓名
    */
-  string Name = 2;
+  string name = 2;
 
   /*
    * 昵称
    */
-  string Nickname = 3;
+  string nickname = 3;
 
   /*
    * 头像
    */
-  string Image = 4;
+  string image = 4;
 
   /*
    * 职位
    */
-  string Position = 5;
+  string position = 5;
 
   /*
    * 座右铭
    */
-  string Motto = 6;
+  string motto = 6;
 
   /*
    * 简介
    */
-  string Intro = 7;
+  string intro = 7;
 }
 
 message TeacherPageDto {
-  int32 PageSize = 1;
-  int32 PageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  repeated TeacherDto rows = 5;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  int64 total = 5;
+  repeated TeacherDto rows = 6;
 }
 
 message TeacherDtoList {

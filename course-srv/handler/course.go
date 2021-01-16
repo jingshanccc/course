@@ -13,12 +13,13 @@ import (
 
 //CourseList: get course page
 func (c *CourseServiceHandler) CourseList(ctx context.Context, in *dto.CoursePageDto, out *dto.CoursePageDto) error {
-	courseDtos, err := courseDao.List(in)
+	count, courseDtos, err := courseDao.List(in)
 	if err != nil {
 		return errors.New(config.CourseServiceName, err.Error(), err.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Rows = courseDtos
+	out.Total = count
 	return nil
 }
 

@@ -35,25 +35,17 @@ func (Course) TableName() string {
 }
 
 //List : get course page
-func (c *CourseDao) List(cd *dto.CoursePageDto) ([]*dto.CourseDto, *public.BusinessException) {
-	orderby := "desc"
-	if cd.Asc {
-		orderby = "asc"
-	}
-	var courses []Course
-	err := public.DB.Model(&Course{}).Order(cd.SortBy + " " + orderby).Limit(int(cd.PageSize)).Offset(int((cd.PageNum - 1) * cd.PageSize)).Find(&courses).Error
+func (c *CourseDao) List(in *dto.CoursePageDto) (int64, []*dto.CourseDto, *public.BusinessException) {
+	forCount, forPage := util.GeneratePageSql(in.CreateTime, in.Blurry, in.Sort, []string{"name", "summary"}, "")
+	var count int64
+	err := public.DB.Model(&Course{}).Raw("select count(1) from course x" + forCount).Find(&count).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-	//解决CourseDto直接被sql赋值时列表字段未被sql忽略而产生的报错
-	res := make([]*dto.CourseDto, len(courses))
-	for index, val := range courses {
-		r := dto.CourseDto{}
-		_ = util.CopyProperties(&r, val)
-		res[index] = &r
-	}
-	return res, nil
+	var res []*dto.CourseDto
+	err = public.DB.Model(&Course{}).Raw("select x.* from course x"+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+	return count, res, nil
 }
 
 //Save: 保存/更新
