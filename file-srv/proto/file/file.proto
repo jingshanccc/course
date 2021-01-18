@@ -1,0 +1,9 @@
+syntax="proto3";
+package file;
+option go_package="course/file-srv/proto/file";
+import "course/file-srv/proto/dto/file.proto";
+import "course/proto/basic/basic.proto";
+service FileService {
+  rpc Upload(FileDto) returns(FileDto);
+  rpc Check(basic.String) returns(FileDto);
+}

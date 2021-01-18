@@ -1,11 +1,14 @@
 package route
 
 import (
+	"course/config"
 	"course/gateway/handler"
 	"course/gateway/handler/course"
+	"course/gateway/handler/file"
 	"course/gateway/handler/user"
 	"course/gateway/middleware"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func NewRouter(service ...interface{}) *gin.Engine {
@@ -105,6 +108,12 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			teacher.DELETE("", course.DeleteTeacher)
 		}
 	}
-
+	files := v1.Group("/file")
+	files.StaticFS("/store", http.Dir(config.FilePath))
+	files.Use(middleware.JWT())
+	{
+		files.POST("/upload", file.Upload)
+		files.GET("/check", file.Check)
+	}
 	return ginRouter
 }

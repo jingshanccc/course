@@ -69,11 +69,13 @@ func init() {
 func SaveServices(service []interface{}) gin.HandlerFunc {
 	Services[config.UserServiceName] = service[0]
 	Services[config.CourseServiceName] = service[1]
+	Services[config.FileServiceName] = service[2]
 	return func(context *gin.Context) {
 		//将实例存到gin.Keys里
 		context.Keys = make(map[string]interface{})
 		context.Keys[config.UserServiceName] = service[0]
 		context.Keys[config.CourseServiceName] = service[1]
+		context.Keys[config.FileServiceName] = service[2]
 		context.Next()
 	}
 }

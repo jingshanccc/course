@@ -13,6 +13,14 @@ const (
 	CourseCliName     = "com.chan.course.course-cli"
 )
 
+// file-service
+const (
+	FileServiceName = "com.chan.course.file"
+	FileClientName  = "com.chan.course.file-cli"
+	FilePath        = "F:/GoWorkspace/course/file-srv/store/"
+	FileUrl         = "http://dev.course.com:4000/api/v1/file/store/"
+)
+
 const (
 	JwtKey      = "micah"
 	TokenExpire = 48

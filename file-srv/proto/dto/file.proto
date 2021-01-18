@@ -1,0 +1,18 @@
+syntax="proto3";
+package file;
+option go_package="course/file-srv/proto/dto";
+
+message FileDto {
+  string id = 1;
+  string path = 2;
+  string name = 3;
+  string suffix = 4;
+  int64 size = 5;
+  string key = 6; //文件标识
+  string shard = 7; //分片|base64格式
+  int32 shardIndex = 8; // 已上传分片数
+  int32 shardTotal = 9; // 分片总数
+  int32 shardSize = 10; //分片大小
+  string createAt = 11;
+  string updateAt = 12;
+}
