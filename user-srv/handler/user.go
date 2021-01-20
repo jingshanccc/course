@@ -26,6 +26,20 @@ func (u *UserServiceHandler) List(ctx context.Context, in *dto.PageDto, out *dto
 	return nil
 }
 
+//SaveUserInfo: 更新当前登录用户信息
+func (u *UserServiceHandler) SaveUserInfo(ctx context.Context, in *dto.UserDto, out *dto.UserDto) error {
+	var usr dao.User
+	_ = util.CopyProperties(&usr, in)
+	usr.UpdateTime = time.Now()
+	_, exception := userDao.Update(ctx, &usr)
+	if exception != nil {
+		return errors.New(config.UserServiceName, exception.Error(), exception.Code())
+	}
+	_ = util.CopyProperties(out, in)
+	redis.RedisClient.Del(ctx, config.UserInfoKey+in.Id)
+	return nil
+}
+
 //Save: 新增/更新用户信息
 func (u *UserServiceHandler) Save(ctx context.Context, in *dto.UserDto, out *dto.UserDto) error {
 	var usr dao.User
@@ -77,6 +91,7 @@ func (u *UserServiceHandler) Delete(ctx context.Context, in *basic.StringList, o
 
 //UserInfo: 获取用户信息
 func (u *UserServiceHandler) UserInfo(ctx context.Context, in *basic.String, out *dto.UserDto) error {
+	redis.RedisClient.Del(ctx, config.UserInfoKey+in.Str)
 	var exception *public.BusinessException
 	var err error
 	defer func() {
@@ -136,5 +151,6 @@ func (u *UserServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail,
 	if err != nil {
 		return errors.New(config.UserServiceName, err.Error(), err.Code())
 	}
+	redis.RedisClient.Del(ctx, config.UserInfoKey+in.UserId)
 	return nil
 }

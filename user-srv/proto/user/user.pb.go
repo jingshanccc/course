@@ -38,11 +38,14 @@ var file_course_user_srv_proto_user_user_proto_rawDesc = []byte{
 	0x6f, 0x2f, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2f, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x1a, 0x28, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x75, 0x73, 0x65, 0x72,
 	0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x2f, 0x72,
-	0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0xc0, 0x09,
+	0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0xf0, 0x09,
 	0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x26, 0x0a,
 	0x04, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x0d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x50, 0x61, 0x67,
 	0x65, 0x44, 0x74, 0x6f, 0x1a, 0x0d, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x50, 0x61, 0x67, 0x65,
 	0x44, 0x74, 0x6f, 0x22, 0x00, 0x12, 0x26, 0x0a, 0x04, 0x53, 0x61, 0x76, 0x65, 0x12, 0x0d, 0x2e,
+	0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x1a, 0x0d, 0x2e, 0x75,
+	0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x22, 0x00, 0x12, 0x2e, 0x0a,
+	0x0c, 0x53, 0x61, 0x76, 0x65, 0x55, 0x73, 0x65, 0x72, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x0d, 0x2e,
 	0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x1a, 0x0d, 0x2e, 0x75,
 	0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x74, 0x6f, 0x22, 0x00, 0x12, 0x2c, 0x0a,
 	0x06, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x11, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e,
@@ -140,56 +143,58 @@ var file_course_user_srv_proto_user_user_proto_goTypes = []interface{}{
 var file_course_user_srv_proto_user_user_proto_depIdxs = []int32{
 	0,  // 0: user.UserService.List:input_type -> user.PageDto
 	1,  // 1: user.UserService.Save:input_type -> user.UserDto
-	2,  // 2: user.UserService.Delete:input_type -> basic.StringList
-	3,  // 3: user.UserService.SavePassword:input_type -> user.UpdatePass
-	4,  // 4: user.UserService.Login:input_type -> user.LoginUserDto
-	5,  // 5: user.UserService.Logout:input_type -> basic.String
-	5,  // 6: user.UserService.UserInfo:input_type -> basic.String
-	6,  // 7: user.UserService.SaveEmail:input_type -> user.UpdateEmail
-	7,  // 8: user.UserService.MenuList:input_type -> user.ResourcePageDto
-	8,  // 9: user.UserService.MenuParent:input_type -> basic.IntegerList
-	5,  // 10: user.UserService.LoadMenus:input_type -> basic.String
-	9,  // 11: user.UserService.LoadTree:input_type -> basic.Integer
-	9,  // 12: user.UserService.MenuChild:input_type -> basic.Integer
-	10, // 13: user.UserService.SaveResource:input_type -> user.ResourceDto
-	8,  // 14: user.UserService.DeleteResource:input_type -> basic.IntegerList
-	11, // 15: user.UserService.RoleList:input_type -> user.RolePageDto
-	5,  // 16: user.UserService.AllRole:input_type -> basic.String
-	5,  // 17: user.UserService.GetRole:input_type -> basic.String
-	5,  // 18: user.UserService.RoleLevel:input_type -> basic.String
-	12, // 19: user.UserService.SaveRole:input_type -> user.RoleDto
-	2,  // 20: user.UserService.DeleteRole:input_type -> basic.StringList
-	12, // 21: user.UserService.SaveRoleResource:input_type -> user.RoleDto
-	5,  // 22: user.UserService.ListRoleResource:input_type -> basic.String
-	12, // 23: user.UserService.SaveRoleUser:input_type -> user.RoleDto
-	5,  // 24: user.UserService.ListRoleUser:input_type -> basic.String
-	0,  // 25: user.UserService.List:output_type -> user.PageDto
-	1,  // 26: user.UserService.Save:output_type -> user.UserDto
-	5,  // 27: user.UserService.Delete:output_type -> basic.String
-	5,  // 28: user.UserService.SavePassword:output_type -> basic.String
-	4,  // 29: user.UserService.Login:output_type -> user.LoginUserDto
-	5,  // 30: user.UserService.Logout:output_type -> basic.String
-	1,  // 31: user.UserService.UserInfo:output_type -> user.UserDto
-	5,  // 32: user.UserService.SaveEmail:output_type -> basic.String
-	7,  // 33: user.UserService.MenuList:output_type -> user.ResourcePageDto
-	13, // 34: user.UserService.MenuParent:output_type -> user.ResourceDtoList
-	13, // 35: user.UserService.LoadMenus:output_type -> user.ResourceDtoList
-	13, // 36: user.UserService.LoadTree:output_type -> user.ResourceDtoList
-	8,  // 37: user.UserService.MenuChild:output_type -> basic.IntegerList
-	5,  // 38: user.UserService.SaveResource:output_type -> basic.String
-	5,  // 39: user.UserService.DeleteResource:output_type -> basic.String
-	11, // 40: user.UserService.RoleList:output_type -> user.RolePageDto
-	14, // 41: user.UserService.AllRole:output_type -> user.RoleDtoList
-	12, // 42: user.UserService.GetRole:output_type -> user.RoleDto
-	9,  // 43: user.UserService.RoleLevel:output_type -> basic.Integer
-	12, // 44: user.UserService.SaveRole:output_type -> user.RoleDto
-	5,  // 45: user.UserService.DeleteRole:output_type -> basic.String
-	12, // 46: user.UserService.SaveRoleResource:output_type -> user.RoleDto
-	8,  // 47: user.UserService.ListRoleResource:output_type -> basic.IntegerList
-	12, // 48: user.UserService.SaveRoleUser:output_type -> user.RoleDto
-	2,  // 49: user.UserService.ListRoleUser:output_type -> basic.StringList
-	25, // [25:50] is the sub-list for method output_type
-	0,  // [0:25] is the sub-list for method input_type
+	1,  // 2: user.UserService.SaveUserInfo:input_type -> user.UserDto
+	2,  // 3: user.UserService.Delete:input_type -> basic.StringList
+	3,  // 4: user.UserService.SavePassword:input_type -> user.UpdatePass
+	4,  // 5: user.UserService.Login:input_type -> user.LoginUserDto
+	5,  // 6: user.UserService.Logout:input_type -> basic.String
+	5,  // 7: user.UserService.UserInfo:input_type -> basic.String
+	6,  // 8: user.UserService.SaveEmail:input_type -> user.UpdateEmail
+	7,  // 9: user.UserService.MenuList:input_type -> user.ResourcePageDto
+	8,  // 10: user.UserService.MenuParent:input_type -> basic.IntegerList
+	5,  // 11: user.UserService.LoadMenus:input_type -> basic.String
+	9,  // 12: user.UserService.LoadTree:input_type -> basic.Integer
+	9,  // 13: user.UserService.MenuChild:input_type -> basic.Integer
+	10, // 14: user.UserService.SaveResource:input_type -> user.ResourceDto
+	8,  // 15: user.UserService.DeleteResource:input_type -> basic.IntegerList
+	11, // 16: user.UserService.RoleList:input_type -> user.RolePageDto
+	5,  // 17: user.UserService.AllRole:input_type -> basic.String
+	5,  // 18: user.UserService.GetRole:input_type -> basic.String
+	5,  // 19: user.UserService.RoleLevel:input_type -> basic.String
+	12, // 20: user.UserService.SaveRole:input_type -> user.RoleDto
+	2,  // 21: user.UserService.DeleteRole:input_type -> basic.StringList
+	12, // 22: user.UserService.SaveRoleResource:input_type -> user.RoleDto
+	5,  // 23: user.UserService.ListRoleResource:input_type -> basic.String
+	12, // 24: user.UserService.SaveRoleUser:input_type -> user.RoleDto
+	5,  // 25: user.UserService.ListRoleUser:input_type -> basic.String
+	0,  // 26: user.UserService.List:output_type -> user.PageDto
+	1,  // 27: user.UserService.Save:output_type -> user.UserDto
+	1,  // 28: user.UserService.SaveUserInfo:output_type -> user.UserDto
+	5,  // 29: user.UserService.Delete:output_type -> basic.String
+	5,  // 30: user.UserService.SavePassword:output_type -> basic.String
+	4,  // 31: user.UserService.Login:output_type -> user.LoginUserDto
+	5,  // 32: user.UserService.Logout:output_type -> basic.String
+	1,  // 33: user.UserService.UserInfo:output_type -> user.UserDto
+	5,  // 34: user.UserService.SaveEmail:output_type -> basic.String
+	7,  // 35: user.UserService.MenuList:output_type -> user.ResourcePageDto
+	13, // 36: user.UserService.MenuParent:output_type -> user.ResourceDtoList
+	13, // 37: user.UserService.LoadMenus:output_type -> user.ResourceDtoList
+	13, // 38: user.UserService.LoadTree:output_type -> user.ResourceDtoList
+	8,  // 39: user.UserService.MenuChild:output_type -> basic.IntegerList
+	5,  // 40: user.UserService.SaveResource:output_type -> basic.String
+	5,  // 41: user.UserService.DeleteResource:output_type -> basic.String
+	11, // 42: user.UserService.RoleList:output_type -> user.RolePageDto
+	14, // 43: user.UserService.AllRole:output_type -> user.RoleDtoList
+	12, // 44: user.UserService.GetRole:output_type -> user.RoleDto
+	9,  // 45: user.UserService.RoleLevel:output_type -> basic.Integer
+	12, // 46: user.UserService.SaveRole:output_type -> user.RoleDto
+	5,  // 47: user.UserService.DeleteRole:output_type -> basic.String
+	12, // 48: user.UserService.SaveRoleResource:output_type -> user.RoleDto
+	8,  // 49: user.UserService.ListRoleResource:output_type -> basic.IntegerList
+	12, // 50: user.UserService.SaveRoleUser:output_type -> user.RoleDto
+	2,  // 51: user.UserService.ListRoleUser:output_type -> basic.StringList
+	26, // [26:52] is the sub-list for method output_type
+	0,  // [0:26] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

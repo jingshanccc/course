@@ -142,17 +142,18 @@ func (u *UserDao) Update(ctx context.Context, userDto *User) (*User, *public.Bus
 		return nil, public.NewBusinessException(public.USER_LOGIN_NAME_EXIST)
 	}
 	usd := u.SelectByEmail(ctx, userDto.Email)
-	if usd.Id != "" && us.Id != userDto.Id {
+	if usd.Id != "" && usd.Id != userDto.Id {
 		return nil, public.NewBusinessException(public.USER_EMAIL_EXIST)
 	}
 	usd = u.SelectByPhone(ctx, userDto.Phone)
-	if usd.Id != "" && us.Id != userDto.Id {
+	if usd.Id != "" && usd.Id != userDto.Id {
 		return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
 	}
 
+	id := userDto.Id
 	userDto.Id = ""
 	userDto.Password = ""
-	err := public.DB.Model(&User{Id: userDto.Id}).Updates(userDto).Error
+	err := public.DB.Model(&User{Id: id}).Updates(userDto).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}

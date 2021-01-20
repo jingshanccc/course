@@ -74,8 +74,8 @@ func (c *CourseDao) Save(cd *dto.CourseDto) (*dto.CourseDto, *public.BusinessExc
 }
 
 // Delete 删除课程
-func (c *CourseDao) Delete(id string) *public.BusinessException {
-	err := public.DB.Delete(&Course{Id: id}).Error
+func (c *CourseDao) Delete(ids []string) *public.BusinessException {
+	err := public.DB.Model(&Teacher{}).Where("id in ?", ids).Delete(&Course{}).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)

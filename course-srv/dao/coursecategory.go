@@ -34,7 +34,7 @@ func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]*dto.CourseCate
 func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.CategoryDto) *public.BusinessException {
 	var err error
 	var tx *gorm.DB
-	res := public.NoException("")
+	var res *public.BusinessException
 	defer func() {
 		if err != nil {
 			tx.Rollback()

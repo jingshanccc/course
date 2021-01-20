@@ -64,8 +64,8 @@ func merge(in *dto.FileDto) {
 	fileName := in.Key + "." + in.Suffix
 	file, _ := os.Create(config.FilePath + fileName)
 	defer file.Close()
-	for i := 0; i < int(in.ShardTotal); i++ {
-		shard, _ := os.Open(config.FilePath + fileName + "." + strconv.Itoa(i+1))
+	for i := 1; i <= int(in.ShardTotal); i++ {
+		shard, _ := os.Open(config.FilePath + fileName + "." + strconv.Itoa(i))
 		buf := make([]byte, 10*1024*1024)
 		for {
 			n, err := shard.Read(buf)
@@ -78,10 +78,10 @@ func merge(in *dto.FileDto) {
 		}
 	}
 	time.Sleep(100 * time.Millisecond)
-	for i := 0; i < int(in.ShardTotal); i++ {
-		err := os.Remove(config.FilePath + fileName + "." + strconv.Itoa(i+1))
+	for i := 1; i <= int(in.ShardTotal); i++ {
+		err := os.Remove(config.FilePath + fileName + "." + strconv.Itoa(i))
 		if err != nil {
-			log.Printf("delete shard failed, file is %s, shardIndex is %v \n", in.Key, i+1)
+			log.Printf("delete shard failed, file is %s, shardIndex is %v \n", in.Key, i)
 		}
 	}
 }

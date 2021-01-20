@@ -48,7 +48,7 @@ func SaveTeacher(ctx *gin.Context) {
 
 //DeleteTeacher: 删除讲师
 func DeleteTeacher(ctx *gin.Context) {
-	var req basic.String
+	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteTeacher(context.Background(), &req)

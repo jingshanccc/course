@@ -7,7 +7,7 @@ service CourseService {
   //Course
   rpc CourseList(CoursePageDto) returns (CoursePageDto);
   rpc SaveCourse(CourseDto) returns (CourseDto);
-  rpc DeleteCourse(basic.String) returns (basic.String);
+  rpc DeleteCourse(basic.StringList) returns (basic.String);
   rpc ListCourseCategory(basic.String) returns (CourseCategoryDtoList);
   rpc SortCourse(SortDto) returns (basic.String);
   rpc FindCourseContent(basic.String) returns (CourseContentDto);
@@ -38,5 +38,5 @@ service CourseService {
   rpc ListTeacher(TeacherPageDto) returns (TeacherPageDto);
   rpc AllTeacher(basic.String) returns (TeacherDtoList);
   rpc SaveTeacher(TeacherDto) returns (TeacherDto);
-  rpc DeleteTeacher(basic.String) returns (basic.String);
+  rpc DeleteTeacher(basic.StringList) returns (basic.String);
 }

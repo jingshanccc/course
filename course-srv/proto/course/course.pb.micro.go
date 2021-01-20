@@ -47,7 +47,7 @@ type CourseService interface {
 	//Course
 	CourseList(ctx context.Context, in *dto.CoursePageDto, opts ...client.CallOption) (*dto.CoursePageDto, error)
 	SaveCourse(ctx context.Context, in *dto.CourseDto, opts ...client.CallOption) (*dto.CourseDto, error)
-	DeleteCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteCourse(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	ListCourseCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseCategoryDtoList, error)
 	SortCourse(ctx context.Context, in *dto.SortDto, opts ...client.CallOption) (*basic.String, error)
 	FindCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseContentDto, error)
@@ -73,7 +73,7 @@ type CourseService interface {
 	ListTeacher(ctx context.Context, in *dto.TeacherPageDto, opts ...client.CallOption) (*dto.TeacherPageDto, error)
 	AllTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error)
 	SaveTeacher(ctx context.Context, in *dto.TeacherDto, opts ...client.CallOption) (*dto.TeacherDto, error)
-	DeleteTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteTeacher(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -108,7 +108,7 @@ func (c *courseService) SaveCourse(ctx context.Context, in *dto.CourseDto, opts 
 	return out, nil
 }
 
-func (c *courseService) DeleteCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *courseService) DeleteCourse(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteCourse", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -318,7 +318,7 @@ func (c *courseService) SaveTeacher(ctx context.Context, in *dto.TeacherDto, opt
 	return out, nil
 }
 
-func (c *courseService) DeleteTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *courseService) DeleteTeacher(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteTeacher", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -334,7 +334,7 @@ type CourseServiceHandler interface {
 	//Course
 	CourseList(context.Context, *dto.CoursePageDto, *dto.CoursePageDto) error
 	SaveCourse(context.Context, *dto.CourseDto, *dto.CourseDto) error
-	DeleteCourse(context.Context, *basic.String, *basic.String) error
+	DeleteCourse(context.Context, *basic.StringList, *basic.String) error
 	ListCourseCategory(context.Context, *basic.String, *dto.CourseCategoryDtoList) error
 	SortCourse(context.Context, *dto.SortDto, *basic.String) error
 	FindCourseContent(context.Context, *basic.String, *dto.CourseContentDto) error
@@ -360,14 +360,14 @@ type CourseServiceHandler interface {
 	ListTeacher(context.Context, *dto.TeacherPageDto, *dto.TeacherPageDto) error
 	AllTeacher(context.Context, *basic.String, *dto.TeacherDtoList) error
 	SaveTeacher(context.Context, *dto.TeacherDto, *dto.TeacherDto) error
-	DeleteTeacher(context.Context, *basic.String, *basic.String) error
+	DeleteTeacher(context.Context, *basic.StringList, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
 	type courseService interface {
 		CourseList(ctx context.Context, in *dto.CoursePageDto, out *dto.CoursePageDto) error
 		SaveCourse(ctx context.Context, in *dto.CourseDto, out *dto.CourseDto) error
-		DeleteCourse(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteCourse(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListCourseCategory(ctx context.Context, in *basic.String, out *dto.CourseCategoryDtoList) error
 		SortCourse(ctx context.Context, in *dto.SortDto, out *basic.String) error
 		FindCourseContent(ctx context.Context, in *basic.String, out *dto.CourseContentDto) error
@@ -388,7 +388,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error
 		AllTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error
 		SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error
-		DeleteTeacher(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -409,7 +409,7 @@ func (h *courseServiceHandler) SaveCourse(ctx context.Context, in *dto.CourseDto
 	return h.CourseServiceHandler.SaveCourse(ctx, in, out)
 }
 
-func (h *courseServiceHandler) DeleteCourse(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *courseServiceHandler) DeleteCourse(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteCourse(ctx, in, out)
 }
 
@@ -493,6 +493,6 @@ func (h *courseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherD
 	return h.CourseServiceHandler.SaveTeacher(ctx, in, out)
 }
 
-func (h *courseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *courseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteTeacher(ctx, in, out)
 }

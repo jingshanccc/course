@@ -42,8 +42,8 @@ func (c *CourseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherD
 }
 
 // Delete: 删除讲师
-func (c *CourseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.String, out *basic.String) error {
-	exception := teacherDao.Delete(in.Str)
+func (c *CourseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	exception := teacherDao.Delete(in.Rows)
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}

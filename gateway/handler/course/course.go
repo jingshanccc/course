@@ -36,7 +36,7 @@ func SaveCourse(ctx *gin.Context) {
 
 //DelCourse: 删除课程
 func DelCourse(ctx *gin.Context) {
-	var req basic.String
+	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteCourse(context.Background(), &req)

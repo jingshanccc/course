@@ -34,8 +34,8 @@ func (c *CourseServiceHandler) SaveCourse(ctx context.Context, in *dto.CourseDto
 }
 
 //DeleteCourse: 删除课程
-func (c *CourseServiceHandler) DeleteCourse(ctx context.Context, in *basic.String, out *basic.String) error {
-	exception := courseDao.Delete(in.Str)
+func (c *CourseServiceHandler) DeleteCourse(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	exception := courseDao.Delete(in.Rows)
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}

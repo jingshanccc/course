@@ -11,6 +11,7 @@ service UserService{
   //----------- 用户接口 -------------
   rpc List(PageDto) returns (PageDto){}
   rpc Save(UserDto) returns (UserDto){}
+  rpc SaveUserInfo(UserDto) returns (UserDto){}
   rpc Delete(basic.StringList) returns (basic.String){}
   rpc SavePassword(UpdatePass) returns (basic.String){}
   rpc Login(LoginUserDto) returns (LoginUserDto){}

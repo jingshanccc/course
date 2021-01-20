@@ -51,6 +51,20 @@ func SavePassword(ctx *gin.Context) {
 	}
 }
 
+//SaveUserInfo: 更新当前登录用户信息
+func SaveUserInfo(ctx *gin.Context) {
+	var req dto.UserDto
+	if err := ctx.Bind(&req); err == nil {
+		_, usr := middleware.GetCurrentUser(ctx)
+		req.UpdateBy = usr.LoginName
+		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		result, err := userService.SaveUserInfo(context.Background(), &req)
+		public.ResponseAny(ctx, err, result)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //Save : insert or update user
 func Save(ctx *gin.Context) {
 	var req dto.UserDto

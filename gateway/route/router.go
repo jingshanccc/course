@@ -30,6 +30,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		{
 			userGroup.POST("/list", user.GetUserList)
 			userGroup.POST("/info", user.UserInfo)
+			userGroup.POST("/save-info", user.SaveUserInfo)
 			userGroup.POST("/save-password", user.SavePassword)
 			userGroup.POST("/save", user.Save)
 			userGroup.POST("/delete", user.DeleteUser)
@@ -65,8 +66,9 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		courseGroup := admin.Group("/course")
 		{
 			courseGroup.POST("/list", course.ListCourse)
-			courseGroup.POST("/save", course.SaveCourse)
-			courseGroup.DELETE("/delete", course.DelCourse)
+			courseGroup.POST("", course.SaveCourse)
+			courseGroup.DELETE("", course.DelCourse)
+			courseGroup.PUT("", course.SaveCourse)
 			courseGroup.POST("/save-content", course.SaveCourseContent)
 			courseGroup.GET("/list-category", course.ListCourseCategory)
 			courseGroup.POST("/sort", course.SortCourse)
