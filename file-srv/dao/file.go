@@ -15,7 +15,7 @@ type File struct {
 	Path       string
 	Name       string
 	Suffix     string
-	Size       int32
+	Size       int64
 	ShardIndex int32
 	ShardSize  int32
 	ShardTotal int32
