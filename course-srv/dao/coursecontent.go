@@ -30,15 +30,22 @@ func (c *CourseContentDao) SelectById(id string) (*dto.CourseContentDto, *public
 
 //SaveContent: 插入/更新
 func (c *CourseContentDao) SaveContent(ccd *dto.CourseContentDto) *public.BusinessException {
-	if affected := public.DB.Model(&CourseContent{}).Where("id = ? ", ccd.Id).Update("content", ccd.Content).RowsAffected; affected <= 0 {
-		err := public.DB.Create(&CourseContent{
+	var err error
+	var content CourseContent
+	public.DB.Model(&CourseContent{}).Where("id = ? ", ccd.Id).Find(&content)
+	if content.Id == "" {
+		err = public.DB.Create(&CourseContent{
 			Id:      ccd.Id,
 			Content: ccd.Content,
 		}).Error
-		if err != nil {
-			log.Println("exec sql failed, err is " + err.Error())
-			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	} else {
+		if content.Content != ccd.Content {
+			err = public.DB.Model(&CourseContent{}).Where("id = ? ", ccd.Id).Update("content", ccd.Content).Error
 		}
+	}
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return nil
 }
