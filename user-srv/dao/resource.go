@@ -131,6 +131,7 @@ func (r *ResourceDao) Save(ctx context.Context, in *dto.ResourceDto) *public.Bus
 		}
 		resource.Id = 0
 		resource.UpdateTime = time.Now()
+		resource.SubCount = byId.SubCount
 		err := db.Where("id = ?", in.Id).Updates(&resource).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -156,7 +157,7 @@ func (r *ResourceDao) GetByParent(ctx context.Context, pid int32) ([]*dto.Resour
 // FindUserResources 获取用户的权限
 func (r *ResourceDao) FindUserResources(ctx context.Context, userId string) ([]*dto.ResourceDto, *public.BusinessException) {
 	var resources []*Resource
-	err := public.DB.Raw("select r.* from role_user ru, role_menu rr, menu r where ru.user_id = ? and type != ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.sort asc", userId, 2).Find(&resources).Error
+	err := public.DB.Raw("select r.* from role_user ru, role_menu rr, menu r where ru.user_id = ? and type != ? and ru.role_id = rr.role_id and rr.resource_id = r.id order by r.id", userId, 2).Find(&resources).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
