@@ -43,6 +43,7 @@ func (f *FileDao) Save(in *dto.FileDto) *public.BusinessException {
 	now := time.Now()
 	if fileEntity != nil && fileEntity.Id != "" { // update
 		fileEntity.UpdateAt = now
+		fileEntity.ShardIndex += 1
 		err := public.DB.Model(&File{Id: fileEntity.Id}).Updates(fileEntity).Error
 		if err != nil {
 			return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
