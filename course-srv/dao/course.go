@@ -122,3 +122,12 @@ func (c *CourseDao) FindContent(id string) (*dto.CourseContentDto, *public.Busin
 func (c *CourseDao) SaveContent(ccd *dto.CourseContentDto) *public.BusinessException {
 	return (&CourseContentDao{}).SaveContent(ccd)
 }
+
+// 更新课程时长
+func (c *CourseDao) UpdateCourseDuration(id string) *public.BusinessException {
+	err := public.DB.Model(&Course{}).Raw("update course c set c.time = (select sum(time) from section where course_id = c.id) where c.id = ?", id).Find(nil).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}

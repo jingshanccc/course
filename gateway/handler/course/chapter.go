@@ -20,6 +20,16 @@ func ListChapter(ctx *gin.Context) {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
 }
+func AllChapter(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.AllChapter(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
 
 //SaveChapter: 保存课程
 func SaveChapter(ctx *gin.Context) {
@@ -35,7 +45,7 @@ func SaveChapter(ctx *gin.Context) {
 
 //DelChapter: 删除课程
 func DelChapter(ctx *gin.Context) {
-	var req basic.String
+	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.DeleteChapter(context.Background(), &req)

@@ -28,9 +28,9 @@ type Section struct {
 	// 顺序
 	Sort int32
 	// 创建时间
-	CreatedAt time.Time
+	CreatedTime time.Time
 	// 修改时间
-	UpdatedAt time.Time
+	UpdatedTime time.Time
 }
 
 func (Section) TableName() string {
@@ -38,47 +38,74 @@ func (Section) TableName() string {
 }
 
 //List : get Section page
-func (c *SectionDao) List(cd *dto.SectionPageDto) ([]*dto.SectionDto, *public.BusinessException) {
-	orderby := "desc"
-	if cd.Asc {
-		orderby = "asc"
+func (c *SectionDao) List(cd *dto.SectionPageDto) (int64, []*dto.SectionDto, *public.BusinessException) {
+	var beforeOrder string
+	if cd.Blurry != "" {
+		beforeOrder = " and x.course_id = ? and x.chapter_id = ? "
+	} else {
+		beforeOrder = " where x.course_id = ? and x.chapter_id = ? "
 	}
-	var res []*dto.SectionDto
-	err := public.DB.Model(&Section{}).Where(&Section{ChapterId: cd.ChapterId, CourseId: cd.CourseId}).Order(cd.SortBy + " " + orderby).Limit(int(cd.PageSize)).Offset(int((cd.PageNum - 1) * cd.PageSize)).Find(&res).Error
+	forCount, forPage := util.GeneratePageSql(cd.CreateTime, cd.Blurry, cd.Sort, []string{"title"}, beforeOrder)
+
+	var count int64
+	err := public.DB.Model(&Section{}).Raw("select count(1) from section x "+forCount+beforeOrder, cd.CourseId, cd.ChapterId).Find(&count).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
-		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
-
-	return res, nil
+	var res []*dto.SectionDto
+	err = public.DB.Model(&Section{}).Raw("select x.* from section x "+forPage, cd.CourseId, cd.ChapterId, (cd.Page-1)*cd.Size, cd.Size).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return count, res, nil
 }
 
 //Save: 保存/更新小节
 func (c *SectionDao) Save(cd *dto.SectionDto) (*dto.SectionDto, *public.BusinessException) {
-	sectionEntity := &Section{}
-	_ = util.CopyProperties(sectionEntity, cd)
-	sectionEntity.UpdatedAt = time.Time{}
-	if cd.Id != "" { //update
-		sectionEntity.Id = ""
-		err := public.DB.Model(&Section{Id: cd.Id}).Updates(sectionEntity).Error
-		if err != nil {
-			return &dto.SectionDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	var sectionEntity Section
+	_ = util.CopyProperties(&sectionEntity, cd)
+	sectionEntity.UpdatedTime = time.Now()
+	if isSortAllow(sectionEntity) {
+		if cd.Id != "" { //update
+			sectionEntity.Id = ""
+			err := public.DB.Model(&Section{}).Where("id = ?", cd.Id).Updates(&sectionEntity).Error
+			if err != nil {
+				return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+			}
+		} else { //insert
+			sectionEntity.Id = util.GetShortUuid()
+			sectionEntity.CreatedTime = sectionEntity.UpdatedTime
+			err := public.DB.Create(&sectionEntity).Error
+			if err != nil {
+				return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+			}
 		}
-	} else { //insert
-		cd.Id = util.GetShortUuid()
-		sectionEntity.Id = cd.Id
-		sectionEntity.CreatedAt = time.Time{}
-		err := public.DB.Create(sectionEntity).Error
-		if err != nil {
-			return &dto.SectionDto{}, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
-		}
+	} else {
+		return nil, public.BadRequestException("已存在该序号的小节，请重新输入！")
 	}
 	return cd, nil
 }
 
+//isSortAllow: 判断序号是否已存在
+func isSortAllow(section Section) bool {
+	var fromDb Section
+	public.DB.Model(&Section{}).Where("chapter_id = ? and course_id = ? and sort = ?", section.ChapterId, section.CourseId, section.Sort).Find(&fromDb)
+	if fromDb.Id == "" {
+		return true
+	} else {
+		if section.Id != "" {
+			return section.Id == fromDb.Id
+		} else {
+			return false
+		}
+	}
+}
+
 // Delete 删除小节
-func (c *SectionDao) Delete(id string) *public.BusinessException {
-	err := public.DB.Delete(&Section{Id: id}).Error
+func (c *SectionDao) Delete(ids []string) *public.BusinessException {
+	err := public.DB.Delete(&Section{}, "id in ?", ids).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)

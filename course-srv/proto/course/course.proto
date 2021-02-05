@@ -21,13 +21,14 @@ service CourseService {
 
   //Chapter
   rpc ListChapter(ChapterPageDto) returns (ChapterPageDto);
+  rpc AllChapter(basic.String) returns (ChapterDtoList);
   rpc SaveChapter(ChapterDto) returns (ChapterDto);
-  rpc DeleteChapter(basic.String) returns (basic.String);
+  rpc DeleteChapter(basic.StringList) returns (basic.String);
 
   //Section
   rpc ListSection(SectionPageDto) returns (SectionPageDto);
   rpc SaveSection(SectionDto) returns (SectionDto);
-  rpc DeleteSection(basic.String) returns (basic.String);
+  rpc DeleteSection(basic.StringList) returns (basic.String);
 
   //CourseFile
   rpc ListCourseFile(basic.String) returns (CourseFileDtoList);

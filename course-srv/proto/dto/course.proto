@@ -137,18 +137,24 @@ message CategoryDtoList{
 
 //Chapter Dto
 message ChapterDto{
-  string Id = 1;
-  string CourseId = 2;
-  string Name = 3;
+  string id = 1;
+  string courseId = 2;
+  string name = 3;
+  int32  sort = 4;
+}
+message ChapterDtoList{
+  repeated ChapterDto rows = 1;
 }
 
 message ChapterPageDto{
-  int32 PageSize = 1;
-  int32 PageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  string CourseId = 5;
-  repeated ChapterDto rows = 6;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  int64 total = 5;
+  repeated string createTime = 6;
+  string courseId = 7;
+  repeated ChapterDto rows = 8;
 }
 
 //Section Dto
@@ -156,62 +162,64 @@ message SectionDto{
   /*
    * id
    */
-  string Id = 1;
+  string id = 1;
 
   /*
    * 标题
    */
-  string Title = 2;
+  string title = 2;
 
   /*
    * 课程|course.id
    */
-  string CourseId = 3;
+  string courseId = 3;
 
   /*
    * 大章|chapter.id
    */
-  string ChapterId = 4;
+  string chapterId = 4;
 
   /*
    * 视频
    */
-  string Video = 5;
+  string video = 5;
 
   /*
    * 时长|单位秒
    */
-  int32 Time = 6;
+  int32 time = 6;
 
   /*
-   * 收费|枚举[SectionChargeEnum]：CHARGE("C", "收费"),FREE("F", "免费")
+   * 收费
    */
-  string Charge = 7;
+  string charge = 7;
 
   /*
    * 顺序
    */
-  int32 Sort = 8;
+  int32 sort = 8;
 
   /*
    * 创建时间
    */
-  string CreatedAt = 9;
+  string createdTime = 9;
 
   /*
    * 修改时间
    */
-  string UpdatedAt = 10;
+  string updatedTime = 10;
 }
 
 message SectionPageDto{
-  int32 PageSize = 1;
-  int32 PageNum = 2;
-  string sortBy = 3;
-  bool asc = 4;
-  string CourseId = 5;
-  string ChapterId = 6;
-  repeated SectionDto rows = 8;
+  int64 page = 1;
+  int64 size = 2;
+  repeated string sort = 3;
+  string blurry = 4;
+  int64 total = 5;
+  repeated string createTime = 6;
+  string courseId = 7;
+  string chapterId = 8;
+  repeated SectionDto rows = 9;
 }
 
 //Teacher Dto
@@ -298,7 +306,7 @@ message CourseFileDtoList {
 
 //修改排序使用
 message SortDto {
-  string Id =1;
+  string Id = 1;
   int32 OldSort = 2;
   int32 NewSort = 3;
 }

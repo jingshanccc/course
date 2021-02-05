@@ -10,7 +10,18 @@ import (
 )
 
 func (c *CourseServiceHandler) ListChapter(ctx context.Context, in *dto.ChapterPageDto, out *dto.ChapterPageDto) error {
-	list, exception := chapterDao.List(in)
+	total, list, exception := chapterDao.List(in)
+	if exception != nil {
+		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
+	}
+	_ = util.CopyProperties(out, in)
+	out.Rows = list
+	out.Total = total
+	return nil
+}
+
+func (c *CourseServiceHandler) AllChapter(ctx context.Context, in *basic.String, out *dto.ChapterDtoList) error {
+	list, exception := chapterDao.All(in.Str)
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}
@@ -28,8 +39,8 @@ func (c *CourseServiceHandler) SaveChapter(ctx context.Context, in *dto.ChapterD
 	return nil
 }
 
-func (c *CourseServiceHandler) DeleteChapter(ctx context.Context, in *basic.String, out *basic.String) error {
-	exception := chapterDao.Delete(in.Str)
+func (c *CourseServiceHandler) DeleteChapter(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	exception := chapterDao.Delete(in.Rows)
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}

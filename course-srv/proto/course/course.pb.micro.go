@@ -59,12 +59,13 @@ type CourseService interface {
 	DeleteCategory(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	//Chapter
 	ListChapter(ctx context.Context, in *dto.ChapterPageDto, opts ...client.CallOption) (*dto.ChapterPageDto, error)
+	AllChapter(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ChapterDtoList, error)
 	SaveChapter(ctx context.Context, in *dto.ChapterDto, opts ...client.CallOption) (*dto.ChapterDto, error)
-	DeleteChapter(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteChapter(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	//Section
 	ListSection(ctx context.Context, in *dto.SectionPageDto, opts ...client.CallOption) (*dto.SectionPageDto, error)
 	SaveSection(ctx context.Context, in *dto.SectionDto, opts ...client.CallOption) (*dto.SectionDto, error)
-	DeleteSection(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	DeleteSection(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	//CourseFile
 	ListCourseFile(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseFileDtoList, error)
 	SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, opts ...client.CallOption) (*dto.CourseFileDto, error)
@@ -208,6 +209,16 @@ func (c *courseService) ListChapter(ctx context.Context, in *dto.ChapterPageDto,
 	return out, nil
 }
 
+func (c *courseService) AllChapter(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.ChapterDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.AllChapter", in)
+	out := new(dto.ChapterDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *courseService) SaveChapter(ctx context.Context, in *dto.ChapterDto, opts ...client.CallOption) (*dto.ChapterDto, error) {
 	req := c.c.NewRequest(c.name, "CourseService.SaveChapter", in)
 	out := new(dto.ChapterDto)
@@ -218,7 +229,7 @@ func (c *courseService) SaveChapter(ctx context.Context, in *dto.ChapterDto, opt
 	return out, nil
 }
 
-func (c *courseService) DeleteChapter(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *courseService) DeleteChapter(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteChapter", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -248,7 +259,7 @@ func (c *courseService) SaveSection(ctx context.Context, in *dto.SectionDto, opt
 	return out, nil
 }
 
-func (c *courseService) DeleteSection(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+func (c *courseService) DeleteSection(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteSection", in)
 	out := new(basic.String)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -346,12 +357,13 @@ type CourseServiceHandler interface {
 	DeleteCategory(context.Context, *basic.StringList, *basic.String) error
 	//Chapter
 	ListChapter(context.Context, *dto.ChapterPageDto, *dto.ChapterPageDto) error
+	AllChapter(context.Context, *basic.String, *dto.ChapterDtoList) error
 	SaveChapter(context.Context, *dto.ChapterDto, *dto.ChapterDto) error
-	DeleteChapter(context.Context, *basic.String, *basic.String) error
+	DeleteChapter(context.Context, *basic.StringList, *basic.String) error
 	//Section
 	ListSection(context.Context, *dto.SectionPageDto, *dto.SectionPageDto) error
 	SaveSection(context.Context, *dto.SectionDto, *dto.SectionDto) error
-	DeleteSection(context.Context, *basic.String, *basic.String) error
+	DeleteSection(context.Context, *basic.StringList, *basic.String) error
 	//CourseFile
 	ListCourseFile(context.Context, *basic.String, *dto.CourseFileDtoList) error
 	SaveCourseFile(context.Context, *dto.CourseFileDto, *dto.CourseFileDto) error
@@ -377,11 +389,12 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		SaveCategory(ctx context.Context, in *dto.CategoryDto, out *dto.CategoryDto) error
 		DeleteCategory(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListChapter(ctx context.Context, in *dto.ChapterPageDto, out *dto.ChapterPageDto) error
+		AllChapter(ctx context.Context, in *basic.String, out *dto.ChapterDtoList) error
 		SaveChapter(ctx context.Context, in *dto.ChapterDto, out *dto.ChapterDto) error
-		DeleteChapter(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteChapter(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListSection(ctx context.Context, in *dto.SectionPageDto, out *dto.SectionPageDto) error
 		SaveSection(ctx context.Context, in *dto.SectionDto, out *dto.SectionDto) error
-		DeleteSection(ctx context.Context, in *basic.String, out *basic.String) error
+		DeleteSection(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListCourseFile(ctx context.Context, in *basic.String, out *dto.CourseFileDtoList) error
 		SaveCourseFile(ctx context.Context, in *dto.CourseFileDto, out *dto.CourseFileDto) error
 		DeleteCourseFile(ctx context.Context, in *basic.String, out *basic.String) error
@@ -449,11 +462,15 @@ func (h *courseServiceHandler) ListChapter(ctx context.Context, in *dto.ChapterP
 	return h.CourseServiceHandler.ListChapter(ctx, in, out)
 }
 
+func (h *courseServiceHandler) AllChapter(ctx context.Context, in *basic.String, out *dto.ChapterDtoList) error {
+	return h.CourseServiceHandler.AllChapter(ctx, in, out)
+}
+
 func (h *courseServiceHandler) SaveChapter(ctx context.Context, in *dto.ChapterDto, out *dto.ChapterDto) error {
 	return h.CourseServiceHandler.SaveChapter(ctx, in, out)
 }
 
-func (h *courseServiceHandler) DeleteChapter(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *courseServiceHandler) DeleteChapter(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteChapter(ctx, in, out)
 }
 
@@ -465,7 +482,7 @@ func (h *courseServiceHandler) SaveSection(ctx context.Context, in *dto.SectionD
 	return h.CourseServiceHandler.SaveSection(ctx, in, out)
 }
 
-func (h *courseServiceHandler) DeleteSection(ctx context.Context, in *basic.String, out *basic.String) error {
+func (h *courseServiceHandler) DeleteSection(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteSection(ctx, in, out)
 }
 

@@ -85,8 +85,10 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		chapter := admin.Group("/chapter")
 		{
 			chapter.POST("/list", course.ListChapter)
-			chapter.POST("/save", course.SaveChapter)
-			chapter.DELETE("/delete", course.DelChapter)
+			chapter.GET("/all", course.AllChapter)
+			chapter.POST("", course.SaveChapter)
+			chapter.PUT("", course.SaveChapter)
+			chapter.DELETE("", course.DelChapter)
 		}
 		section := admin.Group("/section")
 		{
