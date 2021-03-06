@@ -25,7 +25,8 @@ const (
 	USER_PHONE_EXIST         ExceptionEnum = 20012
 	ROLE_USER_EXIST          ExceptionEnum = 20013
 
-	BAD_REQUEST ExceptionEnum = 40000
+	BAD_REQUEST    ExceptionEnum = 40000
+	INTERVAL_ERROR ExceptionEnum = 50000
 )
 
 func (code ExceptionEnum) getCode() int32 {
@@ -74,6 +75,8 @@ func (code ExceptionEnum) getDesc() string {
 		return "所选角色存在用户关联，请解除关联再试！"
 	case BAD_REQUEST:
 		return "错误的客户端请求"
+	case INTERVAL_ERROR:
+		return "服务器内部错误"
 	default:
 		return "未知错误"
 	}

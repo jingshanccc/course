@@ -117,6 +117,10 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	files.Use(middleware.JWT())
 	{
 		files.POST("/upload", file.Upload)
+		files.POST("/upload_shard", file.UploadShard)
+		files.POST("/merge", file.Merge)
+		files.GET("/verify_upload", file.VerifyUpload)
+		files.GET("/cancel", file.Cancel)
 		files.GET("/check", file.Check)
 	}
 	return ginRouter

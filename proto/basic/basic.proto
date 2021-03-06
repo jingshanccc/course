@@ -19,3 +19,7 @@ message String {
 message StringList {
   repeated string rows = 1;
 }
+
+message Boolean {
+  bool is = 1;
+}

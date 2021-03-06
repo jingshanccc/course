@@ -29,6 +29,14 @@ func BadRequestException(desc string) *BusinessException {
 	return &BusinessException{int32(BAD_REQUEST), desc}
 }
 
+//IntervalException: 服务器内部错误，自定义错误信息
+func IntervalException(desc string) *BusinessException {
+	if desc == "" {
+		desc = INTERVAL_ERROR.getDesc()
+	}
+	return &BusinessException{int32(INTERVAL_ERROR), desc}
+}
+
 //EntityExistException: 存在属性相同的实体
 func EntityExistException(entity, property string, value interface{}) *BusinessException {
 	return &BusinessException{int32(BAD_REQUEST), fmt.Sprintf("已存在%v为%v的%v，请修改！", property, value, entity)}

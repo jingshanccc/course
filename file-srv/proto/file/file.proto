@@ -6,4 +6,8 @@ import "course/proto/basic/basic.proto";
 service FileService {
   rpc Upload(FileDto) returns(FileDto);
   rpc Check(basic.String) returns(FileDto);
+  rpc VerifyUpload(basic.String) returns(VerifyRes);
+  rpc UploadShard(FileShardDto) returns(basic.Boolean);
+  rpc Merge(FileDto) returns(FileDto);
+  rpc Cancel(basic.String) returns(basic.String);
 }

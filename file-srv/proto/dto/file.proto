@@ -16,3 +16,18 @@ message FileDto {
   string createAt = 11;
   string updateAt = 12;
 }
+
+message FileShardDto {
+  int32 id = 1;
+  string key = 2;
+  int32 index = 3;
+  int32 size = 4;
+  int32 total = 5;
+  bytes blob = 6;
+}
+
+message VerifyRes {
+  bool shouldUpload = 1; //是否完成上传
+  repeated int32 uploadedList = 2; //已完成上传的分片索引
+  FileDto file = 3; //若已完成上传 则将已上传的文件记录返回
+}

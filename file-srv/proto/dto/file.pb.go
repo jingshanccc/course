@@ -160,6 +160,156 @@ func (x *FileDto) GetUpdateAt() string {
 	return ""
 }
 
+type FileShardDto struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id    int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Key   string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Index int32  `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
+	Size  int32  `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`
+	Total int32  `protobuf:"varint,5,opt,name=total,proto3" json:"total,omitempty"`
+	Blob  []byte `protobuf:"bytes,6,opt,name=blob,proto3" json:"blob,omitempty"`
+}
+
+func (x *FileShardDto) Reset() {
+	*x = FileShardDto{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_file_srv_proto_dto_file_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FileShardDto) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileShardDto) ProtoMessage() {}
+
+func (x *FileShardDto) ProtoReflect() protoreflect.Message {
+	mi := &file_course_file_srv_proto_dto_file_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FileShardDto.ProtoReflect.Descriptor instead.
+func (*FileShardDto) Descriptor() ([]byte, []int) {
+	return file_course_file_srv_proto_dto_file_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *FileShardDto) GetId() int32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *FileShardDto) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+func (x *FileShardDto) GetIndex() int32 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+func (x *FileShardDto) GetSize() int32 {
+	if x != nil {
+		return x.Size
+	}
+	return 0
+}
+
+func (x *FileShardDto) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *FileShardDto) GetBlob() []byte {
+	if x != nil {
+		return x.Blob
+	}
+	return nil
+}
+
+type VerifyRes struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ShouldUpload bool     `protobuf:"varint,1,opt,name=shouldUpload,proto3" json:"shouldUpload,omitempty"`        //是否完成上传
+	UploadedList []int32  `protobuf:"varint,2,rep,packed,name=uploadedList,proto3" json:"uploadedList,omitempty"` //已完成上传的分片索引
+	File         *FileDto `protobuf:"bytes,3,opt,name=file,proto3" json:"file,omitempty"`                         //若已完成上传 则将已上传的文件记录返回
+}
+
+func (x *VerifyRes) Reset() {
+	*x = VerifyRes{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_course_file_srv_proto_dto_file_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VerifyRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyRes) ProtoMessage() {}
+
+func (x *VerifyRes) ProtoReflect() protoreflect.Message {
+	mi := &file_course_file_srv_proto_dto_file_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyRes.ProtoReflect.Descriptor instead.
+func (*VerifyRes) Descriptor() ([]byte, []int) {
+	return file_course_file_srv_proto_dto_file_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *VerifyRes) GetShouldUpload() bool {
+	if x != nil {
+		return x.ShouldUpload
+	}
+	return false
+}
+
+func (x *VerifyRes) GetUploadedList() []int32 {
+	if x != nil {
+		return x.UploadedList
+	}
+	return nil
+}
+
+func (x *VerifyRes) GetFile() *FileDto {
+	if x != nil {
+		return x.File
+	}
+	return nil
+}
+
 var File_course_file_srv_proto_dto_file_proto protoreflect.FileDescriptor
 
 var file_course_file_srv_proto_dto_file_proto_rawDesc = []byte{
@@ -184,9 +334,25 @@ var file_course_file_srv_proto_dto_file_proto_rawDesc = []byte{
 	0x7a, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x74, 0x18, 0x0b,
 	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x74, 0x12, 0x1a,
 	0x0a, 0x08, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x42, 0x1b, 0x5a, 0x19, 0x63, 0x6f,
-	0x75, 0x72, 0x73, 0x65, 0x2f, 0x66, 0x69, 0x6c, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x08, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x74, 0x22, 0x84, 0x01, 0x0a, 0x0c, 0x46,
+	0x69, 0x6c, 0x65, 0x53, 0x68, 0x61, 0x72, 0x64, 0x44, 0x74, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6b,
+	0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a,
+	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x69, 0x6e,
+	0x64, 0x65, 0x78, 0x12, 0x12, 0x0a, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x04, 0x73, 0x69, 0x7a, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x52, 0x05, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x12, 0x12, 0x0a,
+	0x04, 0x62, 0x6c, 0x6f, 0x62, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x04, 0x62, 0x6c, 0x6f,
+	0x62, 0x22, 0x76, 0x0a, 0x09, 0x56, 0x65, 0x72, 0x69, 0x66, 0x79, 0x52, 0x65, 0x73, 0x12, 0x22,
+	0x0a, 0x0c, 0x73, 0x68, 0x6f, 0x75, 0x6c, 0x64, 0x55, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0c, 0x73, 0x68, 0x6f, 0x75, 0x6c, 0x64, 0x55, 0x70, 0x6c, 0x6f,
+	0x61, 0x64, 0x12, 0x22, 0x0a, 0x0c, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64, 0x65, 0x64, 0x4c, 0x69,
+	0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x05, 0x52, 0x0c, 0x75, 0x70, 0x6c, 0x6f, 0x61, 0x64,
+	0x65, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x66, 0x69, 0x6c, 0x65, 0x2e, 0x46, 0x69, 0x6c, 0x65,
+	0x44, 0x74, 0x6f, 0x52, 0x04, 0x66, 0x69, 0x6c, 0x65, 0x42, 0x1b, 0x5a, 0x19, 0x63, 0x6f, 0x75,
+	0x72, 0x73, 0x65, 0x2f, 0x66, 0x69, 0x6c, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2f, 0x64, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -201,16 +367,19 @@ func file_course_file_srv_proto_dto_file_proto_rawDescGZIP() []byte {
 	return file_course_file_srv_proto_dto_file_proto_rawDescData
 }
 
-var file_course_file_srv_proto_dto_file_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_course_file_srv_proto_dto_file_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_course_file_srv_proto_dto_file_proto_goTypes = []interface{}{
-	(*FileDto)(nil), // 0: file.FileDto
+	(*FileDto)(nil),      // 0: file.FileDto
+	(*FileShardDto)(nil), // 1: file.FileShardDto
+	(*VerifyRes)(nil),    // 2: file.VerifyRes
 }
 var file_course_file_srv_proto_dto_file_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: file.VerifyRes.file:type_name -> file.FileDto
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_course_file_srv_proto_dto_file_proto_init() }
@@ -231,6 +400,30 @@ func file_course_file_srv_proto_dto_file_proto_init() {
 				return nil
 			}
 		}
+		file_course_file_srv_proto_dto_file_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FileShardDto); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_course_file_srv_proto_dto_file_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VerifyRes); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -238,7 +431,7 @@ func file_course_file_srv_proto_dto_file_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_course_file_srv_proto_dto_file_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

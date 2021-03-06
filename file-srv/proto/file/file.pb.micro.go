@@ -46,6 +46,10 @@ func NewFileServiceEndpoints() []*api.Endpoint {
 type FileService interface {
 	Upload(ctx context.Context, in *dto.FileDto, opts ...client.CallOption) (*dto.FileDto, error)
 	Check(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.FileDto, error)
+	VerifyUpload(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.VerifyRes, error)
+	UploadShard(ctx context.Context, in *dto.FileShardDto, opts ...client.CallOption) (*basic.Boolean, error)
+	Merge(ctx context.Context, in *dto.FileDto, opts ...client.CallOption) (*dto.FileDto, error)
+	Cancel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 }
 
 type fileService struct {
@@ -80,17 +84,65 @@ func (c *fileService) Check(ctx context.Context, in *basic.String, opts ...clien
 	return out, nil
 }
 
+func (c *fileService) VerifyUpload(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.VerifyRes, error) {
+	req := c.c.NewRequest(c.name, "FileService.VerifyUpload", in)
+	out := new(dto.VerifyRes)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fileService) UploadShard(ctx context.Context, in *dto.FileShardDto, opts ...client.CallOption) (*basic.Boolean, error) {
+	req := c.c.NewRequest(c.name, "FileService.UploadShard", in)
+	out := new(basic.Boolean)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fileService) Merge(ctx context.Context, in *dto.FileDto, opts ...client.CallOption) (*dto.FileDto, error) {
+	req := c.c.NewRequest(c.name, "FileService.Merge", in)
+	out := new(dto.FileDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fileService) Cancel(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "FileService.Cancel", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for FileService service
 
 type FileServiceHandler interface {
 	Upload(context.Context, *dto.FileDto, *dto.FileDto) error
 	Check(context.Context, *basic.String, *dto.FileDto) error
+	VerifyUpload(context.Context, *basic.String, *dto.VerifyRes) error
+	UploadShard(context.Context, *dto.FileShardDto, *basic.Boolean) error
+	Merge(context.Context, *dto.FileDto, *dto.FileDto) error
+	Cancel(context.Context, *basic.String, *basic.String) error
 }
 
 func RegisterFileServiceHandler(s server.Server, hdlr FileServiceHandler, opts ...server.HandlerOption) error {
 	type fileService interface {
 		Upload(ctx context.Context, in *dto.FileDto, out *dto.FileDto) error
 		Check(ctx context.Context, in *basic.String, out *dto.FileDto) error
+		VerifyUpload(ctx context.Context, in *basic.String, out *dto.VerifyRes) error
+		UploadShard(ctx context.Context, in *dto.FileShardDto, out *basic.Boolean) error
+		Merge(ctx context.Context, in *dto.FileDto, out *dto.FileDto) error
+		Cancel(ctx context.Context, in *basic.String, out *basic.String) error
 	}
 	type FileService struct {
 		fileService
@@ -109,4 +161,20 @@ func (h *fileServiceHandler) Upload(ctx context.Context, in *dto.FileDto, out *d
 
 func (h *fileServiceHandler) Check(ctx context.Context, in *basic.String, out *dto.FileDto) error {
 	return h.FileServiceHandler.Check(ctx, in, out)
+}
+
+func (h *fileServiceHandler) VerifyUpload(ctx context.Context, in *basic.String, out *dto.VerifyRes) error {
+	return h.FileServiceHandler.VerifyUpload(ctx, in, out)
+}
+
+func (h *fileServiceHandler) UploadShard(ctx context.Context, in *dto.FileShardDto, out *basic.Boolean) error {
+	return h.FileServiceHandler.UploadShard(ctx, in, out)
+}
+
+func (h *fileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dto.FileDto) error {
+	return h.FileServiceHandler.Merge(ctx, in, out)
+}
+
+func (h *fileServiceHandler) Cancel(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.FileServiceHandler.Cancel(ctx, in, out)
 }

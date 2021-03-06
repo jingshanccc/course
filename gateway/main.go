@@ -29,7 +29,7 @@ func main() {
 	courseService := course.NewCourseService(config.CourseServiceName, client.Client())
 
 	client = micro.NewService(micro.Name(config.FileClientName))
-	//get CourseService from registry
+	//get FileService from registry
 	client.Init(micro.Registry(r))
 	fileService := file.NewFileService(config.FileServiceName, client.Client())
 

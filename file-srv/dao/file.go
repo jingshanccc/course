@@ -61,3 +61,24 @@ func (f *FileDao) Save(in *dto.FileDto) *public.BusinessException {
 	}
 	return nil
 }
+
+//Save: 新增文件记录
+func (f *FileDao) SaveNew(in *dto.FileDto) *public.BusinessException {
+	now := time.Now()
+	fileEntity := &File{}
+	_ = util.CopyProperties(fileEntity, in)
+	fileEntity.Id = util.GetShortUuid()
+	fileEntity.Path = in.Key + "." + in.Suffix
+	fileEntity.CreateAt = now
+	fileEntity.UpdateAt = now
+	err := public.DB.Create(fileEntity).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}
+
+//DeleteById: 删除文件记录
+func (f *FileDao) DeleteByProperty(property, value string) {
+	public.DB.Delete(File{}, property+" = ?", value)
+}
