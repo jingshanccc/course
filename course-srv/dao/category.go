@@ -22,10 +22,21 @@ func (Category) TableName() string {
 	return "category"
 }
 
-//All: 获取所有一级分类
-func (c *CategoryDao) All() ([]*dto.CategoryDto, *public.BusinessException) {
+//PrimaryCategory: 获取所有一级分类
+func (c *CategoryDao) PrimaryCategory() ([]*dto.CategoryDto, *public.BusinessException) {
 	var res []*dto.CategoryDto
 	err := public.DB.Model(&Category{}).Where("parent = '00000000'").Order("sort asc").Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}
+
+//All: 获取所有分类
+func (c *CategoryDao) All() ([]*dto.CategoryDto, *public.BusinessException) {
+	var res []*dto.CategoryDto
+	err := public.DB.Model(&Category{}).Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)

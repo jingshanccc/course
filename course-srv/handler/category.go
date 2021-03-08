@@ -22,6 +22,16 @@ func (c *CourseServiceHandler) ListCategory(ctx context.Context, in *dto.Categor
 	return nil
 }
 
+//PrimaryCategory: 获取所有一级分类
+func (c *CourseServiceHandler) PrimaryCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
+	dtos, err := categoryDao.PrimaryCategory()
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	out.Rows = dtos
+	return nil
+}
+
 //AllCategory: 获取所有分类
 func (c *CourseServiceHandler) AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
 	dtos, err := categoryDao.All()

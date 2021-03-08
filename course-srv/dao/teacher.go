@@ -12,10 +12,8 @@ type TeacherDao struct {
 type Teacher struct {
 	Id       string
 	Name     string
-	Nickname string
 	Image    string
 	Position string
-	Motto    string
 	Intro    string
 }
 
@@ -77,4 +75,15 @@ func (c *TeacherDao) Delete(ids []string) *public.BusinessException {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return nil
+}
+
+//SearchByProperty: 模糊查询
+func (c *TeacherDao) SearchByProperty(property, value string) ([]*dto.TeacherDto, *public.BusinessException) {
+	var res []*dto.TeacherDto
+	err := public.DB.Model(&Teacher{}).Where(property+" like ?", "%"+value+"%").Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
 }

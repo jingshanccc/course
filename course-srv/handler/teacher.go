@@ -19,6 +19,16 @@ func (c *CourseServiceHandler) AllTeacher(ctx context.Context, in *basic.String,
 	return nil
 }
 
+//SearchTeacher: 搜索讲师
+func (c *CourseServiceHandler) SearchTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error {
+	dtos, err := teacherDao.SearchByProperty("name", in.Str)
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	out.Rows = dtos
+	return nil
+}
+
 //ListTeacher: get Teacher page
 func (c *CourseServiceHandler) ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error {
 	count, list, exception := teacherDao.List(in)

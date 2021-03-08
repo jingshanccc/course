@@ -22,6 +22,18 @@ func ListCategory(ctx *gin.Context) {
 	}
 }
 
+//PrimaryCategory: 获取所有一级分类
+func PrimaryCategory(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.PrimaryCategory(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //AllCategory: 获取所有分类
 func AllCategory(ctx *gin.Context) {
 	var req basic.String

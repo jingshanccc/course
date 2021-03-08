@@ -22,6 +22,20 @@ func ListCourse(ctx *gin.Context) {
 	}
 }
 
+//CarouselCourse: 轮播图课程
+func CarouselCourse(ctx *gin.Context) {
+	courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+	list, err := courseService.CarouselCourse(context.Background(), &basic.String{})
+	public.ResponseAny(ctx, err, list)
+}
+
+//NewPublishCourse: 新上好课
+func NewPublishCourse(ctx *gin.Context) {
+	courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+	list, err := courseService.NewPublishCourse(context.Background(), &basic.String{})
+	public.ResponseAny(ctx, err, list)
+}
+
 //SaveCourse: 保存课程
 func SaveCourse(ctx *gin.Context) {
 	var req dto.CourseDto

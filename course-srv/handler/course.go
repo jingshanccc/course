@@ -23,6 +23,26 @@ func (c *CourseServiceHandler) CourseList(ctx context.Context, in *dto.CoursePag
 	return nil
 }
 
+//CarouselCourse: get course page
+func (c *CourseServiceHandler) CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	courseDtos, err := courseDao.CarouselCourse()
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	out.Rows = courseDtos
+	return nil
+}
+
+//NewPublishCourse: get course page
+func (c *CourseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	courseDtos, err := courseDao.NewPublish()
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	out.Rows = courseDtos
+	return nil
+}
+
 //SaveCourse: 保存/更新课程
 func (c *CourseServiceHandler) SaveCourse(ctx context.Context, in *dto.CourseDto, out *dto.CourseDto) error {
 	cd, err := courseDao.Save(in)

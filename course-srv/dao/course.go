@@ -45,6 +45,11 @@ func (c *CourseDao) List(in *dto.CoursePageDto) (int64, []*dto.CourseDto, *publi
 	}
 	var res []*dto.CourseDto
 	err = public.DB.Model(&Course{}).Raw("select x.* from course x"+forPage, (in.Page-1)*in.Size, in.Size).Find(&res).Error
+	for _, cou := range res {
+		var categories []string
+		public.DB.Model(&CourseCategory{}).Select("category_id").Where(" course_id = ?", cou.Id).Find(&categories)
+		cou.Categories = categories
+	}
 	return count, res, nil
 }
 
@@ -123,11 +128,31 @@ func (c *CourseDao) SaveContent(ccd *dto.CourseContentDto) *public.BusinessExcep
 	return (&CourseContentDao{}).SaveContent(ccd)
 }
 
-// 更新课程时长
+//UpdateCourseDuration: 更新课程时长
 func (c *CourseDao) UpdateCourseDuration(id string) *public.BusinessException {
 	err := public.DB.Model(&Course{}).Raw("update course c set c.time = (select sum(time) from section where course_id = c.id) where c.id = ?", id).Find(nil).Error
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return nil
+}
+
+//CarouselCourse: 轮播图课程
+func (c *CourseDao) CarouselCourse() ([]*dto.CourseDto, *public.BusinessException) {
+	var res []*dto.CourseDto
+	err := public.DB.Model(&Course{}).Select("id", "image").Where("status = '发布'").Order("sort").Limit(4).Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}
+
+//NewPublish: 新上好课
+func (c *CourseDao) NewPublish() ([]*dto.CourseDto, *public.BusinessException) {
+	var res []*dto.CourseDto
+	err := public.DB.Model(&Course{}).Where("status = '发布'").Order("updated_at desc, sort").Limit(8).Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
 }

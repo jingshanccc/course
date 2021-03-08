@@ -71,7 +71,7 @@ message CourseDto{
    */
   string updatedAt = 13;
 
-  repeated CategoryDto categories = 14;
+  repeated string categories = 14;
 
   repeated ChapterDto chapters = 15;
 
@@ -95,6 +95,10 @@ message CoursePageDto {
   int64 total = 5;
   repeated string createTime = 6;
   repeated CourseDto rows = 7;
+}
+
+message CourseDtoList{
+  repeated CourseDto rows = 1;
 }
 
 message CourseContentDto {
@@ -235,29 +239,19 @@ message TeacherDto {
   string name = 2;
 
   /*
-   * 昵称
-   */
-  string nickname = 3;
-
-  /*
    * 头像
    */
-  string image = 4;
+  string image = 3;
 
   /*
    * 职位
    */
-  string position = 5;
-
-  /*
-   * 座右铭
-   */
-  string motto = 6;
+  string position = 4;
 
   /*
    * 简介
    */
-  string intro = 7;
+  string intro = 5;
 }
 
 message TeacherPageDto {

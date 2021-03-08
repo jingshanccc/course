@@ -44,6 +44,7 @@ func NewCourseServiceEndpoints() []*api.Endpoint {
 // Client API for CourseService service
 
 type CourseService interface {
+	//  ------------  管理端 --------------------
 	//Course
 	CourseList(ctx context.Context, in *dto.CoursePageDto, opts ...client.CallOption) (*dto.CoursePageDto, error)
 	SaveCourse(ctx context.Context, in *dto.CourseDto, opts ...client.CallOption) (*dto.CourseDto, error)
@@ -54,7 +55,7 @@ type CourseService interface {
 	SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, opts ...client.CallOption) (*basic.String, error)
 	//Category
 	ListCategory(ctx context.Context, in *dto.CategoryPageDto, opts ...client.CallOption) (*dto.CategoryPageDto, error)
-	AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error)
+	PrimaryCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error)
 	SaveCategory(ctx context.Context, in *dto.CategoryDto, opts ...client.CallOption) (*dto.CategoryDto, error)
 	DeleteCategory(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 	//Chapter
@@ -73,8 +74,16 @@ type CourseService interface {
 	//Teacher
 	ListTeacher(ctx context.Context, in *dto.TeacherPageDto, opts ...client.CallOption) (*dto.TeacherPageDto, error)
 	AllTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error)
+	SearchTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error)
 	SaveTeacher(ctx context.Context, in *dto.TeacherDto, opts ...client.CallOption) (*dto.TeacherDto, error)
 	DeleteTeacher(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
+	//  ------------  平台端 --------------------
+	// 分类标签云
+	AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error)
+	// 轮播图课程
+	CarouselCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
+	// 新上好课
+	NewPublishCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 }
 
 type courseService struct {
@@ -169,8 +178,8 @@ func (c *courseService) ListCategory(ctx context.Context, in *dto.CategoryPageDt
 	return out, nil
 }
 
-func (c *courseService) AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error) {
-	req := c.c.NewRequest(c.name, "CourseService.AllCategory", in)
+func (c *courseService) PrimaryCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.PrimaryCategory", in)
 	out := new(dto.CategoryDtoList)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -319,6 +328,16 @@ func (c *courseService) AllTeacher(ctx context.Context, in *basic.String, opts .
 	return out, nil
 }
 
+func (c *courseService) SearchTeacher(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.TeacherDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.SearchTeacher", in)
+	out := new(dto.TeacherDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *courseService) SaveTeacher(ctx context.Context, in *dto.TeacherDto, opts ...client.CallOption) (*dto.TeacherDto, error) {
 	req := c.c.NewRequest(c.name, "CourseService.SaveTeacher", in)
 	out := new(dto.TeacherDto)
@@ -339,9 +358,40 @@ func (c *courseService) DeleteTeacher(ctx context.Context, in *basic.StringList,
 	return out, nil
 }
 
+func (c *courseService) AllCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CategoryDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.AllCategory", in)
+	out := new(dto.CategoryDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) CarouselCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.CarouselCourse", in)
+	out := new(dto.CourseDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) NewPublishCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.NewPublishCourse", in)
+	out := new(dto.CourseDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
+	//  ------------  管理端 --------------------
 	//Course
 	CourseList(context.Context, *dto.CoursePageDto, *dto.CoursePageDto) error
 	SaveCourse(context.Context, *dto.CourseDto, *dto.CourseDto) error
@@ -352,7 +402,7 @@ type CourseServiceHandler interface {
 	SaveCourseContent(context.Context, *dto.CourseContentDto, *basic.String) error
 	//Category
 	ListCategory(context.Context, *dto.CategoryPageDto, *dto.CategoryPageDto) error
-	AllCategory(context.Context, *basic.String, *dto.CategoryDtoList) error
+	PrimaryCategory(context.Context, *basic.String, *dto.CategoryDtoList) error
 	SaveCategory(context.Context, *dto.CategoryDto, *dto.CategoryDto) error
 	DeleteCategory(context.Context, *basic.StringList, *basic.String) error
 	//Chapter
@@ -371,8 +421,16 @@ type CourseServiceHandler interface {
 	//Teacher
 	ListTeacher(context.Context, *dto.TeacherPageDto, *dto.TeacherPageDto) error
 	AllTeacher(context.Context, *basic.String, *dto.TeacherDtoList) error
+	SearchTeacher(context.Context, *basic.String, *dto.TeacherDtoList) error
 	SaveTeacher(context.Context, *dto.TeacherDto, *dto.TeacherDto) error
 	DeleteTeacher(context.Context, *basic.StringList, *basic.String) error
+	//  ------------  平台端 --------------------
+	// 分类标签云
+	AllCategory(context.Context, *basic.String, *dto.CategoryDtoList) error
+	// 轮播图课程
+	CarouselCourse(context.Context, *basic.String, *dto.CourseDtoList) error
+	// 新上好课
+	NewPublishCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -385,7 +443,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		FindCourseContent(ctx context.Context, in *basic.String, out *dto.CourseContentDto) error
 		SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, out *basic.String) error
 		ListCategory(ctx context.Context, in *dto.CategoryPageDto, out *dto.CategoryPageDto) error
-		AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error
+		PrimaryCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error
 		SaveCategory(ctx context.Context, in *dto.CategoryDto, out *dto.CategoryDto) error
 		DeleteCategory(ctx context.Context, in *basic.StringList, out *basic.String) error
 		ListChapter(ctx context.Context, in *dto.ChapterPageDto, out *dto.ChapterPageDto) error
@@ -400,8 +458,12 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		DeleteCourseFile(ctx context.Context, in *basic.String, out *basic.String) error
 		ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error
 		AllTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error
+		SearchTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error
 		SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error
 		DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error
+		AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error
+		CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
+		NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 	}
 	type CourseService struct {
 		courseService
@@ -446,8 +508,8 @@ func (h *courseServiceHandler) ListCategory(ctx context.Context, in *dto.Categor
 	return h.CourseServiceHandler.ListCategory(ctx, in, out)
 }
 
-func (h *courseServiceHandler) AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
-	return h.CourseServiceHandler.AllCategory(ctx, in, out)
+func (h *courseServiceHandler) PrimaryCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
+	return h.CourseServiceHandler.PrimaryCategory(ctx, in, out)
 }
 
 func (h *courseServiceHandler) SaveCategory(ctx context.Context, in *dto.CategoryDto, out *dto.CategoryDto) error {
@@ -506,10 +568,26 @@ func (h *courseServiceHandler) AllTeacher(ctx context.Context, in *basic.String,
 	return h.CourseServiceHandler.AllTeacher(ctx, in, out)
 }
 
+func (h *courseServiceHandler) SearchTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error {
+	return h.CourseServiceHandler.SearchTeacher(ctx, in, out)
+}
+
 func (h *courseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error {
 	return h.CourseServiceHandler.SaveTeacher(ctx, in, out)
 }
 
 func (h *courseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteTeacher(ctx, in, out)
+}
+
+func (h *courseServiceHandler) AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
+	return h.CourseServiceHandler.AllCategory(ctx, in, out)
+}
+
+func (h *courseServiceHandler) CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	return h.CourseServiceHandler.CarouselCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	return h.CourseServiceHandler.NewPublishCourse(ctx, in, out)
 }

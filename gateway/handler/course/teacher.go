@@ -22,6 +22,18 @@ func AllTeacher(ctx *gin.Context) {
 	}
 }
 
+//SearchTeacher: 获取所有讲师
+func SearchTeacher(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.SearchTeacher(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //ListTeacher: get Teacher page
 func ListTeacher(ctx *gin.Context) {
 	var req dto.TeacherPageDto

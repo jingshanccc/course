@@ -31,7 +31,7 @@ func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]*dto.CourseCate
 }
 
 //BatchInsert: 批量插入
-func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.CategoryDto) *public.BusinessException {
+func (r *CourseCategoryDao) BatchInsert(courseId string, categoryIds []string) *public.BusinessException {
 	var err error
 	var tx *gorm.DB
 	var res *public.BusinessException
@@ -44,11 +44,11 @@ func (r *CourseCategoryDao) BatchInsert(courseId string, categoryDtos []*dto.Cat
 	tx = public.DB.Begin()
 	err = tx.Model(&CourseCategory{}).Where("course_id = ?", courseId).Delete(&CourseCategory{}).Error
 
-	for _, categoryDto := range categoryDtos {
+	for _, categoryId := range categoryIds {
 		err = tx.Create(&CourseCategory{
 			Id:         util.GetShortUuid(),
 			CourseId:   courseId,
-			CategoryId: categoryDto.Id,
+			CategoryId: categoryId,
 		}).Error
 	}
 	err = tx.Commit().Error

@@ -23,6 +23,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		auth.POST("/token", handler.Token)
 		auth.GET("/logout", user.Logout)
 	}
+	// 后台管理系统接口
 	admin := v1.Group("/admin")
 	admin.Use(middleware.JWT())
 	{
@@ -77,6 +78,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		category := admin.Group("/category")
 		{
 			category.POST("/list", course.ListCategory)
+			category.GET("/primary", course.PrimaryCategory)
 			category.GET("/all", course.AllCategory)
 			category.POST("", course.SaveCategory)
 			category.PUT("", course.SaveCategory)
@@ -106,12 +108,14 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		teacher := admin.Group("/teacher")
 		{
 			teacher.GET("/all", course.AllTeacher)
+			teacher.GET("/search", course.SearchTeacher)
 			teacher.POST("/list", course.ListTeacher)
 			teacher.POST("", course.SaveTeacher)
 			teacher.PUT("", course.SaveTeacher)
 			teacher.DELETE("", course.DeleteTeacher)
 		}
 	}
+	// 文件服务接口
 	files := v1.Group("/file")
 	files.StaticFS("/store", http.Dir(config.FilePath))
 	files.Use(middleware.JWT())
@@ -122,6 +126,13 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		files.GET("/verify_upload", file.VerifyUpload)
 		files.GET("/cancel", file.Cancel)
 		files.GET("/check", file.Check)
+	}
+	// 视频平台接口
+	web := v1.Group("/web")
+	{
+		web.GET("/all_category", course.AllCategory)
+		web.GET("/carousel_course", course.CarouselCourse)
+		web.GET("/new_publish", course.NewPublishCourse)
 	}
 	return ginRouter
 }

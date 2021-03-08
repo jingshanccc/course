@@ -4,6 +4,7 @@ option go_package = "course/course-srv/proto/course";
 import "course/proto/basic/basic.proto";
 import "course/course-srv/proto/dto/course.proto";
 service CourseService {
+  //  ------------  管理端 --------------------
   //Course
   rpc CourseList(CoursePageDto) returns (CoursePageDto);
   rpc SaveCourse(CourseDto) returns (CourseDto);
@@ -15,7 +16,7 @@ service CourseService {
 
   //Category
   rpc ListCategory(CategoryPageDto) returns (CategoryPageDto);
-  rpc AllCategory(basic.String) returns (CategoryDtoList);
+  rpc PrimaryCategory(basic.String) returns (CategoryDtoList);
   rpc SaveCategory(CategoryDto) returns (CategoryDto);
   rpc DeleteCategory(basic.StringList) returns (basic.String);
 
@@ -38,6 +39,15 @@ service CourseService {
   //Teacher
   rpc ListTeacher(TeacherPageDto) returns (TeacherPageDto);
   rpc AllTeacher(basic.String) returns (TeacherDtoList);
+  rpc SearchTeacher(basic.String) returns (TeacherDtoList);
   rpc SaveTeacher(TeacherDto) returns (TeacherDto);
   rpc DeleteTeacher(basic.StringList) returns (basic.String);
+
+  //  ------------  平台端 --------------------
+  // 分类标签云
+  rpc AllCategory(basic.String) returns (CategoryDtoList);
+  // 轮播图课程
+  rpc CarouselCourse(basic.String) returns (CourseDtoList);
+  // 新上好课
+  rpc NewPublishCourse(basic.String) returns (CourseDtoList);
 }
