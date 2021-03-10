@@ -84,6 +84,8 @@ type CourseService interface {
 	CarouselCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 	// 新上好课
 	NewPublishCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
+	// 分类搜索课程
+	CategoryCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 }
 
 type courseService struct {
@@ -388,6 +390,16 @@ func (c *courseService) NewPublishCourse(ctx context.Context, in *basic.String, 
 	return out, nil
 }
 
+func (c *courseService) CategoryCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.CategoryCourse", in)
+	out := new(dto.CourseDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -431,6 +443,8 @@ type CourseServiceHandler interface {
 	CarouselCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 	// 新上好课
 	NewPublishCourse(context.Context, *basic.String, *dto.CourseDtoList) error
+	// 分类搜索课程
+	CategoryCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -464,6 +478,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error
 		CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
+		CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 	}
 	type CourseService struct {
 		courseService
@@ -590,4 +605,8 @@ func (h *courseServiceHandler) CarouselCourse(ctx context.Context, in *basic.Str
 
 func (h *courseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	return h.CourseServiceHandler.NewPublishCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	return h.CourseServiceHandler.CategoryCourse(ctx, in, out)
 }

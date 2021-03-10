@@ -50,4 +50,6 @@ service CourseService {
   rpc CarouselCourse(basic.String) returns (CourseDtoList);
   // 新上好课
   rpc NewPublishCourse(basic.String) returns (CourseDtoList);
+  // 分类搜索课程
+  rpc CategoryCourse(basic.String) returns (CourseDtoList);
 }

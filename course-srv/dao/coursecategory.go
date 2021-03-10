@@ -61,3 +61,16 @@ func (r *CourseCategoryDao) CountByCategories(categories []string) int64 {
 	public.DB.Model(&CourseCategory{}).Where("category_id in ?", categories).Count(&count)
 	return count
 }
+
+//SelectCourseIds: 通过分类 id 获取课程 id
+func (r *CourseCategoryDao) SelectCourseIds(categories ...string) []string {
+	var res []string
+	var query string
+	if len(categories) > 1 {
+		query = "category_id in ?"
+	} else {
+		query = "category_id = ?"
+	}
+	public.DB.Model(&CourseCategory{}).Select("course_id").Where(query, categories).Find(&res)
+	return res
+}

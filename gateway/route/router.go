@@ -130,9 +130,10 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	// 视频平台接口
 	web := v1.Group("/web")
 	{
-		web.GET("/all_category", course.AllCategory)
-		web.GET("/carousel_course", course.CarouselCourse)
-		web.GET("/new_publish", course.NewPublishCourse)
+		web.GET("/all-category", course.AllCategory)
+		web.GET("/carousel-course", course.CarouselCourse)
+		web.GET("/new-publish", course.NewPublishCourse)
+		web.GET("/course-list", course.CategoryCourse)
 	}
 	return ginRouter
 }

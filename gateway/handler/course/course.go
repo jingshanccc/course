@@ -36,6 +36,18 @@ func NewPublishCourse(ctx *gin.Context) {
 	public.ResponseAny(ctx, err, list)
 }
 
+//CategoryCourse: 分类课程
+func CategoryCourse(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.CategoryCourse(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //SaveCourse: 保存课程
 func SaveCourse(ctx *gin.Context) {
 	var req dto.CourseDto

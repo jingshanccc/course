@@ -9,6 +9,8 @@ import (
 	"log"
 )
 
+const parent = "00000000"
+
 type CategoryDao struct {
 }
 type Category struct {
@@ -25,7 +27,7 @@ func (Category) TableName() string {
 //PrimaryCategory: 获取所有一级分类
 func (c *CategoryDao) PrimaryCategory() ([]*dto.CategoryDto, *public.BusinessException) {
 	var res []*dto.CategoryDto
-	err := public.DB.Model(&Category{}).Where("parent = '00000000'").Order("sort asc").Find(&res).Error
+	err := public.DB.Model(&Category{}).Where("parent = ?", parent).Order("sort asc").Find(&res).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -91,7 +93,7 @@ func (c *CategoryDao) Delete(ids []string) *public.BusinessException {
 
 func (c *CategoryDao) List(ctx context.Context, in *dto.CategoryPageDto) (int64, []*dto.CategoryDto, *public.BusinessException) {
 	if in.Parent == "" {
-		in.Parent = "00000000"
+		in.Parent = parent
 	}
 	var beforeOrder string
 	if in.Blurry != "" {
@@ -114,4 +116,15 @@ func (c *CategoryDao) List(ctx context.Context, in *dto.CategoryPageDto) (int64,
 		return 0, nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
 	return count, res, nil
+}
+
+//GetParent: 返回传入分类 id 及其父级 id
+func (c *CategoryDao) GetParent(id string) []string {
+	var p string
+	public.DB.Model(&Category{}).Select("parent").Where("id = ?", id).Find(&p)
+	if p != parent {
+		return []string{id, p}
+	} else {
+		return []string{id}
+	}
 }

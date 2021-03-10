@@ -156,3 +156,20 @@ func (c *CourseDao) NewPublish() ([]*dto.CourseDto, *public.BusinessException) {
 	}
 	return res, nil
 }
+
+//SelectCourseByIds: 批量获取课程 all-当ids为空时是否返回所有course
+func (c *CourseDao) SelectCourseByIds(ids []string, all bool) ([]*dto.CourseDto, *public.BusinessException) {
+	var res []*dto.CourseDto
+	db := public.DB.Model(&Course{})
+	if !all && len(ids) == 0 {
+		return nil, nil
+	}
+	if len(ids) > 0 {
+		db = db.Where("id in ?", ids)
+	}
+	err := db.Where("status = '发布'").Order("sort").Find(&res).Error
+	if err != nil {
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}

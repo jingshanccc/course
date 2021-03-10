@@ -37,7 +37,7 @@ var file_course_course_srv_proto_course_course_proto_rawDesc = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x28, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x63, 0x6f,
 	0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64,
 	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
-	0xfe, 0x0c, 0x0a, 0x0d, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0xb6, 0x0d, 0x0a, 0x0d, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x12, 0x3a, 0x0a, 0x0a, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12,
 	0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x50,
 	0x61, 0x67, 0x65, 0x44, 0x74, 0x6f, 0x1a, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e,
@@ -141,9 +141,13 @@ var file_course_course_srv_proto_course_course_proto_rawDesc = []byte{
 	0x6c, 0x69, 0x73, 0x68, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x12, 0x0d, 0x2e, 0x62, 0x61, 0x73,
 	0x69, 0x63, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x1a, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72,
 	0x73, 0x65, 0x2e, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74,
-	0x42, 0x20, 0x5a, 0x1e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73,
-	0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x75, 0x72,
-	0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x12, 0x36, 0x0a, 0x0e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x43, 0x6f, 0x75, 0x72,
+	0x73, 0x65, 0x12, 0x0d, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x53, 0x74, 0x72, 0x69, 0x6e,
+	0x67, 0x1a, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x75, 0x72, 0x73,
+	0x65, 0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x20, 0x5a, 0x1e, 0x63, 0x6f, 0x75, 0x72,
+	0x73, 0x65, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var file_course_course_srv_proto_course_course_proto_goTypes = []interface{}{
@@ -199,37 +203,39 @@ var file_course_course_srv_proto_course_course_proto_depIdxs = []int32{
 	3,  // 26: course.CourseService.AllCategory:input_type -> basic.String
 	3,  // 27: course.CourseService.CarouselCourse:input_type -> basic.String
 	3,  // 28: course.CourseService.NewPublishCourse:input_type -> basic.String
-	0,  // 29: course.CourseService.CourseList:output_type -> course.CoursePageDto
-	1,  // 30: course.CourseService.SaveCourse:output_type -> course.CourseDto
-	3,  // 31: course.CourseService.DeleteCourse:output_type -> basic.String
-	15, // 32: course.CourseService.ListCourseCategory:output_type -> course.CourseCategoryDtoList
-	3,  // 33: course.CourseService.SortCourse:output_type -> basic.String
-	5,  // 34: course.CourseService.FindCourseContent:output_type -> course.CourseContentDto
-	3,  // 35: course.CourseService.SaveCourseContent:output_type -> basic.String
-	6,  // 36: course.CourseService.ListCategory:output_type -> course.CategoryPageDto
-	16, // 37: course.CourseService.PrimaryCategory:output_type -> course.CategoryDtoList
-	7,  // 38: course.CourseService.SaveCategory:output_type -> course.CategoryDto
-	3,  // 39: course.CourseService.DeleteCategory:output_type -> basic.String
-	8,  // 40: course.CourseService.ListChapter:output_type -> course.ChapterPageDto
-	17, // 41: course.CourseService.AllChapter:output_type -> course.ChapterDtoList
-	9,  // 42: course.CourseService.SaveChapter:output_type -> course.ChapterDto
-	3,  // 43: course.CourseService.DeleteChapter:output_type -> basic.String
-	10, // 44: course.CourseService.ListSection:output_type -> course.SectionPageDto
-	11, // 45: course.CourseService.SaveSection:output_type -> course.SectionDto
-	3,  // 46: course.CourseService.DeleteSection:output_type -> basic.String
-	18, // 47: course.CourseService.ListCourseFile:output_type -> course.CourseFileDtoList
-	12, // 48: course.CourseService.SaveCourseFile:output_type -> course.CourseFileDto
-	3,  // 49: course.CourseService.DeleteCourseFile:output_type -> basic.String
-	13, // 50: course.CourseService.ListTeacher:output_type -> course.TeacherPageDto
-	19, // 51: course.CourseService.AllTeacher:output_type -> course.TeacherDtoList
-	19, // 52: course.CourseService.SearchTeacher:output_type -> course.TeacherDtoList
-	14, // 53: course.CourseService.SaveTeacher:output_type -> course.TeacherDto
-	3,  // 54: course.CourseService.DeleteTeacher:output_type -> basic.String
-	16, // 55: course.CourseService.AllCategory:output_type -> course.CategoryDtoList
-	20, // 56: course.CourseService.CarouselCourse:output_type -> course.CourseDtoList
-	20, // 57: course.CourseService.NewPublishCourse:output_type -> course.CourseDtoList
-	29, // [29:58] is the sub-list for method output_type
-	0,  // [0:29] is the sub-list for method input_type
+	3,  // 29: course.CourseService.CategoryCourse:input_type -> basic.String
+	0,  // 30: course.CourseService.CourseList:output_type -> course.CoursePageDto
+	1,  // 31: course.CourseService.SaveCourse:output_type -> course.CourseDto
+	3,  // 32: course.CourseService.DeleteCourse:output_type -> basic.String
+	15, // 33: course.CourseService.ListCourseCategory:output_type -> course.CourseCategoryDtoList
+	3,  // 34: course.CourseService.SortCourse:output_type -> basic.String
+	5,  // 35: course.CourseService.FindCourseContent:output_type -> course.CourseContentDto
+	3,  // 36: course.CourseService.SaveCourseContent:output_type -> basic.String
+	6,  // 37: course.CourseService.ListCategory:output_type -> course.CategoryPageDto
+	16, // 38: course.CourseService.PrimaryCategory:output_type -> course.CategoryDtoList
+	7,  // 39: course.CourseService.SaveCategory:output_type -> course.CategoryDto
+	3,  // 40: course.CourseService.DeleteCategory:output_type -> basic.String
+	8,  // 41: course.CourseService.ListChapter:output_type -> course.ChapterPageDto
+	17, // 42: course.CourseService.AllChapter:output_type -> course.ChapterDtoList
+	9,  // 43: course.CourseService.SaveChapter:output_type -> course.ChapterDto
+	3,  // 44: course.CourseService.DeleteChapter:output_type -> basic.String
+	10, // 45: course.CourseService.ListSection:output_type -> course.SectionPageDto
+	11, // 46: course.CourseService.SaveSection:output_type -> course.SectionDto
+	3,  // 47: course.CourseService.DeleteSection:output_type -> basic.String
+	18, // 48: course.CourseService.ListCourseFile:output_type -> course.CourseFileDtoList
+	12, // 49: course.CourseService.SaveCourseFile:output_type -> course.CourseFileDto
+	3,  // 50: course.CourseService.DeleteCourseFile:output_type -> basic.String
+	13, // 51: course.CourseService.ListTeacher:output_type -> course.TeacherPageDto
+	19, // 52: course.CourseService.AllTeacher:output_type -> course.TeacherDtoList
+	19, // 53: course.CourseService.SearchTeacher:output_type -> course.TeacherDtoList
+	14, // 54: course.CourseService.SaveTeacher:output_type -> course.TeacherDto
+	3,  // 55: course.CourseService.DeleteTeacher:output_type -> basic.String
+	16, // 56: course.CourseService.AllCategory:output_type -> course.CategoryDtoList
+	20, // 57: course.CourseService.CarouselCourse:output_type -> course.CourseDtoList
+	20, // 58: course.CourseService.NewPublishCourse:output_type -> course.CourseDtoList
+	20, // 59: course.CourseService.CategoryCourse:output_type -> course.CourseDtoList
+	30, // [30:60] is the sub-list for method output_type
+	0,  // [0:30] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

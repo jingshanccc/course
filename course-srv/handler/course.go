@@ -23,7 +23,7 @@ func (c *CourseServiceHandler) CourseList(ctx context.Context, in *dto.CoursePag
 	return nil
 }
 
-//CarouselCourse: get course page
+//CarouselCourse: 轮播图课程
 func (c *CourseServiceHandler) CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	courseDtos, err := courseDao.CarouselCourse()
 	if err != nil {
@@ -33,9 +33,28 @@ func (c *CourseServiceHandler) CarouselCourse(ctx context.Context, in *basic.Str
 	return nil
 }
 
-//NewPublishCourse: get course page
+//NewPublishCourse: 新上好课
 func (c *CourseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	courseDtos, err := courseDao.NewPublish()
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	out.Rows = courseDtos
+	return nil
+}
+
+//CategoryCourse: 分类搜索课程
+func (c *CourseServiceHandler) CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	// 通过 分类id 获取分类id和其父分类id 获取两个id 对应的所有课程id
+	var ids []string
+	var err *public.BusinessException
+	var courseDtos []*dto.CourseDto
+	if in.Str != "" {
+		ids = courseCategoryDao.SelectCourseIds(in.Str)
+		courseDtos, err = courseDao.SelectCourseByIds(ids, false)
+	} else {
+		courseDtos, err = courseDao.SelectCourseByIds(ids, true)
+	}
 	if err != nil {
 		return errors.New(config.CourseServiceName, err.Error(), err.Code())
 	}
