@@ -1,7 +1,6 @@
 package dao
 
 import (
-	"course/course-srv/proto/dto"
 	"course/public"
 	"course/public/util"
 	"gorm.io/gorm"
@@ -21,9 +20,9 @@ func (CourseCategory) TableName() string {
 }
 
 //SelectByCourseId: 查询课程关联的所有分类记录
-func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]*dto.CourseCategoryDto, *public.BusinessException) {
-	var res []*dto.CourseCategoryDto
-	err := public.DB.Model(&CourseCategory{}).Where("course_id = ?", courseId).Find(&res).Error
+func (r *CourseCategoryDao) SelectByCourseId(courseId string) ([]string, *public.BusinessException) {
+	var res []string
+	err := public.DB.Model(&CourseCategory{}).Select("category_id").Where("course_id = ?", courseId).Find(&res).Error
 	if err != nil {
 		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}
@@ -71,6 +70,6 @@ func (r *CourseCategoryDao) SelectCourseIds(categories ...string) []string {
 	} else {
 		query = "category_id = ?"
 	}
-	public.DB.Model(&CourseCategory{}).Select("course_id").Where(query, categories).Find(&res)
+	public.DB.Model(&CourseCategory{}).Select("course_id").Distinct("course_id").Where(query, categories).Find(&res)
 	return res
 }

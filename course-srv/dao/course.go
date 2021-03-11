@@ -173,3 +173,10 @@ func (c *CourseDao) SelectCourseByIds(ids []string, all bool) ([]*dto.CourseDto,
 	}
 	return res, nil
 }
+
+//SelectByProperty: 查询课程
+func (c *CourseDao) SelectByProperty(property, value string) *Course {
+	var res Course
+	public.DB.Model(&Course{}).Where(property+" = ?", value).Find(&res)
+	return &res
+}

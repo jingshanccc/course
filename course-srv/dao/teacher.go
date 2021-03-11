@@ -87,3 +87,14 @@ func (c *TeacherDao) SearchByProperty(property, value string) ([]*dto.TeacherDto
 	}
 	return res, nil
 }
+
+//SelectByProperty: 精确查询
+func (c *TeacherDao) SelectByProperty(property, value string) (*dto.TeacherDto, *public.BusinessException) {
+	var res dto.TeacherDto
+	err := public.DB.Model(&Teacher{}).Where(property+" = ?", value).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return &res, nil
+}

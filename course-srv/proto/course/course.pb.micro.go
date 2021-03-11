@@ -49,7 +49,6 @@ type CourseService interface {
 	CourseList(ctx context.Context, in *dto.CoursePageDto, opts ...client.CallOption) (*dto.CoursePageDto, error)
 	SaveCourse(ctx context.Context, in *dto.CourseDto, opts ...client.CallOption) (*dto.CourseDto, error)
 	DeleteCourse(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
-	ListCourseCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseCategoryDtoList, error)
 	SortCourse(ctx context.Context, in *dto.SortDto, opts ...client.CallOption) (*basic.String, error)
 	FindCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseContentDto, error)
 	SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, opts ...client.CallOption) (*basic.String, error)
@@ -86,6 +85,10 @@ type CourseService interface {
 	NewPublishCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 	// 分类搜索课程
 	CategoryCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
+	// 课程详情
+	CourseDetail(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDto, error)
+	// 相关课程
+	RelatedCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 }
 
 type courseService struct {
@@ -123,16 +126,6 @@ func (c *courseService) SaveCourse(ctx context.Context, in *dto.CourseDto, opts 
 func (c *courseService) DeleteCourse(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
 	req := c.c.NewRequest(c.name, "CourseService.DeleteCourse", in)
 	out := new(basic.String)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *courseService) ListCourseCategory(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseCategoryDtoList, error) {
-	req := c.c.NewRequest(c.name, "CourseService.ListCourseCategory", in)
-	out := new(dto.CourseCategoryDtoList)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -400,6 +393,26 @@ func (c *courseService) CategoryCourse(ctx context.Context, in *basic.String, op
 	return out, nil
 }
 
+func (c *courseService) CourseDetail(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDto, error) {
+	req := c.c.NewRequest(c.name, "CourseService.CourseDetail", in)
+	out := new(dto.CourseDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) RelatedCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.RelatedCourse", in)
+	out := new(dto.CourseDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -408,7 +421,6 @@ type CourseServiceHandler interface {
 	CourseList(context.Context, *dto.CoursePageDto, *dto.CoursePageDto) error
 	SaveCourse(context.Context, *dto.CourseDto, *dto.CourseDto) error
 	DeleteCourse(context.Context, *basic.StringList, *basic.String) error
-	ListCourseCategory(context.Context, *basic.String, *dto.CourseCategoryDtoList) error
 	SortCourse(context.Context, *dto.SortDto, *basic.String) error
 	FindCourseContent(context.Context, *basic.String, *dto.CourseContentDto) error
 	SaveCourseContent(context.Context, *dto.CourseContentDto, *basic.String) error
@@ -445,6 +457,10 @@ type CourseServiceHandler interface {
 	NewPublishCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 	// 分类搜索课程
 	CategoryCourse(context.Context, *basic.String, *dto.CourseDtoList) error
+	// 课程详情
+	CourseDetail(context.Context, *basic.String, *dto.CourseDto) error
+	// 相关课程
+	RelatedCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -452,7 +468,6 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		CourseList(ctx context.Context, in *dto.CoursePageDto, out *dto.CoursePageDto) error
 		SaveCourse(ctx context.Context, in *dto.CourseDto, out *dto.CourseDto) error
 		DeleteCourse(ctx context.Context, in *basic.StringList, out *basic.String) error
-		ListCourseCategory(ctx context.Context, in *basic.String, out *dto.CourseCategoryDtoList) error
 		SortCourse(ctx context.Context, in *dto.SortDto, out *basic.String) error
 		FindCourseContent(ctx context.Context, in *basic.String, out *dto.CourseContentDto) error
 		SaveCourseContent(ctx context.Context, in *dto.CourseContentDto, out *basic.String) error
@@ -479,6 +494,8 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		CarouselCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		NewPublishCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
+		CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error
+		RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 	}
 	type CourseService struct {
 		courseService
@@ -501,10 +518,6 @@ func (h *courseServiceHandler) SaveCourse(ctx context.Context, in *dto.CourseDto
 
 func (h *courseServiceHandler) DeleteCourse(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.DeleteCourse(ctx, in, out)
-}
-
-func (h *courseServiceHandler) ListCourseCategory(ctx context.Context, in *basic.String, out *dto.CourseCategoryDtoList) error {
-	return h.CourseServiceHandler.ListCourseCategory(ctx, in, out)
 }
 
 func (h *courseServiceHandler) SortCourse(ctx context.Context, in *dto.SortDto, out *basic.String) error {
@@ -609,4 +622,12 @@ func (h *courseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.S
 
 func (h *courseServiceHandler) CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	return h.CourseServiceHandler.CategoryCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error {
+	return h.CourseServiceHandler.CourseDetail(ctx, in, out)
+}
+
+func (h *courseServiceHandler) RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	return h.CourseServiceHandler.RelatedCourse(ctx, in, out)
 }

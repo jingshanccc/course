@@ -113,3 +113,13 @@ func (c *ChapterDao) Delete(ids []string) *public.BusinessException {
 	}
 	return nil
 }
+
+func (c *ChapterDao) SelectByProperty(property, value string) ([]*dto.ChapterDto, *public.BusinessException) {
+	var res []*dto.ChapterDto
+	err := public.DB.Model(&Chapter{}).Where(property+" = ?", value).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}

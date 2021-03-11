@@ -71,7 +71,6 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			courseGroup.DELETE("", course.DelCourse)
 			courseGroup.PUT("", course.SaveCourse)
 			courseGroup.POST("/save-content", course.SaveCourseContent)
-			courseGroup.GET("/list-category", course.ListCourseCategory)
 			courseGroup.POST("/sort", course.SortCourse)
 			courseGroup.GET("/find-content", course.FindCourseContent)
 		}
@@ -134,6 +133,8 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		web.GET("/carousel-course", course.CarouselCourse)
 		web.GET("/new-publish", course.NewPublishCourse)
 		web.GET("/course-list", course.CategoryCourse)
+		web.GET("/course", course.GetCourse)
+		web.GET("/related-course", course.RelatedCourse)
 	}
 	return ginRouter
 }

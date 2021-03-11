@@ -112,3 +112,13 @@ func (c *SectionDao) Delete(ids []string) *public.BusinessException {
 	}
 	return nil
 }
+
+func (c *SectionDao) SelectByProperty(property, value string) ([]*dto.SectionDto, *public.BusinessException) {
+	var res []*dto.SectionDto
+	err := public.DB.Model(&Section{}).Where(property+" = ?", value).Find(&res).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return nil, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return res, nil
+}

@@ -48,6 +48,30 @@ func CategoryCourse(ctx *gin.Context) {
 	}
 }
 
+//RelatedCourse: 相关课程
+func RelatedCourse(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.RelatedCourse(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//GetCourse: 课程详情
+func GetCourse(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		list, err := courseService.CourseDetail(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //SaveCourse: 保存课程
 func SaveCourse(ctx *gin.Context) {
 	var req dto.CourseDto
@@ -90,18 +114,6 @@ func SaveCourseContent(ctx *gin.Context) {
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
 		list, err := courseService.SaveCourseContent(context.Background(), &req)
-		public.ResponseAny(ctx, err, list)
-	} else {
-		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
-	}
-}
-
-//ListCourseCategory: 获取课程所属的所有分类
-func ListCourseCategory(ctx *gin.Context) {
-	var req basic.String
-	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
-		list, err := courseService.ListCourseCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))

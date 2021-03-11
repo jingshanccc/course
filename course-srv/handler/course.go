@@ -43,6 +43,20 @@ func (c *CourseServiceHandler) NewPublishCourse(ctx context.Context, in *basic.S
 	return nil
 }
 
+//RelatedCourse: 新上好课
+func (c *CourseServiceHandler) RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	ccds, _ := courseCategoryDao.SelectByCourseId(in.Str)
+	courseDtos, err := courseDao.SelectCourseByIds(courseCategoryDao.SelectCourseIds(ccds...), false)
+	if err != nil {
+		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+	}
+	if len(courseDtos) == 1 {
+		courseDtos, _ = courseDao.NewPublish()
+	}
+	out.Rows = courseDtos
+	return nil
+}
+
 //CategoryCourse: 分类搜索课程
 func (c *CourseServiceHandler) CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	// 通过 分类id 获取分类id和其父分类id 获取两个id 对应的所有课程id
@@ -62,6 +76,22 @@ func (c *CourseServiceHandler) CategoryCourse(ctx context.Context, in *basic.Str
 	return nil
 }
 
+//CourseDetail: 课程详情
+func (c *CourseServiceHandler) CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error {
+	courseDb := courseDao.SelectByProperty("id", in.Str)
+	if courseDb.Id != "" {
+		_ = util.CopyProperties(out, courseDb)
+		teacherDb, _ := teacherDao.SelectByProperty("id", courseDb.TeacherId)
+		chapters, _ := chapterDao.SelectByProperty("course_id", courseDb.Id)
+		sections, _ := sectionDao.SelectByProperty("course_id", courseDb.Id)
+		out.Chapters = chapters
+		out.Teacher = teacherDb
+		out.Sections = sections
+	}
+
+	return nil
+}
+
 //SaveCourse: 保存/更新课程
 func (c *CourseServiceHandler) SaveCourse(ctx context.Context, in *dto.CourseDto, out *dto.CourseDto) error {
 	cd, err := courseDao.Save(in)
@@ -78,16 +108,6 @@ func (c *CourseServiceHandler) DeleteCourse(ctx context.Context, in *basic.Strin
 	if exception != nil {
 		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
 	}
-	return nil
-}
-
-//ListCourseCategory: 获取课程所属的所有分类
-func (c *CourseServiceHandler) ListCourseCategory(ctx context.Context, in *basic.String, out *dto.CourseCategoryDtoList) error {
-	courseCategoryDtos, exception := courseCategoryDao.SelectByCourseId(in.Str)
-	if exception != nil {
-		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
-	}
-	out.Rows = courseCategoryDtos
 	return nil
 }
 
