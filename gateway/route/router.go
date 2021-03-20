@@ -134,6 +134,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		web.GET("/new-publish", course.NewPublishCourse)
 		web.GET("/course-list", course.CategoryCourse)
 		web.GET("/course", course.GetCourse)
+		web.GET("/course-content", course.DownloadCourseContent)
 		web.GET("/related-course", course.RelatedCourse)
 	}
 	return ginRouter

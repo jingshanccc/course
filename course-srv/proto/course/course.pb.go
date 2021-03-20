@@ -37,7 +37,7 @@ var file_course_course_srv_proto_course_course_proto_rawDesc = []byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x28, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x63, 0x6f,
 	0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x64,
 	0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32,
-	0xdb, 0x0d, 0x0a, 0x0d, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x92, 0x0e, 0x0a, 0x0d, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x12, 0x3a, 0x0a, 0x0a, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x12,
 	0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x50,
 	0x61, 0x67, 0x65, 0x44, 0x74, 0x6f, 0x1a, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e,
@@ -146,10 +146,13 @@ var file_course_course_srv_proto_course_course_proto_rawDesc = []byte{
 	0x72, 0x73, 0x65, 0x44, 0x74, 0x6f, 0x12, 0x35, 0x0a, 0x0d, 0x52, 0x65, 0x6c, 0x61, 0x74, 0x65,
 	0x64, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x12, 0x0d, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e,
 	0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x1a, 0x15, 0x2e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2e,
-	0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x20, 0x5a,
-	0x1e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2d, 0x73,
-	0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x44, 0x74, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x35, 0x0a,
+	0x15, 0x44, 0x6f, 0x77, 0x6e, 0x6c, 0x6f, 0x61, 0x64, 0x43, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x43,
+	0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x0d, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x53,
+	0x74, 0x72, 0x69, 0x6e, 0x67, 0x1a, 0x0d, 0x2e, 0x62, 0x61, 0x73, 0x69, 0x63, 0x2e, 0x53, 0x74,
+	0x72, 0x69, 0x6e, 0x67, 0x42, 0x20, 0x5a, 0x1e, 0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x2f, 0x63,
+	0x6f, 0x75, 0x72, 0x73, 0x65, 0x2d, 0x73, 0x72, 0x76, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x63, 0x6f, 0x75, 0x72, 0x73, 0x65, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_course_course_srv_proto_course_course_proto_goTypes = []interface{}{
@@ -206,39 +209,41 @@ var file_course_course_srv_proto_course_course_proto_depIdxs = []int32{
 	4,  // 28: course.CourseService.CategoryCourse:input_type -> basic.String
 	4,  // 29: course.CourseService.CourseDetail:input_type -> basic.String
 	4,  // 30: course.CourseService.RelatedCourse:input_type -> basic.String
-	0,  // 31: course.CourseService.CourseList:output_type -> course.CoursePageDto
-	1,  // 32: course.CourseService.SaveCourse:output_type -> course.CourseDto
-	4,  // 33: course.CourseService.DeleteCourse:output_type -> basic.String
-	4,  // 34: course.CourseService.SortCourse:output_type -> basic.String
-	5,  // 35: course.CourseService.FindCourseContent:output_type -> course.CourseContentDto
-	4,  // 36: course.CourseService.SaveCourseContent:output_type -> basic.String
-	6,  // 37: course.CourseService.ListCategory:output_type -> course.CategoryPageDto
-	15, // 38: course.CourseService.PrimaryCategory:output_type -> course.CategoryDtoList
-	7,  // 39: course.CourseService.SaveCategory:output_type -> course.CategoryDto
-	4,  // 40: course.CourseService.DeleteCategory:output_type -> basic.String
-	8,  // 41: course.CourseService.ListChapter:output_type -> course.ChapterPageDto
-	16, // 42: course.CourseService.AllChapter:output_type -> course.ChapterDtoList
-	9,  // 43: course.CourseService.SaveChapter:output_type -> course.ChapterDto
-	4,  // 44: course.CourseService.DeleteChapter:output_type -> basic.String
-	10, // 45: course.CourseService.ListSection:output_type -> course.SectionPageDto
-	11, // 46: course.CourseService.SaveSection:output_type -> course.SectionDto
-	4,  // 47: course.CourseService.DeleteSection:output_type -> basic.String
-	17, // 48: course.CourseService.ListCourseFile:output_type -> course.CourseFileDtoList
-	12, // 49: course.CourseService.SaveCourseFile:output_type -> course.CourseFileDto
-	4,  // 50: course.CourseService.DeleteCourseFile:output_type -> basic.String
-	13, // 51: course.CourseService.ListTeacher:output_type -> course.TeacherPageDto
-	18, // 52: course.CourseService.AllTeacher:output_type -> course.TeacherDtoList
-	18, // 53: course.CourseService.SearchTeacher:output_type -> course.TeacherDtoList
-	14, // 54: course.CourseService.SaveTeacher:output_type -> course.TeacherDto
-	4,  // 55: course.CourseService.DeleteTeacher:output_type -> basic.String
-	15, // 56: course.CourseService.AllCategory:output_type -> course.CategoryDtoList
-	19, // 57: course.CourseService.CarouselCourse:output_type -> course.CourseDtoList
-	19, // 58: course.CourseService.NewPublishCourse:output_type -> course.CourseDtoList
-	19, // 59: course.CourseService.CategoryCourse:output_type -> course.CourseDtoList
-	1,  // 60: course.CourseService.CourseDetail:output_type -> course.CourseDto
-	19, // 61: course.CourseService.RelatedCourse:output_type -> course.CourseDtoList
-	31, // [31:62] is the sub-list for method output_type
-	0,  // [0:31] is the sub-list for method input_type
+	4,  // 31: course.CourseService.DownloadCourseContent:input_type -> basic.String
+	0,  // 32: course.CourseService.CourseList:output_type -> course.CoursePageDto
+	1,  // 33: course.CourseService.SaveCourse:output_type -> course.CourseDto
+	4,  // 34: course.CourseService.DeleteCourse:output_type -> basic.String
+	4,  // 35: course.CourseService.SortCourse:output_type -> basic.String
+	5,  // 36: course.CourseService.FindCourseContent:output_type -> course.CourseContentDto
+	4,  // 37: course.CourseService.SaveCourseContent:output_type -> basic.String
+	6,  // 38: course.CourseService.ListCategory:output_type -> course.CategoryPageDto
+	15, // 39: course.CourseService.PrimaryCategory:output_type -> course.CategoryDtoList
+	7,  // 40: course.CourseService.SaveCategory:output_type -> course.CategoryDto
+	4,  // 41: course.CourseService.DeleteCategory:output_type -> basic.String
+	8,  // 42: course.CourseService.ListChapter:output_type -> course.ChapterPageDto
+	16, // 43: course.CourseService.AllChapter:output_type -> course.ChapterDtoList
+	9,  // 44: course.CourseService.SaveChapter:output_type -> course.ChapterDto
+	4,  // 45: course.CourseService.DeleteChapter:output_type -> basic.String
+	10, // 46: course.CourseService.ListSection:output_type -> course.SectionPageDto
+	11, // 47: course.CourseService.SaveSection:output_type -> course.SectionDto
+	4,  // 48: course.CourseService.DeleteSection:output_type -> basic.String
+	17, // 49: course.CourseService.ListCourseFile:output_type -> course.CourseFileDtoList
+	12, // 50: course.CourseService.SaveCourseFile:output_type -> course.CourseFileDto
+	4,  // 51: course.CourseService.DeleteCourseFile:output_type -> basic.String
+	13, // 52: course.CourseService.ListTeacher:output_type -> course.TeacherPageDto
+	18, // 53: course.CourseService.AllTeacher:output_type -> course.TeacherDtoList
+	18, // 54: course.CourseService.SearchTeacher:output_type -> course.TeacherDtoList
+	14, // 55: course.CourseService.SaveTeacher:output_type -> course.TeacherDto
+	4,  // 56: course.CourseService.DeleteTeacher:output_type -> basic.String
+	15, // 57: course.CourseService.AllCategory:output_type -> course.CategoryDtoList
+	19, // 58: course.CourseService.CarouselCourse:output_type -> course.CourseDtoList
+	19, // 59: course.CourseService.NewPublishCourse:output_type -> course.CourseDtoList
+	19, // 60: course.CourseService.CategoryCourse:output_type -> course.CourseDtoList
+	1,  // 61: course.CourseService.CourseDetail:output_type -> course.CourseDto
+	19, // 62: course.CourseService.RelatedCourse:output_type -> course.CourseDtoList
+	4,  // 63: course.CourseService.DownloadCourseContent:output_type -> basic.String
+	32, // [32:64] is the sub-list for method output_type
+	0,  // [0:32] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

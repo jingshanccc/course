@@ -89,6 +89,8 @@ type CourseService interface {
 	CourseDetail(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDto, error)
 	// 相关课程
 	RelatedCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
+	// 下载课程讲义
+	DownloadCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -413,6 +415,16 @@ func (c *courseService) RelatedCourse(ctx context.Context, in *basic.String, opt
 	return out, nil
 }
 
+func (c *courseService) DownloadCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.DownloadCourseContent", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -461,6 +473,8 @@ type CourseServiceHandler interface {
 	CourseDetail(context.Context, *basic.String, *dto.CourseDto) error
 	// 相关课程
 	RelatedCourse(context.Context, *basic.String, *dto.CourseDtoList) error
+	// 下载课程讲义
+	DownloadCourseContent(context.Context, *basic.String, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -496,6 +510,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		CategoryCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error
 		RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
+		DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -630,4 +645,8 @@ func (h *courseServiceHandler) CourseDetail(ctx context.Context, in *basic.Strin
 
 func (h *courseServiceHandler) RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
 	return h.CourseServiceHandler.RelatedCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.CourseServiceHandler.DownloadCourseContent(ctx, in, out)
 }

@@ -76,6 +76,16 @@ func (c *CourseServiceHandler) CategoryCourse(ctx context.Context, in *basic.Str
 	return nil
 }
 
+//DownloadCourseContent: 下载课程讲义
+func (c *CourseServiceHandler) DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error {
+	content, exception := courseDao.FindContent(in.Str)
+	if exception != nil {
+		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
+	}
+	out.Str = util.TransToHtml(content.Content)
+	return nil
+}
+
 //CourseDetail: 课程详情
 func (c *CourseServiceHandler) CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error {
 	courseDb := courseDao.SelectByProperty("id", in.Str)

@@ -60,6 +60,18 @@ func RelatedCourse(ctx *gin.Context) {
 	}
 }
 
+//DownloadCourseContent: 下载课程讲义
+func DownloadCourseContent(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		bytes, err := courseService.DownloadCourseContent(context.Background(), &req)
+		public.ResponseAny(ctx, err, bytes)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //GetCourse: 课程详情
 func GetCourse(ctx *gin.Context) {
 	var req basic.String
