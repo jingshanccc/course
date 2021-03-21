@@ -36,7 +36,7 @@ func main() {
 	//create web micro service, register in consul, use gin router to handler request
 	server := web.NewService(
 		web.Name(config.GatewayName),
-		web.Address(":4000"),
+		web.Address(config.GatewayAddr),
 		web.Handler(route.NewRouter(userService, courseService, fileService)),
 		web.Registry(r),
 	)
