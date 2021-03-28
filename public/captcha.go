@@ -2,9 +2,9 @@ package public
 
 import (
 	"context"
-	"course/middleware/redis"
 	"github.com/mojocn/base64Captcha"
 	"log"
+	"public/middleware/redis"
 	"strings"
 	"time"
 )

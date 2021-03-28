@@ -1,11 +1,11 @@
 package public
 
 import (
-	configs "course/config"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 	"io"
+	config2 "public/config"
 	"time"
 )
 
@@ -21,7 +21,7 @@ func NewTracer(serviceName string) (opentracing.Tracer, io.Closer, error) {
 			QueueSize:           0,
 			BufferFlushInterval: 1 * time.Second,
 			LogSpans:            true,
-			LocalAgentHostPort:  configs.TracerAddr,
+			LocalAgentHostPort:  config2.TracerAddr,
 		},
 	}
 	return cfg.NewTracer()

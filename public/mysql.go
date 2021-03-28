@@ -1,11 +1,11 @@
 package public
 
 import (
-	"course/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"public/config"
 )
 
 var DB *gorm.DB
