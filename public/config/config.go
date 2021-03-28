@@ -3,6 +3,7 @@ package config
 // basic config
 const (
 	//192.168.10.130 127.0.0.1
+	BasicName   = "com.chan.course.srv."
 	BasicHost   = "192.168.10.130"
 	ServiceHost = "127.0.0.1"
 	MySQLUrl    = "root:123456@tcp(192.168.10.130:33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
@@ -15,8 +16,8 @@ const (
 // user-service
 const (
 	DefaultPassword     = "123456"
-	UserServiceName     = "com.chan.course.user"
-	UserClientName      = "com.chan.course.user-cli"
+	UserServiceName     = BasicName + "user"
+	UserClientName      = BasicName + "user-cli"
 	UserServiceAddr     = ServiceHost + ":8081"
 	JwtKey              = "micah"
 	TokenExpire         = 48
@@ -27,7 +28,7 @@ const (
 
 // file-service
 const (
-	FileServiceName = "com.chan.course.file"
+	FileServiceName = BasicName + "file"
 	FileClientName  = "com.chan.course.file-cli"
 	FileServiceAddr = ServiceHost + ":8082"
 	FilePath        = "F:/GoWorkspace/course/file-srv/store/"
@@ -36,8 +37,8 @@ const (
 
 // course-service
 const (
-	CourseServiceName = "com.chan.course.course"
-	CourseCliName     = "com.chan.course.course-cli"
+	CourseServiceName = BasicName + "course"
+	CourseCliName     = BasicName + "course-cli"
 	CourseServiceAddr = ServiceHost + ":8083"
 )
 
