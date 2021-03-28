@@ -1,8 +1,8 @@
 package redis
 
 import (
+	"gitee.com/jingshanccc/course/public/config"
 	"github.com/go-redis/redis/v8"
-	"public/config"
 )
 
 var (

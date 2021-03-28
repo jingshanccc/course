@@ -1,10 +1,10 @@
 package public
 
 import (
+	"gitee.com/jingshanccc/course/public/util"
 	"github.com/asim/go-micro/v3/errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"public/util"
 )
 
 type Response struct {

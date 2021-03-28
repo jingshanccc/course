@@ -1,4 +1,4 @@
-module public
+module gitee.com/jingshanccc/course/public
 
 go 1.14
 

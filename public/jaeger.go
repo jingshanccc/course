@@ -1,11 +1,11 @@
 package public
 
 import (
+	config2 "gitee.com/jingshanccc/course/public/config"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 	"io"
-	config2 "public/config"
 	"time"
 )
 
