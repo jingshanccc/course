@@ -17,8 +17,9 @@ const (
 const (
 	DefaultPassword     = "123456"
 	UserServiceName     = BasicName + "user"
-	UserClientName      = BasicName + "user-cli"
 	UserServiceAddr     = ServiceHost + ":8081"
+	UserApiName         = BasicName + "api.user"
+	UserApiAddr         = ServiceHost + ":8091"
 	JwtKey              = "micah"
 	TokenExpire         = 48
 	UserInfoKey         = "user_info_"
@@ -29,8 +30,9 @@ const (
 // file-service
 const (
 	FileServiceName = BasicName + "file"
-	FileClientName  = "com.chan.course.file-cli"
 	FileServiceAddr = ServiceHost + ":8082"
+	FileApiName     = BasicName + "api.file"
+	FileApiAddr     = ServiceHost + ":8092"
 	FilePath        = "F:/GoWorkspace/course/file-srv/store/"
 	FileUrl         = "http://dev.course.com:4000/api/v1/file/store/"
 )
@@ -38,8 +40,9 @@ const (
 // course-service
 const (
 	CourseServiceName = BasicName + "course"
-	CourseCliName     = BasicName + "course-cli"
 	CourseServiceAddr = ServiceHost + ":8083"
+	CourseApiName     = BasicName + "api.course"
+	CourseApiAddr     = ServiceHost + ":8093"
 )
 
 // gateway
