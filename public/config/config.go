@@ -6,11 +6,11 @@ const (
 	BasicName   = "com.chan.course.srv."
 	BasicHost   = "192.168.10.130"
 	ServiceHost = "127.0.0.1"
-	MySQLUrl    = "root:123456@tcp(192.168.10.130:33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
-	RedisUrl    = "192.168.10.130:6379"
+	MySQLUrl    = "root:123456@tcp(" + BasicHost + ":33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
+	RedisUrl    = BasicHost + ":6379"
 	//RegistryAddr = "192.168.10.130:8500"
-	RegistryAddr = "192.168.10.130:2379"
-	TracerAddr   = "192.168.10.130:6831"
+	RegistryAddr = BasicHost + ":2379"
+	TracerAddr   = BasicHost + ":6831"
 )
 
 // user-service
