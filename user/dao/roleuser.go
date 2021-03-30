@@ -2,7 +2,7 @@ package dao
 
 import (
 	"context"
-	"course/public"
+	"gitee.com/jingshanccc/course/public"
 )
 
 type RoleUserDao struct {

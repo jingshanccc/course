@@ -1,3 +1,10 @@
+GET localhost:8080/greeter/hello
+Content-Type: application/json
+
+{
+  "name": "test"
+}
+
 ### save role resource
 POST {{base}}/role/save-resource
 Content-Type: application/json
