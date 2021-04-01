@@ -1,7 +1,7 @@
 package public
 
 import (
-	"course/config"
+	"gitee.com/jingshanccc/course/public/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

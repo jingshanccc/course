@@ -1,10 +1,11 @@
 GOPATH:=$(shell go env GOPATH)
 
+MODULE ?= user
 .PHONY: proto
-MODULE = user
 proto:
-	protoc --proto_path=../ --go_out=../ ../course/$(MODULE)-srv/proto/dto/*.proto
-	protoc --proto_path=../ --go_out=../ --micro_out=../ ../course/$(MODULE)-srv/proto/$(MODULE)/*.proto
+	echo $(MODULE)
+	protoc --proto_path=f:/ --go_out=f:/ f:/gitee.com/jingshanccc/course/$(MODULE)/proto/dto/*.proto
+	protoc --proto_path=f:/ --go_out=f:/ --micro_out=f:/ f:/gitee.com/jingshanccc/course/$(MODULE)/proto/$(MODULE)/*.proto
 
 .PHONY: build
 build:
@@ -17,3 +18,7 @@ build:
 docker:
 	cd $(MODULE)-srv
 	docker build . -t $(MODULE):latest
+
+.PHONY: api
+api:
+	micro --api_namespace=com.chan.course --auth_namespace=com.chan.course --registry=etcd --registry_address=192.168.10.130:2379 api

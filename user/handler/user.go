@@ -2,15 +2,15 @@ package handler
 
 import (
 	"context"
-	"course/config"
-	"course/middleware/redis"
-	"course/proto/basic"
-	"course/public"
-	"course/public/util"
-	"course/user-srv/dao"
-	"course/user-srv/proto/dto"
 	"encoding/json"
-	"github.com/micro/go-micro/v2/errors"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
+	"gitee.com/jingshanccc/course/public/proto/basic"
+	"gitee.com/jingshanccc/course/public/util"
+	"gitee.com/jingshanccc/course/user/dao"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"github.com/asim/go-micro/v3/errors"
 	"log"
 	"time"
 )

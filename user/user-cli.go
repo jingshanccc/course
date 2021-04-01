@@ -1,9 +1,9 @@
 package main
 
 import (
-	"course/public/util"
 	"encoding/base64"
 	"fmt"
+	"gitee.com/jingshanccc/course/public/util"
 )
 
 func main() {

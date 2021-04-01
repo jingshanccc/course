@@ -1,9 +1,9 @@
 package public
 
 import (
-	"course/public/util"
+	"gitee.com/jingshanccc/course/public/util"
+	"github.com/asim/go-micro/v3/errors"
 	"github.com/gin-gonic/gin"
-	"github.com/micro/go-micro/v2/errors"
 	"net/http"
 )
 

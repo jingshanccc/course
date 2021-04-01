@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s # 每15s抓取一次
+  external_labels:
+    monitor: 'prometheus' # 监控系统在注册中心的服务名
+scrape_configs:
+  - job_name: 'etcd' # 监控的服务
+    scrape_interval: 1s # 覆盖全局配置
+    static_configs:
+      - targets: ['192.168.10.130:2379'] # 监控服务的地址

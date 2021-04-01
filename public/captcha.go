@@ -2,7 +2,7 @@ package public
 
 import (
 	"context"
-	"course/middleware/redis"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
 	"github.com/mojocn/base64Captcha"
 	"log"
 	"strings"

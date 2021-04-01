@@ -1,6 +1,8 @@
 package handler
 
-import "course/user-srv/dao"
+import (
+	"gitee.com/jingshanccc/course/user/dao"
+)
 
 /*
  when service handler return not nil, the default err code will be 500.

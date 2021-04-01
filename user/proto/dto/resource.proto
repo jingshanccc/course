@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "course/user-srv/proto/dto";
+option go_package="gitee.com/jingshanccc/course/user/proto/dto";
 
 message ResourceDto{
   int32 id = 1;

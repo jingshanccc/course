@@ -2,9 +2,9 @@ package dao
 
 import (
 	"context"
-	"course/public"
-	"course/public/util"
-	"course/user-srv/proto/dto"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/util"
+	"gitee.com/jingshanccc/course/user/proto/dto"
 	"log"
 	"strings"
 	"time"

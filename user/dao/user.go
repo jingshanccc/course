@@ -2,14 +2,14 @@ package dao
 
 import (
 	"context"
-	"course/config"
-	"course/middleware/redis"
-	"course/public"
-	"course/public/util"
-	"course/user-srv/proto/dto"
 	"crypto/md5"
 	"encoding/base64"
 	"fmt"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
+	"gitee.com/jingshanccc/course/public/util"
+	"gitee.com/jingshanccc/course/user/proto/dto"
 	"log"
 	"time"
 )

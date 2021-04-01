@@ -1,11 +1,11 @@
 syntax="proto3";
 
-import "course/user-srv/proto/dto/user.proto";
-import "course/proto/basic/basic.proto";
-import "course/user-srv/proto/dto/resource.proto";
+import "gitee.com/jingshanccc/course/user/proto/dto/user.proto";
+import "gitee.com/jingshanccc/course/public/proto/basic/basic.proto";
+import "gitee.com/jingshanccc/course/user/proto/dto/resource.proto";
 package user;
 
-option go_package="course/user-srv/proto/user";
+option go_package="gitee.com/jingshanccc/course/user/proto/user";
 
 service UserService{
   //----------- 用户接口 -------------

@@ -28,14 +28,14 @@ services:
       - 9090:9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-#  consul:
-#    image: consul
-#    ports:
-#    - "8300:8300"
-#    - "8301:8301"
-#    - "8302:8302"
-#    - "8500:8500"
-#    - "8600:8600"
+  consul:
+    image: consul
+    ports:
+    - "8300:8300"
+    - "8301:8301"
+    - "8302:8302"
+    - "8500:8500"
+    - "8600:8600"
   jaeger:
     image: jaegertracing/all-in-one
     ports:
