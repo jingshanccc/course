@@ -7,7 +7,7 @@ import (
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/proto/basic"
 	"gitee.com/jingshanccc/course/public/util"
-	"github.com/asim/go-micro/v3/errors"
+	"github.com/micro/go-micro/v2/errors"
 )
 
 //ListCategory: 获取分类列表

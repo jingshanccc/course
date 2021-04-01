@@ -10,7 +10,7 @@ import (
 	"gitee.com/jingshanccc/course/public/util"
 	"gitee.com/jingshanccc/course/user/dao"
 	"gitee.com/jingshanccc/course/user/proto/dto"
-	"github.com/asim/go-micro/v3/errors"
+	"github.com/micro/go-micro/v2/errors"
 	"log"
 	"time"
 )

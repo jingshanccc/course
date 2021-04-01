@@ -6,7 +6,7 @@ import (
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/proto/basic"
 	"gitee.com/jingshanccc/course/user/proto/dto"
-	"github.com/asim/go-micro/v3/errors"
+	"github.com/micro/go-micro/v2/errors"
 )
 
 //LoadMenus : 加载后台管理系统用户权限树
