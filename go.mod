@@ -9,27 +9,26 @@ require (
 	github.com/asim/go-micro/cmd/protoc-gen-micro/v3 v3.0.0-20210317093720-0a41e6d80f39 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/dgryski/go-rendezvous v0.0.0-20200609043717-5ab96a526299 // indirect
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-oauth2/oauth2/v4 v4.1.2
+	github.com/go-oauth2/redis/v4 v4.1.1
+	github.com/go-redis/redis/v8 v8.8.0
 	github.com/golang/protobuf v1.4.3
-	github.com/google/go-cmp v0.5.0 // indirect
-	github.com/google/uuid v1.1.1
-	github.com/jordan-wright/email v0.0.0-20200917010138-e1c00e156980
+	github.com/google/uuid v1.1.1 // indirect
+	github.com/jordan-wright/email v0.0.0-20200917010138-e1c00e156980 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/consul/v2 v2.9.1
-	github.com/micro/go-plugins/wrapper/trace/opentracing/v2 v2.9.1 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.4
-	github.com/mojocn/base64Captcha v1.2.2
+	github.com/micro/go-plugins/wrapper/trace/opentracing/v2 v2.9.1
+	github.com/microcosm-cc/bluemonday v1.0.4 // indirect
+	github.com/mojocn/base64Captcha v1.2.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/russross/blackfriday/v2 v2.0.1
-	github.com/uber/jaeger-client-go v2.25.0+incompatible
+	github.com/russross/blackfriday/v2 v2.0.1 // indirect
+	github.com/uber/jaeger-client-go v2.25.0+incompatible // indirect
 	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
-	go.opentelemetry.io/otel v0.2.2 // indirect
 	google.golang.org/protobuf v1.23.0
-	gorm.io/driver/mysql v1.0.3
-	gorm.io/gorm v1.20.7
+	gorm.io/driver/mysql v1.0.3 // indirect
+	gorm.io/gorm v1.20.7 // indirect
 )

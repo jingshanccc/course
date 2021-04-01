@@ -1,11 +1,11 @@
 GOPATH:=$(shell go env GOPATH)
 
+WORK_PATH ?= f:
 MODULE ?= user
 .PHONY: proto
 proto:
-	echo $(MODULE)
-	protoc --proto_path=f:/ --go_out=f:/ f:/gitee.com/jingshanccc/course/$(MODULE)/proto/dto/*.proto
-	protoc --proto_path=f:/ --go_out=f:/ --micro_out=f:/ f:/gitee.com/jingshanccc/course/$(MODULE)/proto/$(MODULE)/*.proto
+	protoc --proto_path=$(WORK_PATH)/ --go_out=$(WORK_PATH)/ $(WORK_PATH)/gitee.com/jingshanccc/course/$(MODULE)/proto/dto/*.proto
+	protoc --proto_path=$(WORK_PATH)/ --go_out=$(WORK_PATH)/ --micro_out=$(WORK_PATH)/ $(WORK_PATH)/gitee.com/jingshanccc/course/$(MODULE)/proto/$(MODULE)/*.proto
 
 .PHONY: build
 build:

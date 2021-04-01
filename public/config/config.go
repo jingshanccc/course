@@ -33,7 +33,7 @@ const (
 	FileServiceAddr = ServiceHost + ":8082"
 	FileApiName     = BasicName + "api.file"
 	FileApiAddr     = ServiceHost + ":8092"
-	FilePath        = "F:/GoWorkspace/course/file-srv/store/"
+	FilePath        = "F:/GoWorkspace/course/file/store/"
 	FileUrl         = "http://dev.course.com:4000/api/v1/file/store/"
 )
 

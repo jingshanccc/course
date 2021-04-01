@@ -1,0 +1,33 @@
+syntax="proto3";
+package file;
+option go_package="gitee.com/jingshanccc/course/file/proto/dto";
+
+message FileDto {
+  string id = 1;
+  string path = 2;
+  string name = 3;
+  string suffix = 4;
+  int64 size = 5;
+  string key = 6; //文件标识
+  string shard = 7; //分片|base64格式
+  int32 shardIndex = 8; // 已上传分片数
+  int32 shardTotal = 9; // 分片总数
+  int32 shardSize = 10; //分片大小
+  string createAt = 11;
+  string updateAt = 12;
+}
+
+message FileShardDto {
+  int32 id = 1;
+  string key = 2;
+  int32 index = 3;
+  int32 size = 4;
+  int32 total = 5;
+  bytes blob = 6;
+}
+
+message VerifyRes {
+  bool shouldUpload = 1; //是否完成上传
+  repeated int32 uploadedList = 2; //已完成上传的分片索引
+  FileDto file = 3; //若已完成上传 则将已上传的文件记录返回
+}

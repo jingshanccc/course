@@ -18,5 +18,5 @@ LICENSE
 
 # Goland
 .idea/
-/file-srv/store/
+/file/store/
 /build/

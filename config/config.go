@@ -29,7 +29,7 @@ const (
 	FileServiceName = "com.chan.course.file"
 	FileClientName  = "com.chan.course.file-cli"
 	FileServiceAddr = ServiceHost + ":8082"
-	FilePath        = "F:/GoWorkspace/course/file-srv/store/"
+	FilePath        = "F:/GoWorkspace/course/file/store/"
 	FileUrl         = "http://dev.course.com:4000/api/v1/file/store/"
 )
 
