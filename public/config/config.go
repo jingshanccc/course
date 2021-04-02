@@ -4,6 +4,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"runtime"
 )
 
@@ -30,18 +31,20 @@ type Config struct {
 var Conf *Config
 
 func init() {
-	var path string
+	path := "https://gitee.com/jingshanccc/course/raw/main/public/config/"
 	if runtime.GOOS == "linux" {
-		path = "config/conf.yaml"
+		path += "conf.yaml"
 	} else {
-		path = "config/conf-win.yaml"
+		path += "conf-win.yaml"
 	}
-	file, err := ioutil.ReadFile(path)
+	file, err := http.Get(path)
 	if err != nil {
-		log.Println("read config file error")
+		log.Println("read config file error, err is " + err.Error())
 	}
-	err = yaml.Unmarshal(file, &Conf)
+	defer file.Body.Close()
+	bytes, err := ioutil.ReadAll(file.Body)
+	err = yaml.Unmarshal(bytes, &Conf)
 	if err != nil {
-		log.Println("unmarshal yaml file error")
+		log.Println("unmarshal yaml file error, err is " + err.Error())
 	}
 }
