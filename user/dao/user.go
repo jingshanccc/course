@@ -124,7 +124,7 @@ func (u *UserDao) Create(ctx context.Context, userDto *User) (*User, *public.Bus
 	if usd.Id != "" {
 		return nil, public.NewBusinessException(public.USER_PHONE_EXIST)
 	}
-	userDto.Password = fmt.Sprintf("%x", md5.Sum([]byte(config.DefaultPassword)))
+	userDto.Password = fmt.Sprintf("%x", md5.Sum([]byte(config.Conf.Services["user"].Others["defaultPassword"].(string))))
 	userDto.CreateBy = userDto.UpdateBy
 	userDto.CreateTime = userDto.UpdateTime
 	err := public.DB.Create(userDto).Error
@@ -173,7 +173,7 @@ func (u *UserDao) Delete(ctx context.Context, ids []string) *public.BusinessExce
 //UpdateEmail: 更新邮箱
 func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.BusinessException {
 	//校验验证码
-	code, _ := redis.RedisClient.Get(ctx, config.EmailResetEmailCode+in.Email).Result()
+	code, _ := redis.RedisClient.Get(ctx, config.Conf.Services["user"].Others["emailResetKey"].(string)+in.Email).Result()
 	if code == "" {
 		return public.NewBusinessException(public.VERIFY_CODE_EXPIRED)
 	}

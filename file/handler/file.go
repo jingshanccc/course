@@ -33,7 +33,7 @@ func (f *FileServiceHandler) Upload(ctx context.Context, in *dto.FileDto, out *d
 	bytes, err := base64.StdEncoding.DecodeString(strings.Split(in.Shard, ",")[1])
 	log.Println(err)
 	path := in.Key + "." + in.Suffix
-	localPath := config.FilePath + path + "." + strconv.FormatInt(int64(in.ShardIndex), 10)
+	localPath := config.Conf.Services["file"].Others["filePath"].(string) + path + "." + strconv.FormatInt(int64(in.ShardIndex), 10)
 	// 暂存文件到本地
 	err = ioutil.WriteFile(localPath, bytes, 0666)
 	if err != nil {
@@ -43,13 +43,13 @@ func (f *FileServiceHandler) Upload(ctx context.Context, in *dto.FileDto, out *d
 	out.Path = path
 	exception := fileDao.Save(out)
 	if exception != nil {
-		return errors.New(config.FileServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	// 当当前分片为最后一块分片时 合并本地文件 并删除分片
 	if in.ShardIndex == in.ShardTotal {
 		merge(in)
 	}
-	out.Path = config.FileUrl + path
+	out.Path = config.Conf.Services["file"].Others["fileUrl"].(string) + path
 	return nil
 }
 
@@ -58,7 +58,7 @@ func (f *FileServiceHandler) Check(ctx context.Context, in *basic.String, out *d
 	fileDb := fileDao.SelectByProperty("`key`", in.Str)
 	if fileDb != nil {
 		_ = util.CopyProperties(out, fileDb)
-		out.Path = config.FileUrl + out.Path
+		out.Path = config.Conf.Services["file"].Others["fileUrl"].(string) + out.Path
 	}
 	return nil
 }
@@ -66,10 +66,10 @@ func (f *FileServiceHandler) Check(ctx context.Context, in *basic.String, out *d
 //merge: 合并分片
 func merge(in *dto.FileDto) {
 	fileName := in.Key + "." + in.Suffix
-	file, _ := os.Create(config.FilePath + fileName)
+	file, _ := os.Create(config.Conf.Services["file"].Others["filePath"].(string) + fileName)
 	defer file.Close()
 	for i := 1; i <= int(in.ShardTotal); i++ {
-		shard, _ := os.Open(config.FilePath + fileName + "." + strconv.Itoa(i))
+		shard, _ := os.Open(config.Conf.Services["file"].Others["filePath"].(string) + fileName + "." + strconv.Itoa(i))
 		buf := make([]byte, 10*1024*1024)
 		for {
 			n, err := shard.Read(buf)
@@ -83,7 +83,7 @@ func merge(in *dto.FileDto) {
 	}
 	time.Sleep(100 * time.Millisecond)
 	for i := 1; i <= int(in.ShardTotal); i++ {
-		err := os.Remove(config.FilePath + fileName + "." + strconv.Itoa(i))
+		err := os.Remove(config.Conf.Services["file"].Others["filePath"].(string) + fileName + "." + strconv.Itoa(i))
 		if err != nil {
 			log.Printf("delete shard failed, file is %s, shardIndex is %v \n", in.Key, i)
 		}
@@ -98,7 +98,7 @@ func (f *FileServiceHandler) VerifyUpload(ctx context.Context, in *basic.String,
 		out.ShouldUpload = false
 		var fileDto dto.FileDto
 		_ = util.CopyProperties(&fileDto, fileDb)
-		fileDto.Path = config.FileUrl + fileDto.Path
+		fileDto.Path = config.Conf.Services["file"].Others["fileUrl"].(string) + fileDto.Path
 		out.File = &fileDto
 	} else { // 若没有 查询file_shard表该文件的所有记录的index字段
 		uploadedShards := fileShardDao.GetUploadedShards(in.Str)
@@ -110,16 +110,16 @@ func (f *FileServiceHandler) VerifyUpload(ctx context.Context, in *basic.String,
 
 //UploadShard: 上传文件分片
 func (f *FileServiceHandler) UploadShard(ctx context.Context, in *dto.FileShardDto, out *basic.Boolean) error {
-	localPath := config.FilePath + in.Key + "." + strconv.FormatInt(int64(in.Index), 10)
+	localPath := config.Conf.Services["file"].Others["filePath"].(string) + in.Key + "." + strconv.FormatInt(int64(in.Index), 10)
 	// 暂存文件到本地
 	err := ioutil.WriteFile(localPath, in.Blob, 0666)
 	if err != nil {
 		exception := public.IntervalException("文件写出错误")
-		return errors.New(config.FileServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	exception := fileShardDao.Save(in)
 	if exception != nil {
-		return errors.New(config.FileServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	if shards := fileShardDao.GetUploadedShards(in.Key); len(shards) == int(in.Total) {
 		// 所有分片上传完成 返回的布尔值作为前端发起合并请求的标识
@@ -132,10 +132,10 @@ func (f *FileServiceHandler) UploadShard(ctx context.Context, in *dto.FileShardD
 
 //Merge: 合并文件
 func (f *FileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dto.FileDto) error {
-	file, _ := os.Create(config.FilePath + in.Key + "." + in.Suffix)
+	file, _ := os.Create(config.Conf.Services["file"].Others["filePath"].(string) + in.Key + "." + in.Suffix)
 	defer file.Close()
 	for i := 0; i < int(in.ShardTotal); i++ {
-		shard, _ := os.Open(config.FilePath + in.Key + "." + strconv.Itoa(i))
+		shard, _ := os.Open(config.Conf.Services["file"].Others["filePath"].(string) + in.Key + "." + strconv.Itoa(i))
 		buf := make([]byte, 10*1024*1024)
 		for {
 			n, err := shard.Read(buf)
@@ -148,13 +148,13 @@ func (f *FileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dt
 			if err != nil {
 				log.Printf("merge file failed, file is %s, shardIndex is %v \n", in.Key, i)
 				exception := public.IntervalException("合并文件错误")
-				return errors.New(config.FileServiceName, exception.Error(), exception.Code())
+				return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 			}
 		}
 	}
 	time.Sleep(100 * time.Millisecond)
 	for i := 0; i < int(in.ShardTotal); i++ {
-		err := os.Remove(config.FilePath + in.Key + "." + strconv.Itoa(i))
+		err := os.Remove(config.Conf.Services["file"].Others["filePath"].(string) + in.Key + "." + strconv.Itoa(i))
 		if err != nil {
 			log.Printf("delete shard failed, file is %s, shardIndex is %v \n", in.Key, i)
 		}
@@ -162,9 +162,9 @@ func (f *FileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dt
 	fileShardDao.DeleteByKey(in.Key)
 	exception := fileDao.SaveNew(in)
 	if exception != nil {
-		return errors.New(config.FileServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
-	out.Path = config.FileUrl + in.Key + "." + in.Suffix
+	out.Path = config.Conf.Services["file"].Others["fileUrl"].(string) + in.Key + "." + in.Suffix
 	return nil
 }
 
@@ -173,12 +173,12 @@ func (f *FileServiceHandler) Cancel(ctx context.Context, in *basic.String, out *
 	// 先判断是否已完成上传
 	fileDb := fileDao.SelectByProperty("`key`", in.Str)
 	if fileDb.Id != "" { // 已完成 直接删除文件和对应数据库记录
-		_ = os.Remove(config.FilePath + fileDb.Key + "." + fileDb.Suffix)
+		_ = os.Remove(config.Conf.Services["file"].Others["filePath"].(string) + fileDb.Key + "." + fileDb.Suffix)
 		fileDao.DeleteByProperty("`key`", fileDb.Id)
 	} else { // 未完成 删除已上传的文件分片和对应数据库记录
 		shards := fileShardDao.GetUploadedShards(in.Str)
 		for _, index := range shards {
-			err := os.Remove(config.FilePath + in.Str + "." + strconv.Itoa(int(index)))
+			err := os.Remove(config.Conf.Services["file"].Others["filePath"].(string) + in.Str + "." + strconv.Itoa(int(index)))
 			if err != nil {
 				log.Printf("delete shard failed, file is %s, shardIndex is %v \n", in.Str, index)
 			}

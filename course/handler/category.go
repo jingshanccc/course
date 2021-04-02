@@ -14,7 +14,7 @@ import (
 func (c *CourseServiceHandler) ListCategory(ctx context.Context, in *dto.CategoryPageDto, out *dto.CategoryPageDto) error {
 	count, list, exception := categoryDao.List(ctx, in)
 	if exception != nil {
-		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Total = count
@@ -26,7 +26,7 @@ func (c *CourseServiceHandler) ListCategory(ctx context.Context, in *dto.Categor
 func (c *CourseServiceHandler) PrimaryCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
 	dtos, err := categoryDao.PrimaryCategory()
 	if err != nil {
-		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+		return errors.New(config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
 	out.Rows = dtos
 	return nil
@@ -36,7 +36,7 @@ func (c *CourseServiceHandler) PrimaryCategory(ctx context.Context, in *basic.St
 func (c *CourseServiceHandler) AllCategory(ctx context.Context, in *basic.String, out *dto.CategoryDtoList) error {
 	dtos, err := categoryDao.All()
 	if err != nil {
-		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+		return errors.New(config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
 	out.Rows = dtos
 	return nil
@@ -46,7 +46,7 @@ func (c *CourseServiceHandler) AllCategory(ctx context.Context, in *basic.String
 func (c *CourseServiceHandler) SaveCategory(ctx context.Context, in *dto.CategoryDto, out *dto.CategoryDto) error {
 	cd, err := categoryDao.Save(in)
 	if err != nil {
-		return errors.New(config.CourseServiceName, err.Error(), err.Code())
+		return errors.New(config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
 	_ = util.CopyProperties(out, cd)
 	return nil
@@ -61,7 +61,7 @@ func (c *CourseServiceHandler) DeleteCategory(ctx context.Context, in *basic.Str
 		exception = categoryDao.Delete(in.Rows)
 	}
 	if exception != nil {
-		return errors.New(config.CourseServiceName, exception.Error(), exception.Code())
+		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }

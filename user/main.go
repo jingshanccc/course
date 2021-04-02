@@ -20,8 +20,8 @@ func main() {
 	//r := consul.NewRegistry(
 	//	registry.Addrs(config.RegistryAddr))
 	r := etcd.NewRegistry(
-		registry.Addrs(config.RegistryAddr))
-	t, io, err := public.NewTracer(config.UserServiceName)
+		registry.Addrs(config.Conf.BasicConfig.RegistryAddr))
+	t, io, err := public.NewTracer(config.Conf.Services["user"].Name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,8 +29,8 @@ func main() {
 	opentracing2.SetGlobalTracer(t)
 	service := micro.NewService(
 		micro.Registry(r),
-		micro.Name(config.UserServiceName),
-		micro.Address(config.UserServiceAddr),
+		micro.Name(config.Conf.Services["user"].Name),
+		micro.Address(config.Conf.Services["user"].Addr),
 		micro.WrapHandler(opentracing.NewHandlerWrapper(opentracing2.GlobalTracer())),
 	)
 	service.Init()
