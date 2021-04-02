@@ -5,7 +5,7 @@ go 1.14
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
-	gitee.com/jingshanccc/course/public v0.0.0-20210402072743-466ecc0fa016
+	gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.5.1
 	github.com/grpc-ecosystem/grpc-gateway v1.14.6 // indirect

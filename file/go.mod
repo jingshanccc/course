@@ -5,7 +5,7 @@ go 1.14
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
-	gitee.com/jingshanccc/course/public v0.0.0-20210402072743-466ecc0fa016
+	gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c
 	github.com/golang/protobuf v1.5.2
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
