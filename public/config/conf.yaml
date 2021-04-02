@@ -1,0 +1,29 @@
+basic:
+  name: "com.chan.course.srv."
+  host: "127.0.0.1"
+  mysql: "root:123456@tcp(127.0.0.1:33060)/course?charset=utf8mb4&parseTime=True&loc=Local"
+  redis: ":6379"
+  registry: ":2379"
+  tracer: ":6831"
+services:
+  user:
+    name: user
+    addr: :8081
+    others:
+      jwtKey: micah
+      tokenExpire: 48
+      userInfoKey: user_info_
+      emailResetKey: reset_email_
+      emailTemplatePath: /home/jingshanccc/gitee.com/jingshanccc/course/public/template/
+  course:
+    name: course
+    addr: :8082
+  file:
+    name: file
+    addr: :8083
+    others:
+      filePath: /home/jingshanccc/gitee.com/jingshanccc/course/file/store/
+      fileUrl: http://dev.course.com:4000/api/v1/file/store/
+  gateway:
+    name: gateway
+    addr: :4000
