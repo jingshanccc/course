@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func init() {
 	var err error
-	DB, err = gorm.Open(mysql.Open(config.MySQLUrl), &gorm.Config{
+	DB, err = gorm.Open(mysql.Open(config.Conf.BasicConfig.MySQLUrl), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {

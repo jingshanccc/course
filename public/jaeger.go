@@ -21,7 +21,7 @@ func NewTracer(serviceName string) (opentracing.Tracer, io.Closer, error) {
 			QueueSize:           0,
 			BufferFlushInterval: 1 * time.Second,
 			LogSpans:            true,
-			LocalAgentHostPort:  config2.TracerAddr,
+			LocalAgentHostPort:  config2.Conf.BasicConfig.TracerAddr,
 		},
 	}
 	return cfg.NewTracer()
