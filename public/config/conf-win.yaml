@@ -10,6 +10,7 @@ services:
     name: user
     addr: :8081
     others:
+      defaultPassword: 123456
       jwtKey: micah
       tokenExpire: 48
       userInfoKey: user_info_
