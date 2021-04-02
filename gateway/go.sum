@@ -23,18 +23,25 @@ gitee.com/jingshanccc/course v0.0.0-20210328150239-74cb3b9a25b4 h1:s8mJ3z0LSALhh
 gitee.com/jingshanccc/course v0.0.0-20210329233009-5f9c9613b3e4 h1:cS5QF8Y7MMoJNHqWNc0as7/A3wD+kiEbSZ7qffDet0Y=
 gitee.com/jingshanccc/course v0.0.0-20210401100438-9a4367275394 h1:U8RrXS/zEeM9Oyr3+JBDLFUlSFlfiK0VQ9jwH7NJxNE=
 gitee.com/jingshanccc/course v0.0.0-20210401102846-13a2dca591b7 h1:UPyy2DV3e/M9sJ3xFuZ9Zod6yClTa7esnsHN5E2y85E=
+gitee.com/jingshanccc/course v0.0.0-20210402065611-0059874e5844 h1:UeMiIRZsPsdiSibg9RDSK+82PjrsGSVuLXJ55q1/z+s=
 gitee.com/jingshanccc/course/course v0.0.0-20210401100438-9a4367275394 h1:zTPNNpmvtxSopLpqcmzkvFXuv6AbHT169qM4hwGnrSo=
 gitee.com/jingshanccc/course/course v0.0.0-20210401102846-13a2dca591b7 h1:ER0gK0obfXJwzQCd1tK8fRsCNNzgvDVMNyQk37kT7p0=
 gitee.com/jingshanccc/course/course v0.0.0-20210401102846-13a2dca591b7/go.mod h1:pXLRr4lNZun6iGopuShr1wscS7Pfhl6hjbCK5uKDXrE=
+gitee.com/jingshanccc/course/course v0.0.0-20210402065611-0059874e5844 h1:sukVVF1X3tkAYgjKQ0aCuDhoeaJU31frEu8FCJmOTto=
+gitee.com/jingshanccc/course/course v0.0.0-20210402065611-0059874e5844/go.mod h1:pXLRr4lNZun6iGopuShr1wscS7Pfhl6hjbCK5uKDXrE=
 gitee.com/jingshanccc/course/file v0.0.0-20210401100438-9a4367275394 h1:mtPjm+a/1GIo9HrUqJ4LCI/T2nEPVeie7O0sam21cS4=
 gitee.com/jingshanccc/course/file v0.0.0-20210401100438-9a4367275394/go.mod h1:MSfTpliOzVPA1S988C/c5+L+fBF+dfxIcRfl7QiAiXI=
 gitee.com/jingshanccc/course/file v0.0.0-20210401102846-13a2dca591b7 h1:ygY5bXBT/zVA38O1RcpzSt0Q8Lhfplhd5vH8BogUK7w=
 gitee.com/jingshanccc/course/file v0.0.0-20210401102846-13a2dca591b7/go.mod h1:P5aAURXXeb4RfdwvSM0bwxpiHkUe1RQDPYBFhr2cSxA=
+gitee.com/jingshanccc/course/file v0.0.0-20210402065611-0059874e5844 h1:rZ1nQmoq4SnzTZJbTTMcMWO0xIuR8NqJV5s3ElyIegQ=
+gitee.com/jingshanccc/course/file v0.0.0-20210402065611-0059874e5844/go.mod h1:P5aAURXXeb4RfdwvSM0bwxpiHkUe1RQDPYBFhr2cSxA=
 gitee.com/jingshanccc/course/public v0.0.0-20210328150239-74cb3b9a25b4/go.mod h1:8UdliPS2VcBKxr6O1FjcPoB13m3r4OkWg0FlWuzs18o=
 gitee.com/jingshanccc/course/public v0.0.0-20210329233009-5f9c9613b3e4 h1:TALdpaa6S7YvN5GJRmYAjCBXXzp4QPsF4BGXtg+KHhk=
 gitee.com/jingshanccc/course/public v0.0.0-20210329233009-5f9c9613b3e4/go.mod h1:8UdliPS2VcBKxr6O1FjcPoB13m3r4OkWg0FlWuzs18o=
 gitee.com/jingshanccc/course/public v0.0.0-20210401102846-13a2dca591b7 h1:fZp7dPjYbt7kUT2qE+A+HAZH7VhK2Z9aUirUq8nmP/M=
 gitee.com/jingshanccc/course/public v0.0.0-20210401102846-13a2dca591b7/go.mod h1:5DlRD/X6K45CdzSOUzlI/O7CUu3uHvuegcEuL1WFudE=
+gitee.com/jingshanccc/course/public v0.0.0-20210402065611-0059874e5844 h1:hmyqseKaQjczTSUlN6ikTSM2eTNbDvWDqF9+d9Ca0b0=
+gitee.com/jingshanccc/course/public v0.0.0-20210402065611-0059874e5844/go.mod h1:Lwz6icqIDmPdY32rqmLDeELDHk9hvfRpsrcvYVJvQfs=
 gitee.com/jingshanccc/course/user v0.0.0-20210401100438-9a4367275394 h1:VKmUw47rYZOQMKXJrkSWdjQEEgyc6jwxxs/EPhEcMko=
 gitee.com/jingshanccc/course/user v0.0.0-20210401102846-13a2dca591b7 h1:DyUN+qhOBTCrn2kFowq8aAVzs+LH089UGhwShcHu3XI=
 gitee.com/jingshanccc/course/user v0.0.0-20210401102846-13a2dca591b7/go.mod h1:HMr17J3irvWB+3VV51MXL+6pOiSZvSSRnuOsQXXuTTY=
@@ -319,6 +326,7 @@ github.com/google/btree v1.0.0/go.mod h1:lNA+9X1NB3Zf8V7Ke586lFgjr2dZNuvo3lPJSGZ
 github.com/google/go-cmp v0.2.0/go.mod h1:oXzfMopK8JAjlY9xF4vHSVASa0yLyX7SntLO5aqRK0M=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
 github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
+github.com/google/go-cmp v0.4.0 h1:xsAVV57WRhGj6kEIi8ReJzQlHHqcBYCElAvkovg3B/4=
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.0 h1:/QaMHBdZ26BB3SSst0Iwl10Epc+xhTquomWX0oZEB6w=
 github.com/google/go-cmp v0.5.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
@@ -528,6 +536,7 @@ github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+W
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.10.1/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.1/go.mod h1:zj2OWP4+oCPe1qIXoGWkgMRwljMUYCdkwsT2108oapk=
+github.com/onsi/ginkgo v1.13.0 h1:M76yO2HkZASFjXL0HSoZJ1AYEmQxNJmY41Jx1zNUq1Y=
 github.com/onsi/ginkgo v1.13.0/go.mod h1:+REjRxOmWfHCjfv9TTWB1jD1Frx4XydAD3zm1lskyM0=
 github.com/onsi/ginkgo v1.14.0 h1:2mOpI4JVVPBN+WQRa0WKH2eXR+Ey+uK4n7Zj0aYpIQA=
 github.com/onsi/ginkgo v1.14.0/go.mod h1:iSB4RoI2tjJc9BBv4NKIKWKya62Rps+oPG/Lv9klQyY=
@@ -856,6 +865,7 @@ golang.org/x/net v0.0.0-20200301022130-244492dfa37a/go.mod h1:z5CRVTTTmAJ677TzLL
 golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
 golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
 golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2/go.mod h1:qpuaurCH72eLCgpAm/N6yyVIVM9cpaDIP3A8BGJEC5A=
+golang.org/x/net v0.0.0-20200625001655-4c5254603344 h1:vGXIOMxbNfDTk/aXCmfdLgkrSV+Z2tcbze+pEc3v5W4=
 golang.org/x/net v0.0.0-20200625001655-4c5254603344/go.mod h1:/O7V0waA8r7cgGh81Ro3o1hOxt32SMVPicZroKQ2sZA=
 golang.org/x/net v0.0.0-20200707034311-ab3426394381 h1:VXak5I6aEWmAXeQjA+QSZzlgNrpq9mjcfDemuexIKsU=
 golang.org/x/net v0.0.0-20200707034311-ab3426394381/go.mod h1:/O7V0waA8r7cgGh81Ro3o1hOxt32SMVPicZroKQ2sZA=
@@ -874,6 +884,7 @@ golang.org/x/sync v0.0.0-20181108010431-42b317875d0f/go.mod h1:RxMgew5VJxzue5/jJ
 golang.org/x/sync v0.0.0-20181221193216-37e7f081c4d4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20190423024810-112230192c58/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
+golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e h1:vcxGaoTs7kV8m5Np9uUNQin4BrLOthgV7252N8V+FwY=
 golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20201207232520-09787c993a3a h1:DcqTD9SDLc+1P/r1EmRBwnVsrOwW+kk2vWf9n+1sGhs=

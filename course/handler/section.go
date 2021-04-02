@@ -12,7 +12,7 @@ import (
 func (c *CourseServiceHandler) ListSection(ctx context.Context, in *dto.SectionPageDto, out *dto.SectionPageDto) error {
 	total, list, exception := sectionDao.List(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Rows = list
@@ -23,11 +23,11 @@ func (c *CourseServiceHandler) ListSection(ctx context.Context, in *dto.SectionP
 func (c *CourseServiceHandler) SaveSection(ctx context.Context, in *dto.SectionDto, out *dto.SectionDto) error {
 	sectionDto, exception := sectionDao.Save(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	exception = courseDao.UpdateCourseDuration(in.CourseId)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, sectionDto)
 	return nil
@@ -36,7 +36,7 @@ func (c *CourseServiceHandler) SaveSection(ctx context.Context, in *dto.SectionD
 func (c *CourseServiceHandler) DeleteSection(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	exception := sectionDao.Delete(in.Rows)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }

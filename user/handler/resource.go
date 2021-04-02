@@ -13,7 +13,7 @@ import (
 func (u *UserServiceHandler) LoadMenus(ctx context.Context, in *basic.String, out *dto.ResourceDtoList) error {
 	resourceDtos, exception := resourceDao.FindUserResources(ctx, in.Str)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Rows = resourceDtos
 	return nil
@@ -23,7 +23,7 @@ func (u *UserServiceHandler) LoadMenus(ctx context.Context, in *basic.String, ou
 func (u *UserServiceHandler) LoadTree(ctx context.Context, in *basic.Integer, out *dto.ResourceDtoList) error {
 	resourceDtos, exception := resourceDao.GetByParent(ctx, in.Id)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Rows = resourceDtos
 	return nil
@@ -35,7 +35,7 @@ func (u *UserServiceHandler) MenuChild(ctx context.Context, in *basic.Integer, o
 	resourceSet := public.NewHashSet()
 	exception := resourceDao.GetChildMenus(ctx, []int32{in.Id}, resourceSet)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	var res []int32
 	for _, r := range resourceSet.Values() {
@@ -57,7 +57,7 @@ func (u *UserServiceHandler) MenuList(ctx context.Context, in *dto.ResourcePageD
 		count, list, exception = resourceDao.List(ctx, in)
 	}
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	for _, resourceDto := range list {
 		if resourceDto.SubCount > 0 {
@@ -79,7 +79,7 @@ func (u *UserServiceHandler) MenuParent(ctx context.Context, in *basic.IntegerLi
 		list, exception = resourceDao.GetSuperior(ctx, in.Ids)
 	}
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Rows = list
 	return nil
@@ -89,7 +89,7 @@ func (u *UserServiceHandler) MenuParent(ctx context.Context, in *basic.IntegerLi
 func (u *UserServiceHandler) SaveResource(ctx context.Context, in *dto.ResourceDto, out *basic.String) error {
 	exception := resourceDao.Save(ctx, in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }
@@ -98,7 +98,7 @@ func (u *UserServiceHandler) SaveResource(ctx context.Context, in *dto.ResourceD
 func (u *UserServiceHandler) DeleteResource(ctx context.Context, in *basic.IntegerList, out *basic.String) error {
 	exception := resourceDao.Delete(ctx, in.Ids)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }

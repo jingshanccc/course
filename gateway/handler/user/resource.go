@@ -2,12 +2,12 @@ package user
 
 import (
 	"context"
-	"course/config"
-	"course/gateway/middleware"
-	"course/proto/basic"
-	"course/public"
-	"course/user-srv/proto/dto"
-	"course/user-srv/proto/user"
+	"gitee.com/jingshanccc/course/gateway/middleware"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/proto/basic"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +15,7 @@ import (
 func LoadMenus(ctx *gin.Context) {
 	currentUser, _ := middleware.GetCurrentUser(ctx)
 
-	resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+	resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 	list, err := resourceService.LoadMenus(context.Background(), &basic.String{Str: currentUser})
 	public.ResponseAny(ctx, err, list)
 }
@@ -24,7 +24,7 @@ func LoadMenus(ctx *gin.Context) {
 func LoadTree(ctx *gin.Context) {
 	var req basic.Integer
 	if err := ctx.Bind(&req); err == nil {
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := resourceService.LoadTree(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -36,7 +36,7 @@ func LoadTree(ctx *gin.Context) {
 func MenuChild(ctx *gin.Context) {
 	var req basic.Integer
 	if err := ctx.Bind(&req); err == nil {
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := resourceService.MenuChild(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -48,7 +48,7 @@ func MenuChild(ctx *gin.Context) {
 func MenuList(ctx *gin.Context) {
 	var req dto.ResourcePageDto
 	if err := ctx.Bind(&req); err == nil {
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := resourceService.MenuList(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -60,7 +60,7 @@ func MenuList(ctx *gin.Context) {
 func MenuParent(ctx *gin.Context) {
 	var req basic.IntegerList
 	if err := ctx.Bind(&req); err == nil {
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := resourceService.MenuParent(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -75,7 +75,7 @@ func SaveResource(ctx *gin.Context) {
 		req.Label = req.Title
 		_, u := middleware.GetCurrentUser(ctx)
 		req.UpdateBy = u.LoginName
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		str, err := resourceService.SaveResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, str)
 	} else {
@@ -86,7 +86,7 @@ func SaveResource(ctx *gin.Context) {
 func Delete(ctx *gin.Context) {
 	var req basic.IntegerList
 	if err := ctx.Bind(&req); err == nil {
-		resourceService := ctx.Keys[config.UserServiceName].(user.UserService)
+		resourceService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		str, err := resourceService.DeleteResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, str)
 	} else {

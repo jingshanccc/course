@@ -2,11 +2,11 @@ package file
 
 import (
 	"context"
-	"course/config"
-	"course/file-srv/proto/dto"
-	"course/file-srv/proto/file"
-	"course/proto/basic"
-	"course/public"
+	"gitee.com/jingshanccc/course/file/proto/dto"
+	"gitee.com/jingshanccc/course/file/proto/file"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/proto/basic"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"strconv"
@@ -17,7 +17,7 @@ import (
 func Upload(ctx *gin.Context) {
 	var req dto.FileDto
 	if err := ctx.Bind(&req); err == nil {
-		fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+		fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 		res, err := fileService.Upload(context.Background(), &req)
 		public.ResponseAny(ctx, err, res)
 	} else {
@@ -29,7 +29,7 @@ func Upload(ctx *gin.Context) {
 func Check(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+		fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 		res, err := fileService.Check(context.Background(), &req)
 		public.ResponseAny(ctx, err, res)
 	} else {
@@ -63,7 +63,7 @@ func UploadShard(ctx *gin.Context) {
 	req.Size = int32(i)
 	i, _ = strconv.ParseInt(ctx.PostForm("total"), 10, 32)
 	req.Total = int32(i)
-	fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+	fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 	res, err := fileService.UploadShard(context.Background(), &req)
 	public.ResponseAny(ctx, err, res)
 }
@@ -72,7 +72,7 @@ func UploadShard(ctx *gin.Context) {
 func VerifyUpload(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+		fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 		res, err := fileService.VerifyUpload(context.Background(), &req)
 		public.ResponseAny(ctx, err, res)
 	} else {
@@ -87,7 +87,7 @@ func Merge(ctx *gin.Context) {
 		// 由于分片可能数量较大 设置较长的超时时间防止由于读写文件超时而无法正常响应
 		con, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 		defer cancel()
-		fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+		fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 		res, err := fileService.Merge(con, &req)
 		public.ResponseAny(ctx, err, res)
 	} else {
@@ -99,7 +99,7 @@ func Merge(ctx *gin.Context) {
 func Cancel(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		fileService := ctx.Keys[config.FileServiceName].(file.FileService)
+		fileService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name].(file.FileService)
 		res, err := fileService.Cancel(context.Background(), &req)
 		public.ResponseAny(ctx, err, res)
 	} else {

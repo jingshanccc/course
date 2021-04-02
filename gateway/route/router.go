@@ -1,12 +1,12 @@
 package route
 
 import (
-	"course/config"
-	"course/gateway/handler"
-	"course/gateway/handler/course"
-	"course/gateway/handler/file"
-	"course/gateway/handler/user"
-	"course/gateway/middleware"
+	"gitee.com/jingshanccc/course/gateway/handler"
+	"gitee.com/jingshanccc/course/gateway/handler/course"
+	"gitee.com/jingshanccc/course/gateway/handler/file"
+	"gitee.com/jingshanccc/course/gateway/handler/user"
+	"gitee.com/jingshanccc/course/gateway/middleware"
+	"gitee.com/jingshanccc/course/public/config"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -116,7 +116,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 	}
 	// 文件服务接口
 	files := v1.Group("/file")
-	files.StaticFS("/store", http.Dir(config.FilePath))
+	files.StaticFS("/store", http.Dir(config.Conf.Services["file"].Others["filePath"].(string)))
 	files.Use(middleware.JWT())
 	{
 		files.POST("/upload", file.Upload)

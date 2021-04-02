@@ -43,7 +43,7 @@ func (f *FileServiceHandler) Upload(ctx context.Context, in *dto.FileDto, out *d
 	out.Path = path
 	exception := fileDao.Save(out)
 	if exception != nil {
-		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	// 当当前分片为最后一块分片时 合并本地文件 并删除分片
 	if in.ShardIndex == in.ShardTotal {
@@ -115,11 +115,11 @@ func (f *FileServiceHandler) UploadShard(ctx context.Context, in *dto.FileShardD
 	err := ioutil.WriteFile(localPath, in.Blob, 0666)
 	if err != nil {
 		exception := public.IntervalException("文件写出错误")
-		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	exception := fileShardDao.Save(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	if shards := fileShardDao.GetUploadedShards(in.Key); len(shards) == int(in.Total) {
 		// 所有分片上传完成 返回的布尔值作为前端发起合并请求的标识
@@ -148,7 +148,7 @@ func (f *FileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dt
 			if err != nil {
 				log.Printf("merge file failed, file is %s, shardIndex is %v \n", in.Key, i)
 				exception := public.IntervalException("合并文件错误")
-				return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
+				return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 			}
 		}
 	}
@@ -162,7 +162,7 @@ func (f *FileServiceHandler) Merge(ctx context.Context, in *dto.FileDto, out *dt
 	fileShardDao.DeleteByKey(in.Key)
 	exception := fileDao.SaveNew(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["file"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name, exception.Error(), exception.Code())
 	}
 	out.Path = config.Conf.Services["file"].Others["fileUrl"].(string) + in.Key + "." + in.Suffix
 	return nil

@@ -13,7 +13,7 @@ import (
 func (c *CourseServiceHandler) AllTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error {
 	dtos, err := teacherDao.All()
 	if err != nil {
-		return errors.New(config.Conf.Services["course"].Name, err.Error(), err.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
 	out.Rows = dtos
 	return nil
@@ -23,7 +23,7 @@ func (c *CourseServiceHandler) AllTeacher(ctx context.Context, in *basic.String,
 func (c *CourseServiceHandler) SearchTeacher(ctx context.Context, in *basic.String, out *dto.TeacherDtoList) error {
 	dtos, err := teacherDao.SearchByProperty("name", in.Str)
 	if err != nil {
-		return errors.New(config.Conf.Services["course"].Name, err.Error(), err.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
 	out.Rows = dtos
 	return nil
@@ -33,7 +33,7 @@ func (c *CourseServiceHandler) SearchTeacher(ctx context.Context, in *basic.Stri
 func (c *CourseServiceHandler) ListTeacher(ctx context.Context, in *dto.TeacherPageDto, out *dto.TeacherPageDto) error {
 	count, list, exception := teacherDao.List(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Rows = list
@@ -45,7 +45,7 @@ func (c *CourseServiceHandler) ListTeacher(ctx context.Context, in *dto.TeacherP
 func (c *CourseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherDto, out *dto.TeacherDto) error {
 	TeacherDto, exception := teacherDao.Save(in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, TeacherDto)
 	return nil
@@ -55,7 +55,7 @@ func (c *CourseServiceHandler) SaveTeacher(ctx context.Context, in *dto.TeacherD
 func (c *CourseServiceHandler) DeleteTeacher(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	exception := teacherDao.Delete(in.Rows)
 	if exception != nil {
-		return errors.New(config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }

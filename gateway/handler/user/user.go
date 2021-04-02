@@ -2,14 +2,14 @@ package user
 
 import (
 	"context"
-	"course/config"
-	"course/gateway/middleware"
-	"course/middleware/redis"
-	"course/proto/basic"
-	"course/public"
-	"course/public/util"
-	"course/user-srv/proto/dto"
-	"course/user-srv/proto/user"
+	"gitee.com/jingshanccc/course/gateway/middleware"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
+	"gitee.com/jingshanccc/course/public/proto/basic"
+	"gitee.com/jingshanccc/course/public/util"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/gin-gonic/gin"
 	"strings"
 	"time"
@@ -18,7 +18,7 @@ import (
 func GetUserList(ctx *gin.Context) {
 	var req dto.PageDto
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := userService.List(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -32,7 +32,7 @@ func UserInfo(ctx *gin.Context) {
 	var err error
 	userId, userDto := middleware.GetCurrentUser(ctx)
 	if userDto == nil {
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		userDto, err = userService.UserInfo(context.Background(), &basic.String{Str: userId})
 	}
 	public.ResponseAny(ctx, err, userDto)
@@ -43,7 +43,7 @@ func SavePassword(ctx *gin.Context) {
 	var req dto.UpdatePass
 	if err := ctx.Bind(&req); err == nil {
 		req.UserId, _ = middleware.GetCurrentUser(ctx)
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		result, err := userService.SavePassword(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -57,7 +57,7 @@ func SaveUserInfo(ctx *gin.Context) {
 	if err := ctx.Bind(&req); err == nil {
 		_, usr := middleware.GetCurrentUser(ctx)
 		req.UpdateBy = usr.LoginName
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		result, err := userService.SaveUserInfo(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -71,7 +71,7 @@ func Save(ctx *gin.Context) {
 	if err := ctx.Bind(&req); err == nil {
 		_, usr := middleware.GetCurrentUser(ctx)
 		req.UpdateBy = usr.LoginName
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		result, err := userService.Save(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -83,7 +83,7 @@ func Save(ctx *gin.Context) {
 func DeleteUser(ctx *gin.Context) {
 	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		result, err := userService.Delete(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -111,7 +111,7 @@ func UpdateEmail(ctx *gin.Context) {
 	var req dto.UpdateEmail
 	if err := ctx.Bind(&req); err == nil {
 		req.UserId, _ = middleware.GetCurrentUser(ctx)
-		userService := ctx.Keys[config.UserServiceName].(user.UserService)
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		result, err := userService.SaveEmail(context.Background(), &req)
 		public.ResponseAny(ctx, err, result)
 	} else {
@@ -122,7 +122,7 @@ func UpdateEmail(ctx *gin.Context) {
 //SendEmailCode: 发送邮箱验证码
 func SendEmailCode(ctx *gin.Context) {
 	email := ctx.Query("email")
-	redisKey := config.EmailResetEmailCode + email
+	redisKey := config.Conf.Services["user"].Others["emailResetKey"].(string) + email
 	var code string
 	if c, err := redis.RedisClient.Get(context.Background(), redisKey).Result(); err == nil {
 		code = c
@@ -130,7 +130,7 @@ func SendEmailCode(ctx *gin.Context) {
 		code = util.GetVerifyCode()
 		redis.RedisClient.Set(context.Background(), redisKey, code, 5*time.Minute)
 	}
-	err := public.SendHTMLEmail(email, config.TemplatePath+"/email.html", code)
+	err := public.SendHTMLEmail(email, config.Conf.Services["user"].Others["emailTemplatePath"].(string)+"/email.html", code)
 	if err != nil {
 		public.ResponseError(ctx, public.NewBusinessException(public.SEND_EMAIL_CODE_ERROR))
 		return

@@ -2,14 +2,14 @@ package user
 
 import (
 	"context"
-	"course/config"
-	"course/gateway/middleware"
-	"course/proto/basic"
-	"course/public"
-	"course/user-srv/dao"
-	"course/user-srv/proto/dto"
-	"course/user-srv/proto/user"
 	"encoding/json"
+	"gitee.com/jingshanccc/course/gateway/middleware"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/proto/basic"
+	"gitee.com/jingshanccc/course/user/dao"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +17,7 @@ import (
 func SaveRole(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.SaveRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -29,7 +29,7 @@ func SaveRole(ctx *gin.Context) {
 func AllRole(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.AllRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -41,7 +41,7 @@ func AllRole(ctx *gin.Context) {
 func GetRole(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		res, err := roleService.GetRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, res)
 	} else {
@@ -53,7 +53,7 @@ func GetRole(ctx *gin.Context) {
 func RoleList(ctx *gin.Context) {
 	var req dto.RolePageDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.RoleList(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -64,7 +64,7 @@ func RoleList(ctx *gin.Context) {
 //RoleLevel: gateway handler 获取用户角色级别
 func RoleLevel(ctx *gin.Context) {
 	userId, curUser := middleware.GetCurrentUser(ctx)
-	roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+	roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 	if curUser == nil {
 		level, err := roleService.RoleLevel(ctx, &basic.String{Str: userId})
 		public.ResponseAny(ctx, err, level)
@@ -80,7 +80,7 @@ func RoleLevel(ctx *gin.Context) {
 func DeleteRole(ctx *gin.Context) {
 	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.DeleteRole(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -92,7 +92,7 @@ func DeleteRole(ctx *gin.Context) {
 func SaveRoleResource(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.SaveRoleResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -104,7 +104,7 @@ func SaveRoleResource(ctx *gin.Context) {
 func ListRoleResource(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.ListRoleResource(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -116,7 +116,7 @@ func ListRoleResource(ctx *gin.Context) {
 func SaveRoleUser(ctx *gin.Context) {
 	var req dto.RoleDto
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.SaveRoleUser(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -128,7 +128,7 @@ func SaveRoleUser(ctx *gin.Context) {
 func ListRoleUser(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		roleService := ctx.Keys[config.UserServiceName].(user.UserService)
+		roleService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 		list, err := roleService.ListRoleUser(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {

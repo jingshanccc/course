@@ -2,11 +2,11 @@ package course
 
 import (
 	"context"
-	"course/config"
-	"course/course-srv/proto/course"
-	"course/course-srv/proto/dto"
-	"course/proto/basic"
-	"course/public"
+	"gitee.com/jingshanccc/course/course/proto/course"
+	"gitee.com/jingshanccc/course/course/proto/dto"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/proto/basic"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +14,7 @@ import (
 func ListCategory(ctx *gin.Context) {
 	var req dto.CategoryPageDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.ListCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -26,7 +26,7 @@ func ListCategory(ctx *gin.Context) {
 func PrimaryCategory(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.PrimaryCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -38,7 +38,7 @@ func PrimaryCategory(ctx *gin.Context) {
 func AllCategory(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.AllCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -50,7 +50,7 @@ func AllCategory(ctx *gin.Context) {
 func SaveCategory(ctx *gin.Context) {
 	var req dto.CategoryDto
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.SaveCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {
@@ -62,7 +62,7 @@ func SaveCategory(ctx *gin.Context) {
 func DeleteCategory(ctx *gin.Context) {
 	var req basic.StringList
 	if err := ctx.Bind(&req); err == nil {
-		courseService := ctx.Keys[config.CourseServiceName].(course.CourseService)
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.DeleteCategory(context.Background(), &req)
 		public.ResponseAny(ctx, err, list)
 	} else {

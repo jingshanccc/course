@@ -2,12 +2,12 @@ package middleware
 
 import (
 	"context"
-	"course/config"
-	"course/middleware/redis"
-	"course/public"
-	"course/user-srv/proto/dto"
-	"course/user-srv/proto/user"
 	"encoding/json"
+	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/go-oauth2/oauth2/v4"
@@ -54,7 +54,7 @@ func init() {
 	manager.MapClientStorage(&ClientStore{})
 	// use jwt token
 	manager.MapAccessGenerate(
-		generates.NewJWTAccessGenerate("", []byte(config.JwtKey), jwt.SigningMethodHS512))
+		generates.NewJWTAccessGenerate("", []byte(config.Conf.Services["user"].Others["jwtKey"].(string)), jwt.SigningMethodHS512))
 	AuthServer = server.NewDefaultServer(manager)
 	AuthServer.SetAccessTokenExpHandler(TokenExpHandler)
 	AuthServer.SetAllowGetAccessRequest(true)
@@ -67,15 +67,15 @@ func init() {
 
 //SaveServices : 将服务实例存放到gin中
 func SaveServices(service []interface{}) gin.HandlerFunc {
-	Services[config.UserServiceName] = service[0]
-	Services[config.CourseServiceName] = service[1]
-	Services[config.FileServiceName] = service[2]
+	Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name] = service[0]
+	Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name] = service[1]
+	Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name] = service[2]
 	return func(context *gin.Context) {
 		//将实例存到gin.Keys里
 		context.Keys = make(map[string]interface{})
-		context.Keys[config.UserServiceName] = service[0]
-		context.Keys[config.CourseServiceName] = service[1]
-		context.Keys[config.FileServiceName] = service[2]
+		context.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name] = service[0]
+		context.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name] = service[1]
+		context.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["file"].Name] = service[2]
 		context.Next()
 	}
 }
@@ -87,7 +87,7 @@ func GetCurrentUser(ctx *gin.Context) (string, *dto.UserDto) {
 	if err != nil {
 		ctx.AbortWithError(http.StatusUnauthorized, err)
 		return "", nil
-	} else if usrStr, e := redis.RedisClient.Get(context.Background(), config.UserInfoKey+info.GetUserID()).Result(); e == nil {
+	} else if usrStr, e := redis.RedisClient.Get(context.Background(), config.Conf.Services["user"].Others["userInfoKey"].(string)+info.GetUserID()).Result(); e == nil {
 		var usr dto.UserDto
 		_ = json.Unmarshal([]byte(usrStr), &usr)
 		return info.GetUserID(), &usr
@@ -98,7 +98,7 @@ func GetCurrentUser(ctx *gin.Context) (string, *dto.UserDto) {
 
 //ValidPasswordHandler: 密码式授权-校验密码
 func ValidPasswordHandler(username, password string) (userID string, err error) {
-	userService := Services[config.UserServiceName].(user.UserService)
+	userService := Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 	loginUserDto, err := userService.Login(context.Background(), &dto.LoginUserDto{
 		LoginName: username,
 		Password:  password,
@@ -129,11 +129,11 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 	}
 	exception := public.VerifyCaptcha(userDto.Id, userDto.Name)
 	if exception != nil {
-		err = errors.New(config.UserServiceName, exception.Error(), exception.Code()).(*errors.Error)
+		err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code()).(*errors.Error)
 		return "", err
 	}
 	// 登录接口
-	userService := Services[config.UserServiceName].(user.UserService)
+	userService := Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
 	loginUserDto, err := userService.Login(r.Context(), userDto)
 	if loginUserDto != nil {
 		userID = loginUserDto.Id
@@ -144,5 +144,5 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 
 //TokenExpHandler: 令牌过期时间 默认两天
 func TokenExpHandler(w http.ResponseWriter, r *http.Request) (exp time.Duration, err error) {
-	return config.TokenExpire * time.Hour, nil
+	return time.Duration(config.Conf.Services["user"].Others["tokenExpire"].(int)) * time.Hour, nil
 }

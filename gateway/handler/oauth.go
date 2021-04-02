@@ -2,8 +2,8 @@ package handler
 
 import (
 	"context"
-	"course/gateway/middleware"
-	"course/public"
+	"gitee.com/jingshanccc/course/gateway/middleware"
+	"gitee.com/jingshanccc/course/public"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"

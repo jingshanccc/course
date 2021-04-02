@@ -18,8 +18,8 @@ import (
 func main() {
 	log.SetFlags(log.Llongfile)
 	r := etcd.NewRegistry(
-		registry.Addrs(config.Conf.BasicConfig.RegistryAddr))
-	t, io, err := public.NewTracer(config.Conf.Services["course"].Name)
+		registry.Addrs(config.Conf.BasicConfig.BasicHost + config.Conf.BasicConfig.RegistryAddr))
+	t, io, err := public.NewTracer(config.Conf.BasicConfig.BasicName + config.Conf.Services["course"].Name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,8 +27,8 @@ func main() {
 	opentracing2.SetGlobalTracer(t)
 	service := micro.NewService(
 		micro.Registry(r),
-		micro.Name(config.Conf.Services["course"].Name),
-		micro.Address(config.Conf.Services["course"].Addr),
+		micro.Name(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name),
+		micro.Address(config.Conf.BasicConfig.BasicHost+config.Conf.Services["course"].Addr),
 		micro.WrapHandler(opentracing.NewHandlerWrapper(opentracing2.GlobalTracer())),
 	)
 	service.Init()

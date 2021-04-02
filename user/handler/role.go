@@ -14,7 +14,7 @@ import (
 func (u *UserServiceHandler) AllRole(ctx context.Context, in *basic.String, out *dto.RoleDtoList) error {
 	list, exception := roleDao.All(ctx)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Rows = list
 	return nil
@@ -24,7 +24,7 @@ func (u *UserServiceHandler) AllRole(ctx context.Context, in *basic.String, out 
 func (u *UserServiceHandler) GetRole(ctx context.Context, in *basic.String, out *dto.RoleDto) error {
 	r, exception := roleDao.SelectById(ctx, in.Str)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, r)
 	return nil
@@ -34,7 +34,7 @@ func (u *UserServiceHandler) GetRole(ctx context.Context, in *basic.String, out 
 func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, out *dto.RolePageDto) error {
 	total, list, exception := roleDao.List(ctx, in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Total = total
@@ -46,7 +46,7 @@ func (u *UserServiceHandler) RoleList(ctx context.Context, in *dto.RolePageDto, 
 func (u *UserServiceHandler) RoleLevel(ctx context.Context, in *basic.String, out *basic.Integer) error {
 	roles, exception := roleDao.SelectByUserId(in.Str)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	_ = util.CopyProperties(out, in)
 	out.Id = roles[0].Level
@@ -57,7 +57,7 @@ func (u *UserServiceHandler) RoleLevel(ctx context.Context, in *basic.String, ou
 func (u *UserServiceHandler) SaveRole(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	roleDto, err := roleDao.Save(ctx, in)
 	if err != nil {
-		return errors.New(config.Conf.Services["user"].Name, err.Error(), err.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, err.Error(), err.Code())
 	}
 	_ = util.CopyProperties(out, roleDto)
 	return nil
@@ -72,7 +72,7 @@ func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.StringLis
 		exception = roleDao.Delete(ctx, in.Rows)
 	}
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }
@@ -81,7 +81,7 @@ func (u *UserServiceHandler) DeleteRole(ctx context.Context, in *basic.StringLis
 func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	exception := roleDao.SaveRoleResource(ctx, in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }
@@ -90,7 +90,7 @@ func (u *UserServiceHandler) SaveRoleResource(ctx context.Context, in *dto.RoleD
 func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.String, out *basic.IntegerList) error {
 	resources, exception := roleDao.ListRoleResource(ctx, in.Str)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Ids = resources
 	return nil
@@ -100,7 +100,7 @@ func (u *UserServiceHandler) ListRoleResource(ctx context.Context, in *basic.Str
 func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error {
 	exception := roleDao.SaveRoleUser(ctx, in)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	return nil
 }
@@ -109,7 +109,7 @@ func (u *UserServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, 
 func (u *UserServiceHandler) ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	users, exception := roleDao.ListRoleUser(ctx, in.Str)
 	if exception != nil {
-		return errors.New(config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
 	}
 	out.Rows = users
 	return nil

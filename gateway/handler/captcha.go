@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"course/public"
+	"gitee.com/jingshanccc/course/public"
 	"github.com/gin-gonic/gin"
 )
 
