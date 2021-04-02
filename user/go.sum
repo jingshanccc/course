@@ -15,6 +15,8 @@ gitee.com/jingshanccc/course/public v0.0.0-20210402065611-0059874e5844 h1:hmyqse
 gitee.com/jingshanccc/course/public v0.0.0-20210402065611-0059874e5844/go.mod h1:Lwz6icqIDmPdY32rqmLDeELDHk9hvfRpsrcvYVJvQfs=
 gitee.com/jingshanccc/course/public v0.0.0-20210402072743-466ecc0fa016 h1:JqlADrf4Vv7UoClEVjR9yCL7iAVWi4BGuQlTe5DTmNU=
 gitee.com/jingshanccc/course/public v0.0.0-20210402072743-466ecc0fa016/go.mod h1:Lwz6icqIDmPdY32rqmLDeELDHk9hvfRpsrcvYVJvQfs=
+gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c h1:cwOdevECdupKKPUXAbNnrGZpjZ+Defnx4g9p3crd6PI=
+gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c/go.mod h1:Lwz6icqIDmPdY32rqmLDeELDHk9hvfRpsrcvYVJvQfs=
 github.com/Azure/azure-sdk-for-go v32.4.0+incompatible/go.mod h1:9XXNKU+eRnpl9moKnB4QOLf1HestfXbmab5FXxiDBjc=
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=
 github.com/Azure/go-autorest/autorest v0.1.0/go.mod h1:AKyIcETwSUFxIcs/Wnq/C+kwCtlEYGUVd7FPNb2slmg=

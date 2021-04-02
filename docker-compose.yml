@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:5.7.32
     ports:
-    - "33600:3360"
+    - "33060:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
   redis:
