@@ -24,7 +24,7 @@ services:
     addr: :8083
     others:
       filePath: /home/jingshanccc/gitee.com/jingshanccc/course/file/store/
-      fileUrl: http://dev.course.com:4000/api/v1/file/store/
+      fileUrl: http://dev.course.com:8000/api/v1/file/store/
   gateway:
     name: gateway
-    addr: :4000
+    addr: :8000

@@ -16,6 +16,10 @@
 
 LICENSE
 
+# VsCode
+.vscode/
+__debug_bin
+
 # Goland
 .idea/
 /file/store/

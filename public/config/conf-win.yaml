@@ -15,7 +15,7 @@ services:
       tokenExpire: 48
       userInfoKey: user_info_
       emailResetKey: reset_email_
-      emailTemplatePath: /home/jingshanccc/gitee.com/jingshanccc/course/public/template/
+      emailTemplatePath: f:/gitee.com/jingshanccc/course/public/template/
   course:
     name: course
     addr: :8082
@@ -23,8 +23,8 @@ services:
     name: file
     addr: :8083
     others:
-      filePath: /home/jingshanccc/gitee.com/jingshanccc/course/file/store/
-      fileUrl: http://dev.course.com:4000/api/v1/file/store/
+      filePath: f:/gitee.com/jingshanccc/course/file/store/
+      fileUrl: http://dev.course.com:8000/api/v1/file/store/
   gateway:
     name: gateway
-    addr: :4000
+    addr: :8000
