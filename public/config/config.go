@@ -5,7 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"runtime"
+	"strings"
 )
 
 type conf struct {
@@ -32,10 +34,12 @@ var Conf *Config
 
 func init() {
 	path := "https://gitee.com/jingshanccc/course/raw/main/public/config/"
-	if runtime.GOOS == "linux" {
-		path += "conf.yaml"
-	} else {
+	is := false
+	if runtime.GOOS == "windows" {
 		path += "conf-win.yaml"
+	} else {
+		is = true
+		path += "conf.yaml"
 	}
 	file, err := http.Get(path)
 	if err != nil {
@@ -46,5 +50,10 @@ func init() {
 	err = yaml.Unmarshal(bytes, &Conf)
 	if err != nil {
 		log.Println("unmarshal yaml file error, err is " + err.Error())
+	}
+	if is { // edit file path for not windows
+		dir, _ := os.Getwd()
+		Conf.Services["file"].Others["filePath"] = strings.Replace(dir, "public", "file", 1) + Conf.Services["file"].Others["filePath"].(string)
+		Conf.Services["user"].Others["emailTemplatePath"] = dir + Conf.Services["user"].Others["emailTemplatePath"].(string)
 	}
 }
