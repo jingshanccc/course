@@ -47,7 +47,9 @@ func SendHTMLEmail(receiver string, path string, variables interface{}) error {
 	e.HTML = body.Bytes()
 	auth := smtp.PlainAuth("", emailConfig.User, emailConfig.Pass, emailConfig.Host)
 	err := e.Send(emailConfig.Host+emailConfig.Port, auth)
-	log.Println("failed to send email:", err)
+	if err != nil {
+		log.Println("failed to send email:", err)
+	}
 	return err
 }
 
@@ -60,6 +62,7 @@ func SendEmailCode(duration time.Duration, email, redisKey, templatePath string)
 		code = util.GetVerifyCode()
 		redis.RedisClient.Set(context.Background(), redisKey, code, duration)
 	}
+	log.Printf("code is : %v", code)
 	if err := SendHTMLEmail(email, templatePath, code); err != nil {
 		return NewBusinessException(SEND_EMAIL_CODE_ERROR)
 	}

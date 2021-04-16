@@ -74,6 +74,12 @@ type UserService interface {
 	ListRoleResource(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.IntegerList, error)
 	SaveRoleUser(ctx context.Context, in *dto.RoleDto, opts ...client.CallOption) (*dto.RoleDto, error)
 	ListRoleUser(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.StringList, error)
+	// ------------ 平台会员 -------------
+	// 会员注册
+	MemberRegister(ctx context.Context, in *dto.MemberRegisterDto, opts ...client.CallOption) (*basic.String, error)
+	SendEmailCode(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	// 会员登陆
+	MemberLogin(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*basic.String, error)
 }
 
 type userService struct {
@@ -348,6 +354,36 @@ func (c *userService) ListRoleUser(ctx context.Context, in *basic.String, opts .
 	return out, nil
 }
 
+func (c *userService) MemberRegister(ctx context.Context, in *dto.MemberRegisterDto, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberRegister", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) SendEmailCode(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.SendEmailCode", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) MemberLogin(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberLogin", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
@@ -381,6 +417,12 @@ type UserServiceHandler interface {
 	ListRoleResource(context.Context, *basic.String, *basic.IntegerList) error
 	SaveRoleUser(context.Context, *dto.RoleDto, *dto.RoleDto) error
 	ListRoleUser(context.Context, *basic.String, *basic.StringList) error
+	// ------------ 平台会员 -------------
+	// 会员注册
+	MemberRegister(context.Context, *dto.MemberRegisterDto, *basic.String) error
+	SendEmailCode(context.Context, *basic.String, *basic.String) error
+	// 会员登陆
+	MemberLogin(context.Context, *dto.LoginUserDto, *basic.String) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -411,6 +453,9 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		ListRoleResource(ctx context.Context, in *basic.String, out *basic.IntegerList) error
 		SaveRoleUser(ctx context.Context, in *dto.RoleDto, out *dto.RoleDto) error
 		ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error
+		MemberRegister(ctx context.Context, in *dto.MemberRegisterDto, out *basic.String) error
+		SendEmailCode(ctx context.Context, in *basic.String, out *basic.String) error
+		MemberLogin(ctx context.Context, in *dto.LoginUserDto, out *basic.String) error
 	}
 	type UserService struct {
 		userService
@@ -525,4 +570,16 @@ func (h *userServiceHandler) SaveRoleUser(ctx context.Context, in *dto.RoleDto, 
 
 func (h *userServiceHandler) ListRoleUser(ctx context.Context, in *basic.String, out *basic.StringList) error {
 	return h.UserServiceHandler.ListRoleUser(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberRegister(ctx context.Context, in *dto.MemberRegisterDto, out *basic.String) error {
+	return h.UserServiceHandler.MemberRegister(ctx, in, out)
+}
+
+func (h *userServiceHandler) SendEmailCode(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.UserServiceHandler.SendEmailCode(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberLogin(ctx context.Context, in *dto.LoginUserDto, out *basic.String) error {
+	return h.UserServiceHandler.MemberLogin(ctx, in, out)
 }

@@ -16,6 +16,7 @@ var (
 	resourceDao = &dao.ResourceDao{}
 	roleDao     = &dao.RoleDao{}
 	roleUserDao = &dao.RoleUserDao{}
+	memberDao   = &dao.MemberDao{}
 )
 
 type UserServiceHandler struct {

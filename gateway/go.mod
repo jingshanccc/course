@@ -2,8 +2,6 @@ module gitee.com/jingshanccc/course/gateway
 
 go 1.14
 
-replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
-
 require (
 	gitee.com/jingshanccc/course/course v0.0.0-20210402092213-0343d5cd5dd6
 	gitee.com/jingshanccc/course/file v0.0.0-20210402092213-0343d5cd5dd6
@@ -16,4 +14,12 @@ require (
 	github.com/go-oauth2/redis/v4 v4.1.1
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
+)
+
+replace (
+	gitee.com/jingshanccc/course/course => ../course
+	gitee.com/jingshanccc/course/file => ../file
+	gitee.com/jingshanccc/course/public => ../public
+	gitee.com/jingshanccc/course/user => ../user
+	google.golang.org/grpc => google.golang.org/grpc v1.26.0
 )

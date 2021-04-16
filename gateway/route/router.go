@@ -136,6 +136,9 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		web.GET("/course", course.GetCourse)
 		web.GET("/course-content", course.DownloadCourseContent)
 		web.GET("/related-course", course.RelatedCourse)
+		// 登陆注册
+		web.GET("email-code", user.EmailRegisterCode)
+		web.POST("register", user.MemberRegister)
 	}
 	return ginRouter
 }

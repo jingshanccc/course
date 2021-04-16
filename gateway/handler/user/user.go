@@ -5,9 +5,7 @@ import (
 	"gitee.com/jingshanccc/course/gateway/middleware"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
-	"gitee.com/jingshanccc/course/public/middleware/redis"
 	"gitee.com/jingshanccc/course/public/proto/basic"
-	"gitee.com/jingshanccc/course/public/util"
 	"gitee.com/jingshanccc/course/user/proto/dto"
 	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/gin-gonic/gin"
@@ -122,18 +120,7 @@ func UpdateEmail(ctx *gin.Context) {
 //SendEmailCode: 发送邮箱验证码
 func SendEmailCode(ctx *gin.Context) {
 	email := ctx.Query("email")
-	redisKey := config.Conf.Services["user"].Others["emailResetKey"].(string) + email
-	var code string
-	if c, err := redis.RedisClient.Get(context.Background(), redisKey).Result(); err == nil {
-		code = c
-	} else {
-		code = util.GetVerifyCode()
-		redis.RedisClient.Set(context.Background(), redisKey, code, 5*time.Minute)
-	}
-	err := public.SendHTMLEmail(email, config.Conf.Services["user"].Others["emailTemplatePath"].(string)+"/email.html", code)
-	if err != nil {
-		public.ResponseError(ctx, public.NewBusinessException(public.SEND_EMAIL_CODE_ERROR))
-		return
-	}
-	public.ResponseSuccess(ctx, nil)
+	others := config.Conf.Services["user"].Others
+	err := public.SendEmailCode(time.Duration(others["emailCodeExpire"].(int))*time.Minute, email, others["emailResetKey"].(string)+email, others["emailTemplatePath"].(string)+"/email.html")
+	public.ResponseAny(ctx, err, nil)
 }

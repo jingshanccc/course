@@ -35,7 +35,7 @@ message PageDto{
 message LoginUserDto{
   string id = 1;
   string login_name = 2;
-  string name = 3;
+  string name = 3; // 登陆请求时用作图形验证码 响应时作为
   string token = 4;
   string password = 5;
 }

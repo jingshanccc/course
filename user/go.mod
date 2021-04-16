@@ -2,8 +2,6 @@ module gitee.com/jingshanccc/course/user
 
 go 1.14
 
-replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
-
 require (
 	gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c
 	github.com/gogo/protobuf v1.3.1 // indirect
@@ -20,4 +18,9 @@ require (
 	google.golang.org/grpc v1.32.0 // indirect
 	google.golang.org/protobuf v1.26.0
 	sigs.k8s.io/yaml v1.2.0 // indirect
+)
+
+replace (
+	gitee.com/jingshanccc/course/public => ../public
+	google.golang.org/grpc => google.golang.org/grpc v1.26.0
 )

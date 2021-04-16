@@ -3,6 +3,7 @@ syntax="proto3";
 import "gitee.com/jingshanccc/course/user/proto/dto/user.proto";
 import "gitee.com/jingshanccc/course/public/proto/basic/basic.proto";
 import "gitee.com/jingshanccc/course/user/proto/dto/resource.proto";
+import "gitee.com/jingshanccc/course/user/proto/dto/member.proto";
 package user;
 
 option go_package="gitee.com/jingshanccc/course/user/proto/user";
@@ -39,4 +40,11 @@ service UserService{
   rpc ListRoleResource(basic.String) returns (basic.IntegerList);
   rpc SaveRoleUser(RoleDto) returns (RoleDto);
   rpc ListRoleUser(basic.String) returns (basic.StringList);
+
+  // ------------ 平台会员 -------------
+  // 会员注册
+  rpc MemberRegister(MemberRegisterDto) returns (basic.String);
+  rpc SendEmailCode(basic.String) returns (basic.String);
+  // 会员登陆
+  rpc MemberLogin(LoginUserDto) returns (basic.String);
 }

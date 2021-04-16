@@ -123,7 +123,7 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 	// 获取参数
 	userDto := &dto.LoginUserDto{
 		Id:        r.FormValue("id"),
-		Name:      r.FormValue("name"),
+		Name:      r.FormValue("code"),
 		LoginName: r.FormValue("login_name"),
 		Password:  r.FormValue("password"),
 	}
@@ -134,9 +134,16 @@ func UserAuthorizeHandler(w http.ResponseWriter, r *http.Request) (userID string
 	}
 	// 登录接口
 	userService := Services[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
-	loginUserDto, err := userService.Login(r.Context(), userDto)
-	if loginUserDto != nil {
-		userID = loginUserDto.Id
+	if r.FormValue("type") == "member" {
+		login, err := userService.MemberLogin(r.Context(), userDto)
+		if err == nil {
+			userID = login.Str
+		}
+	} else {
+		loginUserDto, _ := userService.Login(r.Context(), userDto)
+		if loginUserDto != nil {
+			userID = loginUserDto.Id
+		}
 	}
 	// 返回userID
 	return userID, err

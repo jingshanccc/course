@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package user;
+
+option go_package="gitee.com/jingshanccc/course/user/proto/dto";
+
+message MemberRegisterDto {
+  string email = 1;
+  string password = 2;
+  string name = 3;
+  string code = 4; //邮件验证码
+  string login_name = 5;
+}
+
+message MemberDto {
+  string id = 1;
+  string email = 2;
+  string name = 3;
+  string sex = 4;
+  string photo = 5;
+  uint32 integral = 6;
+  uint32 learning_time = 7;
+  string register_time = 8;
+}

@@ -11,14 +11,6 @@ cloud.google.com/go/pubsub v1.0.1/go.mod h1:R0Gpsv3s54REJCy4fxDixWD93lHJMoZTyQ2k
 cloud.google.com/go/storage v1.0.0/go.mod h1:IhtSnM/ZTZV8YYJWCY8RULGVqBDmpoyjwiyrjsg+URw=
 contrib.go.opencensus.io/exporter/ocagent v0.4.12/go.mod h1:450APlNTSR6FrvC3CTRqYosuDstRB9un7SOx2k/9ckA=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-gitee.com/jingshanccc/course/course v0.0.0-20210402092213-0343d5cd5dd6 h1:bP+aP/k2nowYl3Ecn+jp7lXvl2bHPFdcmuLU7/u8Opo=
-gitee.com/jingshanccc/course/course v0.0.0-20210402092213-0343d5cd5dd6/go.mod h1:K7eNmEXSOW5FbXJcnRa0bziMf0g7bDJ8wOgm0XHMxa4=
-gitee.com/jingshanccc/course/file v0.0.0-20210402092213-0343d5cd5dd6 h1:BA/CAAiQLhr/hFzDm4ZHTRsuo/BKWm33lm4mqbJoZ1o=
-gitee.com/jingshanccc/course/file v0.0.0-20210402092213-0343d5cd5dd6/go.mod h1:gp8ctgv97kBXr9JVC+wXOtAQodtaL+ziSu0B/dKC4g8=
-gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c h1:cwOdevECdupKKPUXAbNnrGZpjZ+Defnx4g9p3crd6PI=
-gitee.com/jingshanccc/course/public v0.0.0-20210402090200-e69eac553a8c/go.mod h1:Lwz6icqIDmPdY32rqmLDeELDHk9hvfRpsrcvYVJvQfs=
-gitee.com/jingshanccc/course/user v0.0.0-20210402092213-0343d5cd5dd6 h1:T6tGcBA2JqSNsEl4goKK6cz/nNHVizCotIQF4fSlDE4=
-gitee.com/jingshanccc/course/user v0.0.0-20210402092213-0343d5cd5dd6/go.mod h1:tt/IZ1tdFiic1TkRscEOIZ0kUBuUcdCutYQmNql9CSA=
 github.com/Azure/azure-sdk-for-go v32.4.0+incompatible/go.mod h1:9XXNKU+eRnpl9moKnB4QOLf1HestfXbmab5FXxiDBjc=
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=
 github.com/Azure/go-autorest/autorest v0.1.0/go.mod h1:AKyIcETwSUFxIcs/Wnq/C+kwCtlEYGUVd7FPNb2slmg=

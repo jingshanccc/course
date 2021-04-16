@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:5.7.32
     ports:
-    - "33060:3306"
+    - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "123456"
   redis:
@@ -18,24 +18,24 @@ services:
     ports:
       - 2379:2379
       - 2380:2380
-  grafana:
-    image: grafana/grafana
-    ports:
-    - 3000:3000
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-  consul:
-    image: consul
-    ports:
-    - "8300:8300"
-    - "8301:8301"
-    - "8302:8302"
-    - "8500:8500"
-    - "8600:8600"
+#  grafana:
+#    image: grafana/grafana
+#    ports:
+#    - 3000:3000
+#  prometheus:
+#    image: prom/prometheus
+#    ports:
+#      - 9090:9090
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#  consul:
+#    image: consul
+#    ports:
+#    - "8300:8300"
+#    - "8301:8301"
+#    - "8302:8302"
+#    - "8500:8500"
+#    - "8600:8600"
   jaeger:
     image: jaegertracing/all-in-one
     ports:
