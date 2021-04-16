@@ -2,11 +2,15 @@ package public
 
 import (
 	"bytes"
+	"context"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
+	"gitee.com/jingshanccc/course/public/util"
 	"github.com/jordan-wright/email"
 	"html/template"
 	"log"
 	"net/smtp"
 	"strings"
+	"time"
 )
 
 type EmailConfig struct {
@@ -28,7 +32,7 @@ func SendEmail(receiver string) {
 	}
 }
 
-///SendHTMLEmail: 发送HTML格式邮件
+//SendHTMLEmail: 发送HTML格式邮件
 func SendHTMLEmail(receiver string, path string, variables interface{}) error {
 	var emailConfig EmailConfig
 	DB.Raw("select * from email where id = 1 limit 1").Find(&emailConfig)
@@ -45,4 +49,19 @@ func SendHTMLEmail(receiver string, path string, variables interface{}) error {
 	err := e.Send(emailConfig.Host+emailConfig.Port, auth)
 	log.Println("failed to send email:", err)
 	return err
+}
+
+//SendEmailCode: 发送邮箱验证码
+func SendEmailCode(duration time.Duration, email, redisKey, templatePath string) *BusinessException {
+	var code string
+	if c, err := redis.RedisClient.Get(context.Background(), redisKey).Result(); err == nil {
+		code = c
+	} else {
+		code = util.GetVerifyCode()
+		redis.RedisClient.Set(context.Background(), redisKey, code, duration)
+	}
+	if err := SendHTMLEmail(email, templatePath, code); err != nil {
+		return NewBusinessException(SEND_EMAIL_CODE_ERROR)
+	}
+	return nil
 }

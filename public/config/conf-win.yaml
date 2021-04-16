@@ -16,6 +16,8 @@ services:
       userInfoKey: user_info_
       emailResetKey: reset_email_
       emailTemplatePath: f:/gitee.com/jingshanccc/course/public/template/
+      emailRegisterKey: register_email_
+      emailCodeExpire: 5 #分钟
   course:
     name: course
     addr: :8082
