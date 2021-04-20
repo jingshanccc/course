@@ -91,6 +91,10 @@ type CourseService interface {
 	RelatedCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 	// 下载课程讲义
 	DownloadCourseContent(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
+	// 我的课程
+	MyCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
+	// 添加到我的课程
+	AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -425,6 +429,26 @@ func (c *courseService) DownloadCourseContent(ctx context.Context, in *basic.Str
 	return out, nil
 }
 
+func (c *courseService) MyCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error) {
+	req := c.c.NewRequest(c.name, "CourseService.MyCourse", in)
+	out := new(dto.CourseDtoList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseService) AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.AddToMyCourse", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -475,6 +499,10 @@ type CourseServiceHandler interface {
 	RelatedCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 	// 下载课程讲义
 	DownloadCourseContent(context.Context, *basic.String, *basic.String) error
+	// 我的课程
+	MyCourse(context.Context, *basic.String, *dto.CourseDtoList) error
+	// 添加到我的课程
+	AddToMyCourse(context.Context, *dto.MemberCourseDto, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -511,6 +539,8 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		CourseDetail(ctx context.Context, in *basic.String, out *dto.CourseDto) error
 		RelatedCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error
+		MyCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
+		AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -649,4 +679,12 @@ func (h *courseServiceHandler) RelatedCourse(ctx context.Context, in *basic.Stri
 
 func (h *courseServiceHandler) DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error {
 	return h.CourseServiceHandler.DownloadCourseContent(ctx, in, out)
+}
+
+func (h *courseServiceHandler) MyCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	return h.CourseServiceHandler.MyCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error {
+	return h.CourseServiceHandler.AddToMyCourse(ctx, in, out)
 }

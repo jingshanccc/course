@@ -53,7 +53,7 @@ func init() {
 	}
 	if is { // edit file path for not windows
 		dir, _ := os.Getwd()
-		Conf.Services["file"].Others["filePath"] = strings.Replace(dir, "public", "file", 1) + Conf.Services["file"].Others["filePath"].(string)
+		Conf.Services["file"].Others["filePath"] = strings.Replace(dir, "gateway", "file", 1) + Conf.Services["file"].Others["filePath"].(string)
 		Conf.Services["user"].Others["emailTemplatePath"] = dir + Conf.Services["user"].Others["emailTemplatePath"].(string)
 	}
 }

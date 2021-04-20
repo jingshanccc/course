@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/jingshanccc/course/course/proto/course"
 	"gitee.com/jingshanccc/course/course/proto/dto"
+	"gitee.com/jingshanccc/course/gateway/middleware"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/proto/basic"
@@ -54,6 +55,34 @@ func RelatedCourse(ctx *gin.Context) {
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.RelatedCourse(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//MyCourse: 我的课程
+func MyCourse(ctx *gin.Context) {
+	var req basic.String
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
+		list, err := courseService.MyCourse(context.Background(), &req)
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
+//AddToMyCourse: 添加到我的课程
+func AddToMyCourse(ctx *gin.Context) {
+	var req basic.String
+	user, _ := middleware.GetCurrentUser(ctx)
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
+		list, err := courseService.AddToMyCourse(context.Background(), &dto.MemberCourseDto{
+			MemberId: user,
+			CourseId: req.Str,
+		})
 		public.ResponseAny(ctx, err, list)
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))

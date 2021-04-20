@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"gitee.com/jingshanccc/course/course/dao"
 	"gitee.com/jingshanccc/course/course/proto/dto"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
@@ -9,6 +10,7 @@ import (
 	"gitee.com/jingshanccc/course/public/util"
 	"github.com/micro/go-micro/v2/errors"
 	"gorm.io/gorm"
+	"time"
 )
 
 //CourseList: get course page
@@ -20,6 +22,29 @@ func (c *CourseServiceHandler) CourseList(ctx context.Context, in *dto.CoursePag
 	_ = util.CopyProperties(out, in)
 	out.Rows = courseDtos
 	out.Total = count
+	return nil
+}
+
+//MyCourse: 我的课程
+func (c *CourseServiceHandler) MyCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error {
+	courseDtos, err := memberCourseDao.MyCourse(in.Str)
+	if err != nil {
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
+	}
+	out.Rows = courseDtos
+	return nil
+}
+
+//AddToMyCourse: 添加到我的课程
+func (c *CourseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error {
+	var data dao.MemberCourse
+	_ = util.CopyProperties(&data, in)
+	data.CreateAt = time.Now()
+	data.UpdateAt = data.CreateAt
+	err := memberCourseDao.AddToMyCourse(&data)
+	if err != nil {
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
+	}
 	return nil
 }
 

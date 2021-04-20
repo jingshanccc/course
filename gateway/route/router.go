@@ -139,6 +139,20 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		// 登陆注册
 		web.GET("email-code", user.EmailRegisterCode)
 		web.POST("register", user.MemberRegister)
+		u := web.Group("/user")
+		//u.Use(middleware.JWT())
+		{
+			// 文件
+			u.POST("/upload_shard", file.UploadShard)
+			u.POST("/merge", file.Merge)
+			u.GET("/verify_upload", file.VerifyUpload)
+			u.GET("/cancel", file.Cancel)
+			u.GET("/check", file.Check)
+			// 我的课程
+			u.GET("courses", course.MyCourse)
+			// 添加到我的课程
+			u.GET("add-course", course.AddToMyCourse)
+		}
 	}
 	return ginRouter
 }

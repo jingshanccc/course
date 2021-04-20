@@ -304,3 +304,11 @@ message SortDto {
   int32 OldSort = 2;
   int32 NewSort = 3;
 }
+
+message MemberCourseDto {
+  string member_id = 1;
+  string course_id = 2;
+  string last_learn = 3;
+  string create_at = 4;
+  string update_at = 5;
+}

@@ -17,13 +17,27 @@ import (
 	"time"
 )
 
-func (u *UserServiceHandler) SendEmailCode(ctx context.Context, req *basic.String, rsp *basic.String) error {
-	conf := config.Conf.Services["user"]
-	err := public.SendEmailCode(time.Duration(conf.Others["emailCodeExpire"].(int))*time.Minute, req.Str, conf.Others["emailRegisterKey"].(string)+req.Str, strings.Replace(conf.Others["emailTemplatePath"].(string), "user", "public", 1)+"/email.html")
-	if err != nil {
-		return errors.New(config.Conf.BasicConfig.BasicName+conf.Name, err.Error(), err.Code())
+func (u *UserServiceHandler) SendEmailCode(ctx context.Context, req *basic.String, rsp *basic.String) (err error) {
+	var (
+		existEmails []string
+		exception   *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	// 校验邮箱是否唯一
+	public.DB.Table("member").Select("email").Find(&existEmails)
+	if len(existEmails) > 0 {
+		if index := util.Contains(existEmails, req.Str); index != -1 {
+			exception = public.BadRequestException("当前邮箱已绑定用户，请更换邮箱注册或直接登陆")
+			return
+		}
 	}
-	return nil
+	conf := config.Conf.Services["user"]
+	exception = public.SendEmailCode(time.Duration(conf.Others["emailCodeExpire"].(int))*time.Minute, req.Str, conf.Others["emailRegisterKey"].(string)+req.Str, strings.Replace(conf.Others["emailTemplatePath"].(string), "user", "public", 1)+"/email.html")
+	return
 }
 func (u *UserServiceHandler) MemberRegister(ctx context.Context, req *dto.MemberRegisterDto, rsp *basic.String) (err error) {
 	var (
@@ -40,6 +54,7 @@ func (u *UserServiceHandler) MemberRegister(ctx context.Context, req *dto.Member
 	if len(existNames) > 0 {
 		if index := util.Contains(existNames, req.LoginName); index != -1 {
 			exception = public.BadRequestException("用户名已存在，请更换一个用户名")
+			return
 		}
 	}
 	// 校验验证码

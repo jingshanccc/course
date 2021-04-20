@@ -13,4 +13,5 @@ var (
 	sectionDao        = &dao.SectionDao{}
 	courseFileDao     = &dao.CourseFileDao{}
 	teacherDao        = &dao.TeacherDao{}
+	memberCourseDao   = &dao.MemberCourseDao{}
 )
