@@ -95,6 +95,8 @@ type CourseService interface {
 	MyCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 	// 添加到我的课程
 	AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, opts ...client.CallOption) (*basic.String, error)
+	// 添加到我的课程
+	CourseInfo(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -449,6 +451,16 @@ func (c *courseService) AddToMyCourse(ctx context.Context, in *dto.MemberCourseD
 	return out, nil
 }
 
+func (c *courseService) CourseInfo(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.CourseInfo", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -503,6 +515,8 @@ type CourseServiceHandler interface {
 	MyCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 	// 添加到我的课程
 	AddToMyCourse(context.Context, *dto.MemberCourseDto, *basic.String) error
+	// 添加到我的课程
+	CourseInfo(context.Context, *basic.StringList, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -541,6 +555,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		DownloadCourseContent(ctx context.Context, in *basic.String, out *basic.String) error
 		MyCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error
+		CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -687,4 +702,8 @@ func (h *courseServiceHandler) MyCourse(ctx context.Context, in *basic.String, o
 
 func (h *courseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error {
 	return h.CourseServiceHandler.AddToMyCourse(ctx, in, out)
+}
+
+func (h *courseServiceHandler) CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	return h.CourseServiceHandler.CourseInfo(ctx, in, out)
 }

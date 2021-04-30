@@ -151,7 +151,9 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			// 我的课程
 			u.GET("courses", course.MyCourse)
 			// 添加到我的课程
-			u.GET("add-course", course.AddToMyCourse)
+			u.POST("add-course", course.AddToMyCourse)
+			// 获取课程学习进度
+			u.POST("course-info", course.CourseInfo)
 		}
 	}
 	return ginRouter

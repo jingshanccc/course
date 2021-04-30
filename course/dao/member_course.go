@@ -38,3 +38,12 @@ func (m *MemberCourseDao) AddToMyCourse(data *MemberCourse) *public.BusinessExce
 	}
 	return nil
 }
+
+func (m *MemberCourseDao) CourseInfo(memberId, courseId string) (string, *public.BusinessException) {
+	var info string
+	err := public.DB.Model(&MemberCourse{}).Select("last_learn").Where("member_id = ?", memberId).Where("course_id", courseId).Find(&info).Error
+	if err != nil {
+		return info, public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return info, nil
+}

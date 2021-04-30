@@ -39,9 +39,20 @@ func (c *CourseServiceHandler) MyCourse(ctx context.Context, in *basic.String, o
 func (c *CourseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error {
 	var data dao.MemberCourse
 	_ = util.CopyProperties(&data, in)
+	data.LastLearn = "1 1 0"
 	data.CreateAt = time.Now()
 	data.UpdateAt = data.CreateAt
 	err := memberCourseDao.AddToMyCourse(&data)
+	if err != nil {
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
+	}
+	return nil
+}
+
+//CourseInfo: 课程学习情况
+func (c *CourseServiceHandler) CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	info, err := memberCourseDao.CourseInfo(in.Rows[0], in.Rows[1])
+	out.Str = info
 	if err != nil {
 		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
