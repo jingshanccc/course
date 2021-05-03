@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
@@ -111,5 +112,35 @@ func (u *UserServiceHandler) MemberLogin(ctx context.Context, req *dto.LoginUser
 			exception = public.NewBusinessException(public.ERROR_PASSWORD)
 		}
 	}
+	return
+}
+
+//MemberInfo: 获取用户信息
+func (u *UserServiceHandler) MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) (err error) {
+	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Str)
+	var (
+		exception *public.BusinessException
+		usrs      []*dao.Member
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	exception = memberDao.SelectByProperty(&usrs, "id", in.Str)
+	if exception != nil {
+		return
+	}
+	if len(usrs) == 0 {
+		exception = public.NewBusinessException(public.USER_NOT_EXIST)
+		return
+	}
+	_ = util.CopyProperties(out, usrs[0])
+	info, e := json.Marshal(out)
+	if e != nil {
+		exception = public.IntervalException("json 格式化错误")
+		return
+	}
+	redis.RedisClient.Set(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Str, info, time.Duration(config.Conf.Services["user"].Others["tokenExpire"].(int))*time.Hour)
 	return
 }

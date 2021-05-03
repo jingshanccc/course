@@ -47,4 +47,6 @@ service UserService{
   rpc SendEmailCode(basic.String) returns (basic.String);
   // 会员登陆
   rpc MemberLogin(LoginUserDto) returns (basic.String);
+  // 会员信息
+  rpc MemberInfo(basic.String) returns (MemberDto);
 }

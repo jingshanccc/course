@@ -5,6 +5,7 @@ import (
 	"gitee.com/jingshanccc/course/gateway/middleware"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
+	"gitee.com/jingshanccc/course/public/middleware/redis"
 	"gitee.com/jingshanccc/course/public/proto/basic"
 	"gitee.com/jingshanccc/course/user/proto/dto"
 	"gitee.com/jingshanccc/course/user/proto/user"
@@ -93,8 +94,10 @@ func DeleteUser(ctx *gin.Context) {
 func Logout(ctx *gin.Context) {
 	var req basic.String
 	if err := ctx.Bind(&req); err == nil {
+		userId, _ := middleware.GetCurrentUser(ctx)
+		redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+userId)
 		strs := strings.Split(req.Str, "$")
-		err := middleware.AuthServer.Manager.RemoveAccessToken(ctx, strs[0])
+		err = middleware.AuthServer.Manager.RemoveAccessToken(ctx, strs[0])
 		err = middleware.AuthServer.Manager.RemoveRefreshToken(ctx, strs[1])
 		//userService := ctx.Keys[public.UserServiceName].(user.UserService)
 		//result, err := userService.Logout(context.Background(), &req)

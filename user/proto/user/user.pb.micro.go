@@ -80,6 +80,8 @@ type UserService interface {
 	SendEmailCode(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 	// 会员登陆
 	MemberLogin(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*basic.String, error)
+	// 会员信息
+	MemberInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.MemberDto, error)
 }
 
 type userService struct {
@@ -384,6 +386,16 @@ func (c *userService) MemberLogin(ctx context.Context, in *dto.LoginUserDto, opt
 	return out, nil
 }
 
+func (c *userService) MemberInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.MemberDto, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberInfo", in)
+	out := new(dto.MemberDto)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
@@ -423,6 +435,8 @@ type UserServiceHandler interface {
 	SendEmailCode(context.Context, *basic.String, *basic.String) error
 	// 会员登陆
 	MemberLogin(context.Context, *dto.LoginUserDto, *basic.String) error
+	// 会员信息
+	MemberInfo(context.Context, *basic.String, *dto.MemberDto) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -456,6 +470,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		MemberRegister(ctx context.Context, in *dto.MemberRegisterDto, out *basic.String) error
 		SendEmailCode(ctx context.Context, in *basic.String, out *basic.String) error
 		MemberLogin(ctx context.Context, in *dto.LoginUserDto, out *basic.String) error
+		MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) error
 	}
 	type UserService struct {
 		userService
@@ -582,4 +597,8 @@ func (h *userServiceHandler) SendEmailCode(ctx context.Context, in *basic.String
 
 func (h *userServiceHandler) MemberLogin(ctx context.Context, in *dto.LoginUserDto, out *basic.String) error {
 	return h.UserServiceHandler.MemberLogin(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) error {
+	return h.UserServiceHandler.MemberInfo(ctx, in, out)
 }

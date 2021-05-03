@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"gitee.com/jingshanccc/course/gateway/middleware"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/proto/basic"
@@ -29,4 +30,14 @@ func MemberRegister(ctx *gin.Context) {
 	} else {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
+}
+
+func MemberInfo(ctx *gin.Context) {
+	userId, userDto := middleware.GetCurrentMember(ctx)
+	var err error
+	if userDto == nil {
+		userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
+		userDto, err = userService.MemberInfo(context.Background(), &basic.String{Str: userId})
+	}
+	public.ResponseAny(ctx, err, userDto)
 }

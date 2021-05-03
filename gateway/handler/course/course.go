@@ -4,6 +4,7 @@ import (
 	"context"
 	"gitee.com/jingshanccc/course/course/proto/course"
 	"gitee.com/jingshanccc/course/course/proto/dto"
+	"gitee.com/jingshanccc/course/gateway/middleware"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/proto/basic"
@@ -75,8 +76,7 @@ func MyCourse(ctx *gin.Context) {
 //AddToMyCourse: 添加到我的课程
 func AddToMyCourse(ctx *gin.Context) {
 	var req basic.String
-	//user, _ := middleware.GetCurrentUser(ctx)
-	user := "IX7UQht2"
+	user, _ := middleware.GetCurrentMember(ctx)
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.AddToMyCourse(context.Background(), &dto.MemberCourseDto{
@@ -92,8 +92,7 @@ func AddToMyCourse(ctx *gin.Context) {
 //CourseInfo: 获取课程学习进度
 func CourseInfo(ctx *gin.Context) {
 	var req basic.String
-	//user, _ := middleware.GetCurrentUser(ctx)
-	user := "IX7UQht2"
+	user, _ := middleware.GetCurrentMember(ctx)
 	if err := ctx.Bind(&req); err == nil {
 		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
 		list, err := courseService.CourseInfo(context.Background(), &basic.StringList{Rows: []string{user, req.Str}})

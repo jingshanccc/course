@@ -80,7 +80,7 @@ func SaveServices(service []interface{}) gin.HandlerFunc {
 	}
 }
 
-//GetCurrentUser: 获取当前请求登陆的用户
+//GetCurrentUser: 获取当前请求登陆的用户(admin)
 func GetCurrentUser(ctx *gin.Context) (string, *dto.UserDto) {
 	token := strings.Split(ctx.Request.Header.Get("Authorization"), " ")[1]
 	info, err := AuthServer.Manager.LoadAccessToken(context.Background(), token)
@@ -89,6 +89,22 @@ func GetCurrentUser(ctx *gin.Context) (string, *dto.UserDto) {
 		return "", nil
 	} else if usrStr, e := redis.RedisClient.Get(context.Background(), config.Conf.Services["user"].Others["userInfoKey"].(string)+info.GetUserID()).Result(); e == nil {
 		var usr dto.UserDto
+		_ = json.Unmarshal([]byte(usrStr), &usr)
+		return info.GetUserID(), &usr
+	} else {
+		return info.GetUserID(), nil
+	}
+}
+
+//GetCurrentMember: 获取当前请求登陆的用户(web)
+func GetCurrentMember(ctx *gin.Context) (string, *dto.MemberDto) {
+	token := strings.Split(ctx.Request.Header.Get("Authorization"), " ")[1]
+	info, err := AuthServer.Manager.LoadAccessToken(context.Background(), token)
+	if err != nil {
+		ctx.AbortWithError(http.StatusUnauthorized, err)
+		return "", nil
+	} else if usrStr, e := redis.RedisClient.Get(context.Background(), config.Conf.Services["user"].Others["userInfoKey"].(string)+info.GetUserID()).Result(); e == nil {
+		var usr dto.MemberDto
 		_ = json.Unmarshal([]byte(usrStr), &usr)
 		return info.GetUserID(), &usr
 	} else {

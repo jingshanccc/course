@@ -21,4 +21,5 @@ message MemberDto {
   uint32 integral = 6;
   uint32 learning_time = 7;
   string register_time = 8;
+  string login_name = 9;
 }
