@@ -78,14 +78,11 @@ func (u *UserServiceHandler) MemberRegister(ctx context.Context, req *dto.Member
 	req.Password = fmt.Sprintf("%x", md5.Sum([]byte(req.Password)))
 	// 完成注册
 	exception = memberDao.Create(&dao.Member{
-		Id:           util.GetShortUuid(),
-		Email:        req.Email,
-		LoginName:    req.LoginName,
-		Name:         req.Name,
-		Password:     req.Password,
-		RegisterTime: time.Now(),
-		CreateTime:   time.Now(),
-		UpdateTime:   time.Now(),
+		Id:        util.GetShortUuid(),
+		Email:     req.Email,
+		LoginName: req.LoginName,
+		Name:      req.Name,
+		Password:  req.Password,
 	})
 	return
 }
@@ -142,5 +139,50 @@ func (u *UserServiceHandler) MemberInfo(ctx context.Context, in *basic.String, o
 		return
 	}
 	redis.RedisClient.Set(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Str, info, time.Duration(config.Conf.Services["user"].Others["tokenExpire"].(int))*time.Hour)
+	return
+}
+
+//MemberAvatar: 更新用户头像
+func (u *UserServiceHandler) MemberAvatar(ctx context.Context, in *basic.StringList, out *basic.String) (err error) {
+	var (
+		exception *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	if len(in.Rows) != 2 {
+		exception = public.NewBusinessException(public.VALID_PARM_ERROR)
+		return
+	}
+	e := public.DB.Model(&dao.Member{Id: in.Rows[0]}).Update("photo", in.Rows[1]).Error
+	if e != nil {
+		exception = public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return
+	}
+	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Rows[0])
+	return
+}
+
+//MemberSave: 更新用户信息
+func (u *UserServiceHandler) MemberSave(ctx context.Context, in *dto.MemberDto, out *basic.String) (err error) {
+	var (
+		exception *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	var usr dao.Member
+	_ = util.CopyProperties(&usr, in)
+	usr.Id = ""
+	e := public.DB.Model(&dao.Member{Id: in.Id}).Updates(&usr).Error
+	if e != nil {
+		exception = public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return
+	}
+	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Id)
 	return
 }

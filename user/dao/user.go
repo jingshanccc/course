@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
-	"gitee.com/jingshanccc/course/public/middleware/redis"
 	"gitee.com/jingshanccc/course/public/util"
 	"gitee.com/jingshanccc/course/user/proto/dto"
 	"log"
@@ -85,22 +84,13 @@ func (u *UserDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) 
 	if byId.Id == "" {
 		return public.NewBusinessException(public.USER_NOT_EXIST)
 	}
-	oldBytes, _ := base64.StdEncoding.DecodeString(updatePass.OldPass)
-	newBytes, _ := base64.StdEncoding.DecodeString(updatePass.NewPass)
-	oldP, err := util.RsaDecrypt(oldBytes)
-	newP, err := util.RsaDecrypt(newBytes)
-	if err != nil {
-		return public.NewBusinessException(public.VALID_PARM_ERROR)
-	}
-	updatePass.OldPass = fmt.Sprintf("%x", md5.Sum([]byte(oldP)))
-	updatePass.NewPass = fmt.Sprintf("%x", md5.Sum([]byte(newP)))
 	if byId.Password != updatePass.OldPass {
 		return public.NewBusinessException(public.ERROR_PASSWORD)
 	}
 	if byId.Password == updatePass.NewPass {
 		return public.NewBusinessException(public.SAME_PASSWORD)
 	}
-	err = public.DB.Model(&User{}).Where("id=?", updatePass.UserId).Update("password", updatePass.NewPass).Error
+	err := public.DB.Model(&User{}).Where("id=?", updatePass.UserId).Update("password", updatePass.NewPass).Error
 	if err != nil {
 		log.Println("exec sql failed, err is " + err.Error())
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -172,21 +162,6 @@ func (u *UserDao) Delete(ctx context.Context, ids []string) *public.BusinessExce
 
 //UpdateEmail: 更新邮箱
 func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.BusinessException {
-	//校验验证码
-	code, _ := redis.RedisClient.Get(ctx, config.Conf.Services["user"].Others["emailResetKey"].(string)+in.Email).Result()
-	if code == "" {
-		return public.NewBusinessException(public.VERIFY_CODE_EXPIRED)
-	}
-	if code != in.Code {
-		return public.NewBusinessException(public.VERIFY_CODE_ERROR)
-	}
-	//校验密码
-	newBytes, _ := base64.StdEncoding.DecodeString(in.Pass)
-	pas, err := util.RsaDecrypt(newBytes)
-	if err != nil {
-		return public.NewBusinessException(public.VALID_PARM_ERROR)
-	}
-	in.Pass = fmt.Sprintf("%x", md5.Sum([]byte(pas)))
 	byId := u.SelectById(ctx, in.UserId)
 	if byId.Id == "" {
 		return public.NewBusinessException(public.USER_NOT_EXIST)
@@ -194,7 +169,7 @@ func (u *UserDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.
 	if byId.Password != in.Pass {
 		return public.NewBusinessException(public.ERROR_PASSWORD)
 	}
-	err = public.DB.Model(&User{}).Where("id=?", in.UserId).Update("email", in.Email).Error
+	err := public.DB.Model(&User{}).Where("id=?", in.UserId).Update("email", in.Email).Error
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}

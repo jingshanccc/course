@@ -22,4 +22,8 @@ message MemberDto {
   uint32 learning_time = 7;
   string register_time = 8;
   string login_name = 9;
+  string create_time = 10;
+  string update_time = 11;
+  string creator = 12;
+  string updater = 13;
 }

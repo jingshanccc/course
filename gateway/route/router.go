@@ -142,7 +142,12 @@ func NewRouter(service ...interface{}) *gin.Engine {
 		u := web.Group("/user")
 		u.Use(middleware.JWT())
 		{
+			// 个人中心
 			u.POST("/info", user.MemberInfo)
+			u.POST("save", user.MemberSave)
+			u.POST("upload-avatar", user.MemberAvatarUpload)
+			u.POST("update-email", user.UpdateEmail)
+			u.POST("update-pass", user.SavePassword)
 			// 我的课程
 			u.GET("courses", course.MyCourse)
 			// 添加到我的课程

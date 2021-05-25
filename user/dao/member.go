@@ -1,7 +1,11 @@
 package dao
 
 import (
+	"context"
 	"gitee.com/jingshanccc/course/public"
+	"gitee.com/jingshanccc/course/public/util"
+	"gitee.com/jingshanccc/course/user/proto/dto"
+	"log"
 	"time"
 )
 
@@ -30,6 +34,11 @@ type MemberDao struct {
 }
 
 func (m *MemberDao) Create(member *Member) *public.BusinessException {
+	member.Id = util.GetShortUuid()
+	member.Sex = "男"
+	member.RegisterTime = time.Now()
+	member.CreateTime = time.Now()
+	member.UpdateTime = time.Now()
 	err := public.DB.Create(&member).Error
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
@@ -39,6 +48,61 @@ func (m *MemberDao) Create(member *Member) *public.BusinessException {
 
 func (m *MemberDao) SelectByProperty(member *[]*Member, property string, val interface{}) *public.BusinessException {
 	err := public.DB.Model(member).Where(property+" = ?", val).Find(&member).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}
+
+//SavePassword : reset password
+func (m *MemberDao) SavePassword(ctx context.Context, updatePass *dto.UpdatePass) *public.BusinessException {
+	var (
+		members []*Member
+		byId    *Member
+	)
+	exception := m.SelectByProperty(&members, "id", updatePass.UserId)
+	if exception != nil {
+		return exception
+	}
+	if len(members) == 0 {
+		return public.NewBusinessException(public.USER_NOT_EXIST)
+	}
+	byId = members[0]
+	if byId.Password != updatePass.OldPass {
+		return public.NewBusinessException(public.ERROR_PASSWORD)
+	}
+	if byId.Password == updatePass.NewPass {
+		return public.NewBusinessException(public.SAME_PASSWORD)
+	}
+	err := public.DB.Model(&Member{}).Where("id=?", updatePass.UserId).Update("password", updatePass.NewPass).Error
+	if err != nil {
+		log.Println("exec sql failed, err is " + err.Error())
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}
+
+//UpdateEmail: 更新邮箱
+func (m *MemberDao) UpdateEmail(ctx context.Context, in *dto.UpdateEmail) *public.BusinessException {
+	var (
+		members []*Member
+		byId    *Member
+	)
+	exception := m.SelectByProperty(&members, "id", in.UserId)
+	if exception != nil {
+		return exception
+	}
+	if len(members) == 0 {
+		return public.NewBusinessException(public.USER_NOT_EXIST)
+	}
+	byId = members[0]
+	if byId.Id == "" {
+		return public.NewBusinessException(public.USER_NOT_EXIST)
+	}
+	if byId.Password != in.Pass {
+		return public.NewBusinessException(public.ERROR_PASSWORD)
+	}
+	err := public.DB.Model(&Member{}).Where("id=?", in.UserId).Update("email", in.Email).Error
 	if err != nil {
 		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
 	}

@@ -44,6 +44,7 @@ message UpdatePass {
   string oldPass = 1;
   string newPass = 2;
   string userId = 3;
+  bool isMember = 4;
 }
 
 message UpdateEmail {
@@ -51,4 +52,5 @@ message UpdateEmail {
   string email = 2;
   string code = 3;
   string userId = 4;
+  bool isMember = 5;
 }

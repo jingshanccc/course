@@ -2,7 +2,10 @@ package handler
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"gitee.com/jingshanccc/course/public"
 	"gitee.com/jingshanccc/course/public/config"
 	"gitee.com/jingshanccc/course/public/middleware/redis"
@@ -122,10 +125,28 @@ func (u *UserServiceHandler) UserInfo(ctx context.Context, in *basic.String, out
 }
 
 //SavePassword : reset password
-func (u *UserServiceHandler) SavePassword(ctx context.Context, in *dto.UpdatePass, out *basic.String) error {
-	err := userDao.SavePassword(ctx, in)
+func (u *UserServiceHandler) SavePassword(ctx context.Context, in *dto.UpdatePass, out *basic.String) (err error) {
+	var (
+		exception *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	oldBytes, _ := base64.StdEncoding.DecodeString(in.OldPass)
+	newBytes, _ := base64.StdEncoding.DecodeString(in.NewPass)
+	oldP, err := util.RsaDecrypt(oldBytes)
+	newP, err := util.RsaDecrypt(newBytes)
 	if err != nil {
-		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, err.Error(), err.Code())
+		exception = public.NewBusinessException(public.VALID_PARM_ERROR)
+	}
+	in.OldPass = fmt.Sprintf("%x", md5.Sum([]byte(oldP)))
+	in.NewPass = fmt.Sprintf("%x", md5.Sum([]byte(newP)))
+	if in.IsMember {
+		exception = memberDao.SavePassword(ctx, in)
+	} else {
+		exception = userDao.SavePassword(ctx, in)
 	}
 	return nil
 }
@@ -146,11 +167,44 @@ func (u *UserServiceHandler) Logout(ctx context.Context, in *basic.String, out *
 }
 
 //SaveEmail: 用户修改邮箱
-func (u *UserServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) error {
-	err := userDao.UpdateEmail(ctx, in)
+func (u *UserServiceHandler) SaveEmail(ctx context.Context, in *dto.UpdateEmail, out *basic.String) (err error) {
+	var (
+		exception *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	//校验验证码
+	code, _ := redis.RedisClient.Get(ctx, config.Conf.Services["user"].Others["emailResetKey"].(string)+in.Email).Result()
+	if code == "" {
+		exception = public.NewBusinessException(public.VERIFY_CODE_EXPIRED)
+		return
+	}
+	if code != in.Code {
+		exception = public.NewBusinessException(public.VERIFY_CODE_ERROR)
+		return
+	}
+	//解密密码
+	newBytes, _ := base64.StdEncoding.DecodeString(in.Pass)
+	pas, err := util.RsaDecrypt(newBytes)
 	if err != nil {
-		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, err.Error(), err.Code())
+		exception = public.NewBusinessException(public.VALID_PARM_ERROR)
+		return
+	}
+	in.Pass = fmt.Sprintf("%x", md5.Sum([]byte(pas)))
+	if in.IsMember {
+		exception = memberDao.UpdateEmail(ctx, in)
+		if exception != nil {
+			return
+		}
+	} else {
+		exception = userDao.UpdateEmail(ctx, in)
+		if exception != nil {
+			return
+		}
 	}
 	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.UserId)
-	return nil
+	return
 }

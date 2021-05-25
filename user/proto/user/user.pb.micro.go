@@ -82,6 +82,10 @@ type UserService interface {
 	MemberLogin(ctx context.Context, in *dto.LoginUserDto, opts ...client.CallOption) (*basic.String, error)
 	// 会员信息
 	MemberInfo(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.MemberDto, error)
+	// 保存会员信息
+	MemberSave(ctx context.Context, in *dto.MemberDto, opts ...client.CallOption) (*basic.String, error)
+	// 会员头像更新
+	MemberAvatar(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 }
 
 type userService struct {
@@ -396,6 +400,26 @@ func (c *userService) MemberInfo(ctx context.Context, in *basic.String, opts ...
 	return out, nil
 }
 
+func (c *userService) MemberSave(ctx context.Context, in *dto.MemberDto, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberSave", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) MemberAvatar(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberAvatar", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
@@ -437,6 +461,10 @@ type UserServiceHandler interface {
 	MemberLogin(context.Context, *dto.LoginUserDto, *basic.String) error
 	// 会员信息
 	MemberInfo(context.Context, *basic.String, *dto.MemberDto) error
+	// 保存会员信息
+	MemberSave(context.Context, *dto.MemberDto, *basic.String) error
+	// 会员头像更新
+	MemberAvatar(context.Context, *basic.StringList, *basic.String) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -471,6 +499,8 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		SendEmailCode(ctx context.Context, in *basic.String, out *basic.String) error
 		MemberLogin(ctx context.Context, in *dto.LoginUserDto, out *basic.String) error
 		MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) error
+		MemberSave(ctx context.Context, in *dto.MemberDto, out *basic.String) error
+		MemberAvatar(ctx context.Context, in *basic.StringList, out *basic.String) error
 	}
 	type UserService struct {
 		userService
@@ -601,4 +631,12 @@ func (h *userServiceHandler) MemberLogin(ctx context.Context, in *dto.LoginUserD
 
 func (h *userServiceHandler) MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) error {
 	return h.UserServiceHandler.MemberInfo(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberSave(ctx context.Context, in *dto.MemberDto, out *basic.String) error {
+	return h.UserServiceHandler.MemberSave(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberAvatar(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	return h.UserServiceHandler.MemberAvatar(ctx, in, out)
 }
