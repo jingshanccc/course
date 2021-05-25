@@ -148,6 +148,7 @@ func NewRouter(service ...interface{}) *gin.Engine {
 			u.POST("upload-avatar", user.MemberAvatarUpload)
 			u.POST("update-email", user.UpdateEmail)
 			u.POST("update-pass", user.SavePassword)
+			u.GET("/email-code", user.SendEmailCode)
 			// 我的课程
 			u.GET("courses", course.MyCourse)
 			// 添加到我的课程

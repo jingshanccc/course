@@ -10,6 +10,7 @@ import (
 	"gitee.com/jingshanccc/course/user/proto/dto"
 	"gitee.com/jingshanccc/course/user/proto/user"
 	"github.com/gin-gonic/gin"
+	"github.com/micro/go-micro/v2/errors"
 	"strings"
 	"time"
 )
@@ -124,6 +125,10 @@ func UpdateEmail(ctx *gin.Context) {
 func SendEmailCode(ctx *gin.Context) {
 	email := ctx.Query("email")
 	others := config.Conf.Services["user"].Others
-	err := public.SendEmailCode(time.Duration(others["emailCodeExpire"].(int))*time.Minute, email, others["emailResetKey"].(string)+email, others["emailTemplatePath"].(string)+"/email.html")
+	exception := public.SendEmailCode(time.Duration(others["emailCodeExpire"].(int))*time.Minute, email, others["emailResetKey"].(string)+email, strings.Replace(others["emailTemplatePath"].(string), "gateway", "public", 1)+"/email.html")
+	var err error
+	if exception != nil {
+		err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+	}
 	public.ResponseAny(ctx, err, nil)
 }
