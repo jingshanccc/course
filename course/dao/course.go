@@ -180,3 +180,8 @@ func (c *CourseDao) SelectByProperty(property, value string) *Course {
 	public.DB.Model(&Course{}).Where(property+" = ?", value).Find(&res)
 	return &res
 }
+
+//UpdateEnrollL: 更新课程报名人数
+func (c *CourseDao) UpdateEnroll(id string) {
+	public.DB.Exec("update course c set c.enroll = (select count(mc.id) from member_course mc where mc.course_id = c.id) where c.id = ?", id)
+}

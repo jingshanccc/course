@@ -66,3 +66,10 @@ func MemberAvatarUpload(ctx *gin.Context) {
 		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
 	}
 }
+
+func MemberIntegral(ctx *gin.Context) {
+	userId, _ := middleware.GetCurrentMember(ctx)
+	userService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name].(user.UserService)
+	res, err := userService.MemberIntegral(context.Background(), &basic.String{Str: userId})
+	public.ResponseAny(ctx, err, res)
+}

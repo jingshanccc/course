@@ -86,6 +86,8 @@ type UserService interface {
 	MemberSave(ctx context.Context, in *dto.MemberDto, opts ...client.CallOption) (*basic.String, error)
 	// 会员头像更新
 	MemberAvatar(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
+	// 会员积分
+	MemberIntegral(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error)
 }
 
 type userService struct {
@@ -420,6 +422,16 @@ func (c *userService) MemberAvatar(ctx context.Context, in *basic.StringList, op
 	return out, nil
 }
 
+func (c *userService) MemberIntegral(ctx context.Context, in *basic.String, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "UserService.MemberIntegral", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for UserService service
 
 type UserServiceHandler interface {
@@ -465,6 +477,8 @@ type UserServiceHandler interface {
 	MemberSave(context.Context, *dto.MemberDto, *basic.String) error
 	// 会员头像更新
 	MemberAvatar(context.Context, *basic.StringList, *basic.String) error
+	// 会员积分
+	MemberIntegral(context.Context, *basic.String, *basic.String) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
@@ -501,6 +515,7 @@ func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts .
 		MemberInfo(ctx context.Context, in *basic.String, out *dto.MemberDto) error
 		MemberSave(ctx context.Context, in *dto.MemberDto, out *basic.String) error
 		MemberAvatar(ctx context.Context, in *basic.StringList, out *basic.String) error
+		MemberIntegral(ctx context.Context, in *basic.String, out *basic.String) error
 	}
 	type UserService struct {
 		userService
@@ -639,4 +654,8 @@ func (h *userServiceHandler) MemberSave(ctx context.Context, in *dto.MemberDto, 
 
 func (h *userServiceHandler) MemberAvatar(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.UserServiceHandler.MemberAvatar(ctx, in, out)
+}
+
+func (h *userServiceHandler) MemberIntegral(ctx context.Context, in *basic.String, out *basic.String) error {
+	return h.UserServiceHandler.MemberIntegral(ctx, in, out)
 }

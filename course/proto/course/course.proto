@@ -61,6 +61,8 @@ service CourseService {
   rpc MyCourse(basic.String) returns (CourseDtoList);
   // 添加到我的课程
   rpc AddToMyCourse(MemberCourseDto) returns (basic.String);
-  // 添加到我的课程
+  // 获取课程学习进度
   rpc CourseInfo(basic.StringList) returns (basic.String);
+  // 保存课程学习进度
+  rpc SaveLearnInfo(basic.StringList) returns (basic.String);
 }

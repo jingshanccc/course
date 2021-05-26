@@ -47,3 +47,11 @@ func (m *MemberCourseDao) CourseInfo(memberId, courseId string) (string, *public
 	}
 	return info, nil
 }
+
+func (m *MemberCourseDao) SaveLearnInfo(rows []string) *public.BusinessException {
+	err := public.DB.Model(&MemberCourse{}).Where("member_id = ? and course_id = ?", rows[2], rows[0]).Update("last_learn", rows[1]).Error
+	if err != nil {
+		return public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+	}
+	return nil
+}

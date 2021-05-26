@@ -53,4 +53,6 @@ service UserService{
   rpc MemberSave(MemberDto) returns (basic.String);
   // 会员头像更新
   rpc MemberAvatar(basic.StringList) returns (basic.String);
+  // 会员积分
+  rpc MemberIntegral(basic.String) returns (basic.String);
 }

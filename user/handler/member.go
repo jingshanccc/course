@@ -186,3 +186,22 @@ func (u *UserServiceHandler) MemberSave(ctx context.Context, in *dto.MemberDto, 
 	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Id)
 	return
 }
+
+//MemberIntegral: 用户积分
+func (u *UserServiceHandler) MemberIntegral(ctx context.Context, in *basic.String, out *basic.String) (err error) {
+	var (
+		exception *public.BusinessException
+	)
+	defer func() {
+		if exception != nil {
+			err = errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["user"].Name, exception.Error(), exception.Code())
+		}
+	}()
+	e := public.DB.Exec("update member set integral = integral + 10 where id = ?", in.Str).Error
+	if e != nil {
+		exception = public.NewBusinessException(public.EXECUTE_SQL_ERROR)
+		return
+	}
+	redis.RedisClient.Del(ctx, config.Conf.Services["user"].Others["userInfoKey"].(string)+in.Str)
+	return
+}

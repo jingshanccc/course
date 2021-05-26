@@ -10,6 +10,7 @@ import (
 	"gitee.com/jingshanccc/course/public/util"
 	"github.com/micro/go-micro/v2/errors"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -46,6 +47,7 @@ func (c *CourseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.Member
 	if err != nil {
 		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}
+	courseDao.UpdateEnroll(in.CourseId)
 	return nil
 }
 
@@ -53,6 +55,19 @@ func (c *CourseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.Member
 func (c *CourseServiceHandler) CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	info, err := memberCourseDao.CourseInfo(in.Rows[0], in.Rows[1])
 	out.Str = info
+	if err != nil {
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
+	}
+	return nil
+}
+
+//SaveLearnInfo: 保存课程学习进度
+func (c *CourseServiceHandler) SaveLearnInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	if len(in.Rows) != 3 || len(strings.Split(in.Rows[1], " ")) != 3 {
+		exception := public.NewBusinessException(public.VALID_PARM_ERROR)
+		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, exception.Error(), exception.Code())
+	}
+	err := memberCourseDao.SaveLearnInfo(in.Rows)
 	if err != nil {
 		return errors.New(config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name, err.Error(), err.Code())
 	}

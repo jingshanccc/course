@@ -95,8 +95,10 @@ type CourseService interface {
 	MyCourse(ctx context.Context, in *basic.String, opts ...client.CallOption) (*dto.CourseDtoList, error)
 	// 添加到我的课程
 	AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, opts ...client.CallOption) (*basic.String, error)
-	// 添加到我的课程
+	// 获取课程学习进度
 	CourseInfo(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
+	// 保存课程学习进度
+	SaveLearnInfo(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error)
 }
 
 type courseService struct {
@@ -461,6 +463,16 @@ func (c *courseService) CourseInfo(ctx context.Context, in *basic.StringList, op
 	return out, nil
 }
 
+func (c *courseService) SaveLearnInfo(ctx context.Context, in *basic.StringList, opts ...client.CallOption) (*basic.String, error) {
+	req := c.c.NewRequest(c.name, "CourseService.SaveLearnInfo", in)
+	out := new(basic.String)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for CourseService service
 
 type CourseServiceHandler interface {
@@ -515,8 +527,10 @@ type CourseServiceHandler interface {
 	MyCourse(context.Context, *basic.String, *dto.CourseDtoList) error
 	// 添加到我的课程
 	AddToMyCourse(context.Context, *dto.MemberCourseDto, *basic.String) error
-	// 添加到我的课程
+	// 获取课程学习进度
 	CourseInfo(context.Context, *basic.StringList, *basic.String) error
+	// 保存课程学习进度
+	SaveLearnInfo(context.Context, *basic.StringList, *basic.String) error
 }
 
 func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, opts ...server.HandlerOption) error {
@@ -556,6 +570,7 @@ func RegisterCourseServiceHandler(s server.Server, hdlr CourseServiceHandler, op
 		MyCourse(ctx context.Context, in *basic.String, out *dto.CourseDtoList) error
 		AddToMyCourse(ctx context.Context, in *dto.MemberCourseDto, out *basic.String) error
 		CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error
+		SaveLearnInfo(ctx context.Context, in *basic.StringList, out *basic.String) error
 	}
 	type CourseService struct {
 		courseService
@@ -706,4 +721,8 @@ func (h *courseServiceHandler) AddToMyCourse(ctx context.Context, in *dto.Member
 
 func (h *courseServiceHandler) CourseInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
 	return h.CourseServiceHandler.CourseInfo(ctx, in, out)
+}
+
+func (h *courseServiceHandler) SaveLearnInfo(ctx context.Context, in *basic.StringList, out *basic.String) error {
+	return h.CourseServiceHandler.SaveLearnInfo(ctx, in, out)
 }

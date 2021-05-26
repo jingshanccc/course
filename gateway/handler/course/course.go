@@ -102,6 +102,19 @@ func CourseInfo(ctx *gin.Context) {
 	}
 }
 
+//SaveLearnInfo: 保存课程学习进度
+func SaveLearnInfo(ctx *gin.Context) {
+	var req basic.StringList
+	user, _ := middleware.GetCurrentMember(ctx)
+	if err := ctx.Bind(&req); err == nil {
+		courseService := ctx.Keys[config.Conf.BasicConfig.BasicName+config.Conf.Services["course"].Name].(course.CourseService)
+		list, err := courseService.SaveLearnInfo(context.Background(), &basic.StringList{Rows: append(req.Rows, user)})
+		public.ResponseAny(ctx, err, list)
+	} else {
+		public.ResponseError(ctx, public.NewBusinessException(public.VALID_PARM_ERROR))
+	}
+}
+
 //DownloadCourseContent: 下载课程讲义
 func DownloadCourseContent(ctx *gin.Context) {
 	var req basic.String
